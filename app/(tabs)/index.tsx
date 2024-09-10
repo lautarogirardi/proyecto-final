@@ -2,13 +2,26 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import { Link } from 'expo-router';
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
+      <Text style={styles.title}>EPET N°20</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+    <Link href={'/cursos'} style={{...styles.boton, ...styles.text}} >Cursos</Link>
+    
+    <br />
+    <Link href={'/alumnos'} style={{...styles.boton, ...styles.text}}>Alumnos</Link>
+    <br />
+    
+    
+
+      
+       
+
+    
+    
     </View>
   );
 }
@@ -28,4 +41,16 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+  boton:{
+    backgroundColor: 'lightblue',
+    color: 'whitse',
+    padding: 10 ,
+    
+    borderRadius: 5,
+    cursor: 'pointer',
+  },
+
+  text:{
+    color:'white',
+  }
 });
