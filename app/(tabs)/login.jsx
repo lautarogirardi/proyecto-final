@@ -2,11 +2,11 @@ import { formulario } from "../../components/formulario"
 
 function app(){
     return(
-        <div classname="app">
+        <div classname="formulario">
         
           <formulario/>  
         </div>
     )
 }
 
-export default app
+export default formulario

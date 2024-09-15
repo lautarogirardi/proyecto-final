@@ -3,10 +3,10 @@ import { useState } from "react"
 export function formulario(){
     const [nombre, setnombre]=useState("");
     const [contraseña, setcontraseña]=useState("");
-    
+
     return (
     <section>
-        <h1>login</h1>
+        <h1>    login</h1>
 
         <form className="formulario">
             <input type="text" />
