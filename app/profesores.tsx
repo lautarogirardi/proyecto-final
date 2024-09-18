@@ -3,7 +3,7 @@ import { Text, View } from '@/components/Themed';
 import { StyleSheet } from 'react-native';
 import Informe  from '@/alumnos/formInforme';
 import Comportamiento  from '@/alumnos/formComportamiento';
-import Elegir  from '@/alumnos/elegirAlumno';
+import ElegirP from '@/profesores/elegirProfesor';
 
 interface Section {
 id: number;
@@ -19,7 +19,7 @@ const handleButtonClick = (section: Section) => {
 
 return (
   <div >
-    <Elegir></Elegir>
+    <ElegirP></ElegirP>
     <View  style={styles.container}>
     <div >
     <h1>Informe de Profesores: </h1>
