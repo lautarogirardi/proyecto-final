@@ -11,9 +11,7 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>EPET N°20</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-    <Link href={'/cursos'} style={{...styles.boton, ...styles.text}} >Cursos</Link>
-    
-    <br />
+
     <Link href={'/alumnos'} style={{...styles.boton, ...styles.text}}>Alumnos</Link>
     <br />
     <Link href={'/profesores'} style={{...styles.boton, ...styles.text}}>Profesores</Link>
