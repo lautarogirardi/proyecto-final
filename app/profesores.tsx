@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View } from '@/components/Themed';
 import { StyleSheet } from 'react-native';
-import Informe  from '@/alumnos/formInforme';
+import Materias  from '@/profesores/formMaterias';
 import Comportamiento  from '@/alumnos/formComportamiento';
 import ElegirP from '@/profesores/elegirProfesor';
 
@@ -30,7 +30,7 @@ return (
     </div>
 
     {activeSection.name === 'materias' && (
-        <div> </div>
+        <div> <Materias></Materias> </div>
         
     )}
 
