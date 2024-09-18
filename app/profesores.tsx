@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View } from '@/components/Themed';
 import { StyleSheet } from 'react-native';
 import Materias  from '@/profesores/formMaterias';
-import Comportamiento  from '@/alumnos/formComportamiento';
+import Informe from '@/profesores/formInforme';
 import ElegirP from '@/profesores/elegirProfesor';
 
 interface Section {
@@ -36,7 +36,7 @@ return (
 
     {activeSection.name === 'informe' && (
         <div>
-          
+        <Informe></Informe>
         </div>
     )}
     </div>
