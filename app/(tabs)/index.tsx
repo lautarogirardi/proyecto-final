@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
@@ -6,6 +6,8 @@ import { Link } from 'expo-router';
 
 export default function TabOneScreen() {
   return (
+    
+      
     <View style={styles.container}>
       <Text style={styles.title}>EPET N°20</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -15,14 +17,15 @@ export default function TabOneScreen() {
     <Link href={'/alumnos'} style={{...styles.boton, ...styles.text}}>Alumnos</Link>
     <br />
     
-    
+   
 
       
-       
+  
 
     
     
     </View>
+    
   );
 }
 
@@ -43,7 +46,7 @@ const styles = StyleSheet.create({
   },
   boton:{
     backgroundColor: 'lightblue',
-    color: 'whitse',
+    
     padding: 10 ,
     
     borderRadius: 5,
@@ -52,5 +55,6 @@ const styles = StyleSheet.create({
 
   text:{
     color:'white',
-  }
+  },
+
 });
