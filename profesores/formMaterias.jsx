@@ -51,6 +51,14 @@ const styles = StyleSheet.create({
     },
     labelText: {
       color: 'white',
-    }
+    },
+    input:{
+        width: 100,   
+      
+        padding: 10,
+        border: 1,
+        border:solid,
+        borderradius: 3,
+      }
 });
 

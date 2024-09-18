@@ -16,15 +16,8 @@ export default function TabOneScreen() {
     <br />
     <Link href={'/profesores'} style={{...styles.boton, ...styles.text}}>Profesores</Link>
     <br />
-    
-  
-
-      
-  
-
-    
-    
     </View>
+    
     
   );
 }
