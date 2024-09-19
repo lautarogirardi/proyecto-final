@@ -13,8 +13,8 @@ interface CardData {
 export default function TabOneScreen() {
   const router = useRouter();
   const cardsData: CardData[] = [
-    { id: 1, title: 'Card 1', buttonText: 'Go to Page 1', route: '/page1' },
-    { id: 2, title: 'Card 2', buttonText: 'Go to Page 2', route: '/page2' },
+    { id: 1, title: 'agregar profesores', buttonText: 'toca para agregar profesors!', route: '/page1' },
+    { id: 2, title: 'agregar alumnos!', buttonText: 'toca para agregar mas alumnos!', route: '/page2' },
     // Agrega más tarjetas según sea necesario
   ];
 

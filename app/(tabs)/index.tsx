@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { SlidingCards } from 'react-native-slide-cards';
 import { useRouter } from 'expo-router';
-import EditScreenInfo from '@/components/EditScreenInfo'; 
 
 interface CardData {
   id: number;
@@ -11,7 +10,7 @@ interface CardData {
   route: string;
 }
 
-export default function TabOneScreen() {
+export default function MainScreen() {
   const router = useRouter();
   const cardsData: CardData[] = [
     { id: 1, title: 'agregar curso', buttonText: 'toca para agregar cursos!', route: '/page1' },
@@ -20,10 +19,10 @@ export default function TabOneScreen() {
   ];
 
   const renderCard = (data: CardData) => (
-    <View style={styles.card}>
+    <View style={styles.card} key={data.id}>
       <Text style={styles.cardTitle}>{data.title}</Text>
       <View style={styles.buttonContainer}>
-        <Button title={data.buttonText} onPress={() => router.push(data.route)} />
+        <Button title={data.buttonText} onPress={() => router.push(data.route as never)} />
       </View>
     </View>
   );
@@ -54,8 +53,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee', 
   },
   card: {
-    width: '80%', // Reduce el ancho de las tarjetas
-    padding: 15, // Reduce el padding de las tarjetas
+    width: '60%', // Reduce el ancho de las tarjetas
+    padding: 5, // Reduce el padding de las tarjetas
     backgroundColor: '#fff',
     borderRadius: 4,
     marginVertical: 4,
@@ -63,10 +62,10 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16, // Reduce el tamaño de la fuente del título
-    marginBottom: 8, // Reduce el margen inferior del título
+    marginBottom: 4, // Reduce el margen inferior del título
   },
   buttonContainer: {
-    width: '30%', // Ajusta el ancho del contenedor del botón
-    marginTop: 10, // Ajusta el margen superior del contenedor del botón
+    width: '80%', // Ajusta el ancho del contenedor del botón
+    marginTop: 4, // Ajusta el margen superior del contenedor del botón
   },
 });
