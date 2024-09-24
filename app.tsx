@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from '@/app/(tabs)/login';
+import LoginScreen from '@/app/(tabs)/inicio';
 import MainScreen from '@/app/(tabs)/index';
-import OlvidoSuContraseña from '@/app/(tabs)/olvidosucontraseña'; 
+import OlvidoSuContraseña from '@/app/olvidosucontraseña';
 
 export type RootStackParamList = {
   Login: undefined;

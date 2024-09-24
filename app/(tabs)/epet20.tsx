@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { SlidingCards } from 'react-native-slide-cards';
 import { useRouter } from 'expo-router';
 
@@ -10,13 +10,12 @@ interface CardData {
   route: string;
 }
 
-export default function Slider() {
+export default function MainScreen() {
   const router = useRouter();
   const cardsData: CardData[] = [
-    { id: 1, title: 'cursos', buttonText: 'toca para ver info sobre los cursos!', route: '/' },
-    { id: 2, title: 'informe profesores', buttonText: 'toca para hacer un informe a algun profesor!', route: '/informeprofesor' },
+    { id: 1, title: 'cursos', buttonText: 'toca para ver info sobre los cursos!', route: '/curso' },
+    { id: 2, title: 'informe profesores', buttonText: 'toca para hacer un informe a algun profesor!', route: '/profesores' },
     { id: 3, title: 'alumnos', buttonText: 'toca para ver info sobre los alumnos!', route: '/alumnos' },
-    { id: 4, title: 'curso', buttonText: 'toca para ver info sobre el curso!', route: '/curso' },
   ];
 
   const renderCard = (data: CardData) => (
@@ -32,13 +31,7 @@ export default function Slider() {
     <View style={styles.container}>
       <Text style={styles.title}>EPET N20</Text>
       <View style={styles.separator} />
-      <SlidingCards
-        cards={cardsData}
-        mainContent={renderCard}
-        cardWidth={Dimensions.get('window').width * 0.8}
-        cardHeight={200}
-        direction="horizontal"
-      />
+      <SlidingCards cards={cardsData} mainContent={renderCard} />
     </View>
   );
 }

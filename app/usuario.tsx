@@ -1,73 +1,84 @@
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, Switch, View, Button } from 'react-native';
-import { useState } from 'react';
-
+import { Platform, StyleSheet, View, Button, ImageBackground } from 'react-native';
 import { Text } from '@/components/Themed';
 
 export default function ModalScreen() {
-  // Estado para almacenar la preferencia de modo oscuro
-  const [darkMode, setDarkMode] = useState(false);
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Configuración de usuario</Text>
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.background}>
+      <View style={styles.overlay}>
+        <View style={styles.profileContainer}>
+          <Text style={styles.title}>Perfil de Usuario</Text>
 
-      {/* Menú de configuración de usuario */}
-      <View style={styles.menuContainer}>
-        {/* Botón para actualizar el nombre de usuario */}
-        <View style={styles.buttonContainer}>
-          <Button title="Cambiar nombre de usuario" onPress={() => console.log('Actualizando nombre de usuario')} />
+          {/* Menú de configuración de usuario */}
+          <View style={styles.menuContainer}>
+            {/* Botón para actualizar el nombre de usuario */}
+            <View style={styles.buttonContainer}>
+              <Button title="Cambiar nombre de usuario" onPress={() => console.log('Actualizando nombre de usuario')} color="#4B0082" />
+            </View>
+
+            {/* Espacio entre botones */}
+            <View style={{ marginVertical: 10 }} />
+
+            {/* Botón para actualizar la contraseña */}
+            <View style={styles.buttonContainer}>
+              <Button title="Cambiar contraseña" onPress={() => console.log('Actualizando contraseña')} color="#4B0082" />
+            </View>
+          </View>
         </View>
 
-        {/* Espacio entre botones */}
-        <View style={{ marginVertical: 10 }} />
-
-        {/* Botón para actualizar la contraseña */}
-        <View style={styles.buttonContainer}>
-          <Button title="Cambiar contraseña" onPress={() => console.log('Actualizando contraseña')} />
-        </View>
-
-        {/* Espacio entre botones */}
-        <View style={{ marginVertical: 10 }} />
-
-        {/* Etiqueta y switch para el modo oscuro */}
-        <Text style={styles.menuLabel}>Modo oscuro:</Text>
-        <Switch
-          value={darkMode}
-          onValueChange={(value) => setDarkMode(value)}
-        />
+        {/* Use a light status bar on iOS to account for the black space above the modal */}
+        <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
       </View>
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff', // Eliminé el condicional para el modo oscuro
+  },
+  profileContainer: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    alignItems: 'center',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    color: '#4A4A4A',
+    marginBottom: 20,
   },
   menuContainer: {
-    marginVertical: 20,
-  },
-  menuLabel: {
-    fontSize: 16,
-    marginBottom: 10,
+    width: '100%',
   },
   buttonContainer: {
-    marginVertical: 10, // Agregué un margen vertical a los botones
+    marginVertical: 10,
+    backgroundColor: '#4B0082',
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  button: {
+    color: '#fff',
   },
 });

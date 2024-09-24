@@ -1,5 +1,6 @@
+// olvidosucontraseña.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function OlvidoSuContraseña() {
@@ -8,22 +9,27 @@ export default function OlvidoSuContraseña() {
   const navigation = useNavigation();
 
   const handlePasswordRecovery = () => {
-    //proximamente agregar configuracion con google
     setMessage('Se ha enviado un enlace de recuperación a tu correo electrónico.');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recuperar Contraseña</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Correo Electrónico"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Button title="Recuperar Contraseña" onPress={handlePasswordRecovery} />
-      {message && <Text style={styles.message}>{message}</Text>}
-      <Button title="Volver" onPress={() => navigation.goBack()} />
+      <View style={styles.form}>
+        <Text style={styles.title}>Recuperar Contraseña</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Correo Electrónico"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TouchableOpacity style={styles.recoverButton} onPress={handlePasswordRecovery}>
+          <Text style={styles.buttonText}>Recuperar Contraseña</Text>
+        </TouchableOpacity>
+        {message && <Text style={styles.message}>{message}</Text>}
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>Volver</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -33,25 +39,53 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
     backgroundColor: '#f0f0f0',
   },
+  form: {
+    width: '38%',
+    padding: 15,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 20,
+    marginBottom: 12,
     textAlign: 'center',
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
+    borderWidth: 3,
+    marginBottom: 10,
     paddingHorizontal: 8,
     borderRadius: 5,
+  },
+  recoverButton: {
+    backgroundColor: '#4CAF50',
+    padding: 8,
+    borderRadius: 5,
+    marginVertical: 8,
+    alignItems: 'center',
+  },
+  backButton: {
+    backgroundColor: '#2196F3',
+    padding: 8,
+    borderRadius: 5,
+    marginVertical: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 14,
   },
   message: {
     color: 'green',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 8,
   },
 });
