@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, ImageBackground, StyleSheet } from 'react-native';
-import LoginForm from '../../components/formulario'; // Importamos el componente LoginForm
+import RegistroForm from '../components/Registro'; 
 
-export default function LoginScreen() {
+export default function RegistroScreen() {
   return (
     <ImageBackground source={require('@/assets/images/login.jpeg')} style={styles.background}>
       <View style={styles.container}>
-        <LoginForm /> {/* Usamos el componente de Login */}
+        <RegistroForm /> {/* Usamos el componente RegistroForm */}
       </View>
     </ImageBackground>
   );

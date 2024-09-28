@@ -1,7 +1,8 @@
-// olvidosucontraseña.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebaseConfig'; // Import the auth instance
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 export default function OlvidoSuContraseña() {
   const [email, setEmail] = useState('');
@@ -9,7 +10,19 @@ export default function OlvidoSuContraseña() {
   const navigation = useNavigation();
 
   const handlePasswordRecovery = () => {
-    setMessage('Se ha enviado un enlace de recuperación a tu correo electrónico.');
+    if (email.trim() === '') {
+      Alert.alert('Correo no ingresado', 'Por favor ingrese su correo electrónico');
+      return;
+    }
+
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setMessage('Se ha enviado un enlace de recuperación a tu correo electrónico.');
+      })
+      .catch(error => {
+        console.log(error);
+        Alert.alert("Error", error.message);
+      });
   };
 
   return (
@@ -39,49 +52,49 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '',
   },
   form: {
-    width: '38%',
-    padding: 15,
+    width: '90%',
+    padding: 35,
     backgroundColor: '#fff',
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   title: {
-    fontSize: 20,
-    marginBottom: 12,
+    fontSize: 25,
+    marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    height: 50,
+    height: 40,
     borderColor: 'gray',
-    borderWidth: 3,
+    borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 8,
     borderRadius: 5,
   },
   recoverButton: {
     backgroundColor: '#4CAF50',
-    padding: 8,
+    padding: 9,
     borderRadius: 5,
     marginVertical: 8,
     alignItems: 'center',
   },
   backButton: {
     backgroundColor: '#2196F3',
-    padding: 8,
+    padding: 9,
     borderRadius: 5,
     marginVertical: 8,
     alignItems: 'center',
   },
   buttonText: {
     color: 'white',
-    fontSize: 14,
+    fontSize: 16,
   },
   message: {
     color: 'green',
