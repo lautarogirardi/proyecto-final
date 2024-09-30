@@ -4,6 +4,7 @@ import { ImageBackground, StyleSheet } from 'react-native';
 import Informe  from '@/alumnos/formInforme';
 import Comportamiento  from '@/alumnos/formComportamiento';
 import Elegir  from '@/alumnos/elegirAlumno';
+import {BlurView} from 'expo-blur';
 
 interface Section {
 id: number;
@@ -18,11 +19,12 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
-  <ImageBackground source={require('@/fondo/epet20.jpg')} style={styles.backgroundImage}>
+  <ImageBackground source={require('@/fondo/epet21.jpg')} style={styles.backgroundImage}>
     
     <View  style={styles.container}>
-      
-    <View style={styles.lindo} >
+    
+
+    <BlurView intensity={65} style={styles.blurContainer}>
     <h1 style={styles.title} >Informe de Estudiante: </h1>
     <View style={styles.elegir} ><Elegir></Elegir></View>
 
@@ -32,17 +34,19 @@ return (
     </View>
 
     {activeSection.name === 'informe' && (
-        <Informe></Informe>
+        <View style={styles.component}><Informe></Informe></View>
         
     )}
 
     {activeSection.name === 'comportamiento' && (
         
-          <Comportamiento></Comportamiento>
+        <View style={styles.component}><Comportamiento></Comportamiento></View>
         
     )}
+    </BlurView>
     </View>
-    </View>
+
+
     </ImageBackground>
 );
 }
@@ -56,6 +60,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent', 
   },
+
   backgroundImage: {
     flex: 1,
     width: '100%',
@@ -66,40 +71,61 @@ const styles = StyleSheet.create({
   title: {
   fontFamily: 'arial',
     fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#000', 
   },
   text: {
     fontFamily:'arial',
   },
   boton:{
-    backgroundColor: 'lightblue',
-
+    backgroundColor: 'rgba(255, 255, 255, 0.0)', 
     padding: 10,
-
-    borderRadius: 5,
+    color: '#000',
+    borderRadius: 40,
     cursor: 'pointer',
     width:200,
     height:40,
+    textAlign: 'center',
+    fontSize:15,
+    fontWeight:'bold',
+    fontFamily:'arial',
+    borderColor:'lightblue',
+    borderWidth: 2,
   }
   ,
-  lindo:{
-    backgroundColor: '#ffffff', 
-    borderRadius: 15, 
-    padding: 30, 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 12,
-    elevation: 5, 
-    width: 500, 
-  },
+
   ubicacion:{
     flexDirection: 'row' ,
     justifyContent: 'center',
+    marginBottom: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.0)', 
   },
   elegir: {
     marginBottom: 10, 
     alignItems: 'center', 
     justifyContent: 'center',
     width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.0)'
   },
+  blurContainer: {
+    width: '100%', 
+    padding: 20,
+    borderRadius: 40,
+    alignItems:'center', 
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    justifyContent: 'center',
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    borderColor:'lightblue',
+    borderWidth: 2,
+  },
+  component:{
+    marginBottom: 10, 
+
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.0)'
+  },
+
   });

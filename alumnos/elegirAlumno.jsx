@@ -30,30 +30,29 @@ const styles = StyleSheet.create({
     alignItems: 'Right',
     justifyContent: 'Right',
     width: '70%',
+    backgroundColor:'transparent' ,
   },
-    title: {
-      fontSize: 20,
-      fontWeight: 'bold',
-    },
+
     separator: {
       marginVertical: 30,
       height: 1,
       width: '80%',
     },
-    labelText: {
-      color: 'white',
-    },
+
     select: {
       width: '100%', 
       maxWidth: '300px', 
-      padding: 5,
+      padding: 10,
       borderRadius: 5,
-      backgroundColor: '#f0f0f0',
+      backgroundColor: 'rgba(255, 255, 255, 0.0)', 
       borderWidth: 1,
       borderColor: '#ccc',
+      fontFamily: 'arial',
+      fontWeight:'bold',
     },
     label:{
       fontFamily: 'arial',
+      fontWeight:'bold',
     }
   });
 

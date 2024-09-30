@@ -9,12 +9,12 @@ function Comportamiento(){
         
         <View style={styles.container}>
 
-        <label for="sanciones">Sanciones:</label>
+        <label for="sanciones" style={styles.label}>Sanciones:</label>
         <input type="number" id="sanciones" name="sanciones" style={styles.input}></input><br/>
-        <label for="razon">Razon:</label>
-        <textarea name="razon" cols="50" rows="10" id="razon"></textarea><br/>
-        <label  for="reportes">Reportes del profesor:</label>
-        <input type="text" id="reportes" name="reportes"></input><br/>
+        <label for="razon" style={styles.label}>Razon:</label>
+        <textarea name="razon" cols="50" rows="10" id="razon" style={styles.input}></textarea><br/>
+        <label  for="reportes" style={styles.label}>Reportes del profesor:</label>
+        <input type="text" id="reportes" name="reportes" style={styles.input}></input><br/>
         
         
    
@@ -30,22 +30,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.0)', 
+    padding: 20,
     fontFamily:'arial',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+    fontWeight:'bold',
   },
   input:{
-    borderRadius:30,
+    width: '100%',
+    borderRadius: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
   label:{
     fontFamily: 'arial',
+    marginVertical: 5,
+    color: '#000',
+    fontWeight:'bold', 
   }
   });
 

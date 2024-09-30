@@ -20,7 +20,7 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
-  <ImageBackground source={require('@/fondo/epet20.jpg')} style={styles.backgroundImage}>
+  <ImageBackground source={require('@/fondo/epet21.jpg')} style={styles.backgroundImage}>
     
     <View style={styles.container} >
     
