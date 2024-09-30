@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, View } from '@/components/Themed';
-import { StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 import Materias  from '@/profesores/formMaterias';
 import Informe from '@/profesores/formInforme';
 import ElegirP from '@/profesores/elegirProfesor';
@@ -18,30 +18,34 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
-  <div >
+  <ImageBackground source={require('@/fondo/epet20.jpg')} style={styles.backgroundImage}>
+    <View style={styles.container} >
+    
+    <View style={styles.lindo}>
+    
+    <h1 style={styles.title}>Informe de Profesores: </h1>
+    <View style={styles.elegirP} >
     <ElegirP></ElegirP>
-    <View  style={styles.container}>
-    <div >
-    <h1>Informe de Profesores: </h1>
-
-    <div >
+    </View>
+    
+    <View style={styles.ubicacion} >
         <button onClick={() => handleButtonClick({ id: 1, name: 'materias' })} style={styles.boton}>Materias</button>
         <button onClick={() => handleButtonClick({ id: 2, name: 'informe' })} style={styles.boton} >Informe</button>
-    </div>
+    </View>
 
     {activeSection.name === 'materias' && (
-        <div> <Materias></Materias> </div>
+        <Materias></Materias> 
         
     )}
 
     {activeSection.name === 'informe' && (
-        <div>
+        
         <Informe></Informe>
-        </div>
+        
     )}
-    </div>
     </View>
-    </div>
+    </View>
+    </ImageBackground>
 );
 }
 
@@ -50,31 +54,54 @@ export default InformeEstudiante;
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
       justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'transparent', 
+    },
+    backgroundImage: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     title: {
-      fontSize: 20,
+    fontFamily: 'arial',
       fontWeight: 'bold',
     },
-    separator: {
-      marginVertical: 30,
-      height: 1,
-      width: '80%',
-    },
     text: {
-      color: 'white',
+      fontFamily:'arial',
     },
     boton:{
       backgroundColor: 'lightblue',
 
-      padding: 10 ,
-      
+      padding: 10,
+
       borderRadius: 5,
       cursor: 'pointer',
-      
-    },
-    fondo:{
-      backgroundColor:'lightblue',
+      width:200,
+      height:40,
     }
+    ,
+    lindo:{
+      backgroundColor: '#ffffff', 
+      borderRadius: 15, 
+      padding: 30, 
+      shadowColor: '#000', 
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.9,
+      shadowRadius: 12,
+      elevation: 5, 
+      width: 500, 
+    },
+    ubicacion:{
+      flexDirection: 'row' ,
+      justifyContent: 'center',
+    },
+    elegirP: {
+      marginBottom: 10, 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      width: '100%',
+    },
   });

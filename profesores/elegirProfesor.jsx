@@ -10,7 +10,7 @@ function ElegirP(){
         <View style={styles.container} >
 
     <label  >Elegir Profesor: </label>
-    <select id= "elegirP" >
+    <select id= "elegirP" style={styles.select}>
         <option  value="profesor1">Profesor 1</option>
         <option value="profesor2">Profesor 2</option>
         <option value="profesor3">Profesor 3</option>
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'Right',
     justifyContent: 'Right',
-    width: '15%',
+    width: '70%',
   },
     title: {
       fontSize: 20,
@@ -42,6 +42,15 @@ const styles = StyleSheet.create({
     },
     labelText: {
       color: 'white',
+    },
+    select: {
+      width: '100%', 
+      maxWidth: '300px', 
+      padding: 10,
+      borderRadius: 5,
+      backgroundColor: '#f0f0f0',
+      borderWidth: 1,
+      borderColor: '#ccc',
     }
   });
 

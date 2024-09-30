@@ -18,9 +18,10 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
-  <div >
-    <Elegir></Elegir>
+  
+    
     <View  style={styles.container}>
+      <Elegir></Elegir>
     <div >
     <h1>Informe de Estudiante: </h1>
 
@@ -41,7 +42,7 @@ return (
     )}
     </div>
     </View>
-    </div>
+    
 );
 }
 
