@@ -8,7 +8,7 @@ import { BlurView} from 'expo-blur';
 export default function TabOneScreen() {
   return (
     
-    <ImageBackground source={require('@/fondo/epet21.jpg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
     <View style={styles.container}>
       <Text style={styles.title}>EPET N°20</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    resizeMode:"cover",
   },
   title: {
     fontSize: 30,

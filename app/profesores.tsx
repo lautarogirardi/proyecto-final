@@ -20,7 +20,7 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
-  <ImageBackground source={require('@/fondo/epet21.jpg')} style={styles.backgroundImage}>
+  <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
     
     <View style={styles.container} >
     
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
       height: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+      resizeMode:"cover", 
     },
     title: {
     fontFamily: 'arial',
