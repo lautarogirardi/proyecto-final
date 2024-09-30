@@ -26,25 +26,26 @@ export default Informe
 
 const styles = StyleSheet.create({
     container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    },
-    title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    },
-    separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-    },
-    input:{
-        borderRadius:30,
-    },
-    label:{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.0)', 
+        padding: 20,
+        fontFamily:'arial',
+        fontWeight:'bold',
+      },
+      input:{
+        width: '100%',
+        borderRadius: 10,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
+      },
+      label:{
         fontFamily: 'arial',
-    }
-    
+        marginVertical: 5,
+        color: '#000',
+        fontWeight:'bold', 
+      }
 });
 
