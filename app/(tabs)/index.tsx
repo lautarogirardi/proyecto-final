@@ -7,17 +7,17 @@ import { Link } from 'expo-router';
 export default function TabOneScreen() {
   return (
     
-      
+    <ImageBackground source={require('@/fondo/epet20.jpg')} style={styles.backgroundImage}>
     <View style={styles.container}>
       <Text style={styles.title}>EPET N°20</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
-    <Link href={'/alumnos'} style={{...styles.boton, ...styles.text}}>Alumnos</Link>
+    <Link href={'/Alumnos'} style={{...styles.boton, ...styles.text}}>Alumnos</Link>
     <br />
-    <Link href={'/profesores'} style={{...styles.boton, ...styles.text}}>Profesores</Link>
+    <Link href={'/Profesores'} style={{...styles.boton, ...styles.text}}>Profesores</Link>
     <br />
     </View>
-    
+    </ImageBackground>
     
   );
 }
@@ -27,15 +27,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor:'transparent',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
+    backgroundColor:'black',
+
   },
   boton:{
     backgroundColor: 'lightblue',
@@ -47,7 +57,7 @@ const styles = StyleSheet.create({
   },
 
   text:{
-    color:'white',
+    color:'black',
   },
 
 });

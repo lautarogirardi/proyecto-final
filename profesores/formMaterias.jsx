@@ -8,18 +8,18 @@ function Materias(){
     return(
     <View styles={styles.container}>
       
-      <label  for="nombre" >Nombre:</label>
+      <label  for="nombre" styles={styles.label}>Nombre:</label>
       <input type="text" id="nombre" name="nombre" style={styles.input}></input>
-      <label  for="dni">DNI:</label>
+      <label  for="dni" styles={styles.label}>DNI:</label>
       <input type="text" id="dni" name="dni" style={styles.input}></input><br/>
-      <label  for="telefono">Telefono:</label>
+      <label  for="telefono" styles={styles.label}>Telefono:</label>
       <input type="text" id="telefono" name="telefono" style={styles.input}></input><br/>
-      <label  for="faltas">Faltas:</label>
+      <label  for="faltas" styles={styles.label}>Faltas:</label>
       <input type="number" id="faltas" name="faltas" style={styles.input}></input>
-      <h3  >Materias Asignadas</h3>
-      <label  for="materia1">Materia 1:</label>
+      <h3  styles={styles.label}>Materias Asignadas</h3>
+      <label  for="materia1" styles={styles.label}>Materia 1:</label>
       <input type="text" id="materia1" name="materia1" style={styles.input}></input>
-      <label  for="curso1">Curso 1:</label>
+      <label  for="curso1" styles={styles.label}>Curso 1:</label>
       <input type="text" id="curso1" name="curso1" style={styles.input}></input> 
      
     </View>
@@ -48,7 +48,9 @@ const styles = StyleSheet.create({
     input:{
       borderRadius:30,
     },
-
+    label:{
+      fontFamily: 'arial',
+    }
 
 });
 

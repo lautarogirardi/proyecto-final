@@ -9,7 +9,7 @@ function ElegirP(){
         
         <View style={styles.container} >
 
-    <label  >Elegir Profesor: </label>
+    <label style={styles.label} >Elegir Profesor: </label>
     <select id= "elegirP" style={styles.select}>
         <option  value="profesor1">Profesor 1</option>
         <option value="profesor2">Profesor 2</option>
@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
       backgroundColor: '#f0f0f0',
       borderWidth: 1,
       borderColor: '#ccc',
+    },
+    label:{
+      fontFamily: 'arial',
     }
   });
 

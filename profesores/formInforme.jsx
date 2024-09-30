@@ -9,9 +9,9 @@ function Informe(){
         
         <View style={styles.container}>
 
-        <label for="sanciones">Puntuacion:</label>
+        <label for="sanciones" style={styles.label}>Puntuacion:</label>
         <input type="text" id="sanciones" name="sanciones" style={styles.input}></input><br/>
-        <label for="razon">Reportes:</label>
+        <label for="razon" style={styles.label}>Reportes:</label>
         <textarea name="razon" cols="50" rows="10" id="razon" style={styles.container}></textarea><br/>
 
         
@@ -41,7 +41,10 @@ const styles = StyleSheet.create({
     },
     input:{
         borderRadius:30,
-      },
+    },
+    label:{
+        fontFamily: 'arial',
+    }
     
 });
 

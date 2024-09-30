@@ -9,8 +9,8 @@ function Elegir(){
         
         <View style={styles.container} >
 
-    <label  >Elegir Alumnos: </label>
-    <select id= "elegir" >
+    <label style={styles.label} >Elegir Alumnos: </label>
+    <select id= "elegir" style={styles.select}>
         <option  value="alumno1">Alumno 1</option>
         <option value="alumno2">Alumno 2</option>
         <option value="alumno3">Alumno 3</option>
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'Right',
     justifyContent: 'Right',
-    width: '15%',
+    width: '70%',
   },
     title: {
       fontSize: 20,
@@ -42,6 +42,18 @@ const styles = StyleSheet.create({
     },
     labelText: {
       color: 'white',
+    },
+    select: {
+      width: '100%', 
+      maxWidth: '300px', 
+      padding: 5,
+      borderRadius: 5,
+      backgroundColor: '#f0f0f0',
+      borderWidth: 1,
+      borderColor: '#ccc',
+    },
+    label:{
+      fontFamily: 'arial',
     }
   });
 
