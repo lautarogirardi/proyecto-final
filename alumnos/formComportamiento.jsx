@@ -38,9 +38,9 @@ const styles = StyleSheet.create({
   input:{
     width: '100%',
     borderRadius: 10,
-    borderColor: '#ccc',
+    borderColor:'lightblue',
     borderWidth: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
   label:{
     fontFamily: 'arial',

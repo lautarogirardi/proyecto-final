@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
       fontFamily:'arial',
     },
     boton:{
-      backgroundColor: 'rgba(255, 255, 255, 0.0)', 
+      backgroundColor: 'lightblue', 
       padding: 10,
       color: '#000',
       borderRadius: 40,

@@ -15,7 +15,7 @@ function Materias(){
       <label  for="telefono" style={styles.label}>Telefono:</label>
       <input type="text" id="telefono" name="telefono" style={styles.input}></input><br/>
       <label  for="faltas" style={styles.label}>Faltas:</label>
-      <input type="number" id="faltas" name="faltas" style={styles.input}></input>
+      <input type="text" id="faltas" name="faltas" style={styles.input}></input>
       <h3  style={styles.label}>Materias Asignadas</h3>
       <label  for="materia1" style={styles.label}>Materia 1:</label>
       <input type="text" id="materia1" name="materia1" style={styles.input}></input>
@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
     input:{
       width: '100%',
       borderRadius: 10,
-      borderColor: '#ccc',
+      borderColor:'lightblue',
       borderWidth: 1,
-      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
     },
     label:{
       fontFamily: 'arial',

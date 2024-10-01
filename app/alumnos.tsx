@@ -73,13 +73,13 @@ const styles = StyleSheet.create({
   fontFamily: 'arial',
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#000', 
+
   },
   text: {
     fontFamily:'arial',
   },
   boton:{
-    backgroundColor: 'rgba(255, 255, 255, 0.0)', 
+    backgroundColor: 'lightblue', 
     padding: 10,
     color: '#000',
     borderRadius: 40,
@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center',
     width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.0)'
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    
   },
   blurContainer: {
     width: '100%', 

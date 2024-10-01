@@ -47,13 +47,14 @@ const styles = StyleSheet.create({
     select: {
       width: '100%', 
       maxWidth: '300px', 
-      padding: 10,
+      padding: 5,
       borderRadius: 5,
-      backgroundColor: 'rgba(255, 255, 255, 0.0)', 
+      backgroundColor: 'rgba(255, 255, 255, 0.9)', 
       borderWidth: 1,
       borderColor: '#ccc',
       fontFamily: 'arial',
       fontWeight:'bold',
+      borderColor:'lightblue',
     },
     label:{
       fontFamily: 'arial',

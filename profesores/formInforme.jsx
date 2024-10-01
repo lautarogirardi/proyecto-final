@@ -12,7 +12,7 @@ function Informe(){
         <label for="sanciones" style={styles.label}>Puntuacion:</label>
         <input type="text" id="sanciones" name="sanciones" style={styles.input}></input><br/>
         <label for="razon" style={styles.label}>Reportes:</label>
-        <textarea name="razon" cols="50" rows="10" id="razon" style={styles.container}></textarea><br/>
+        <textarea name="razon" cols="50" rows="10" id="razon" style={styles.input}></textarea><br/>
 
         
         
@@ -37,9 +37,9 @@ const styles = StyleSheet.create({
       input:{
         width: '100%',
         borderRadius: 10,
-        borderColor: '#ccc',
+        borderColor:'lightblue',
         borderWidth: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.0)',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
       },
       label:{
         fontFamily: 'arial',

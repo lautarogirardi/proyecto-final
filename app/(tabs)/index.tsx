@@ -13,11 +13,11 @@ export default function TabOneScreen() {
       <Text style={styles.title}>EPET N°20</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     <BlurView style={styles.blur}>
-    <Link href={'/Alumnos'} >Alumnos</Link>
+    <Link href={'/Alumnos'} style={styles.text}>Alumnos</Link>
     </BlurView>
     <View style={styles.br} />
     <BlurView style={styles.blur}>
-    <Link href={'/Profesores'} >Profesores</Link>
+    <Link href={'/Profesores'} style={styles.text}>Profesores</Link>
     </BlurView>
     </View>
     </ImageBackground>
@@ -44,6 +44,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
   },
+  text: {
+    fontSize: 15,
+
+    color:'lightblue',
+  },
   separator: {
     marginVertical: 30,
     height: 1,
@@ -53,8 +58,6 @@ const styles = StyleSheet.create({
   },
   blur:{
     backgroundColor: 'lightblue',
-    fontFamily:'arial',
-    fontWeight:'bold',
     padding: 10 ,
     borderColor:'lightblue',
     borderWidth: 2,
