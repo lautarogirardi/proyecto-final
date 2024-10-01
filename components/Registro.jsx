@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig'; // Import the auth instance
+import { auth } from '../firebaseConfig'; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function RegistroForm() {

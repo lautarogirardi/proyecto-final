@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig'; // Import the auth instance
+import { auth } from '../firebaseConfig'; 
 import { sendPasswordResetEmail } from 'firebase/auth';
 
 export default function OlvidoSuContraseña() {
