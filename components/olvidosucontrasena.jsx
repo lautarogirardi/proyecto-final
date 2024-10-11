@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig'; // Import the auth instance
+import { auth } from '../firebaseConfig'; 
 import { sendPasswordResetEmail } from 'firebase/auth';
 
 export default function OlvidoSuContraseña() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const navigation = useNavigation();
 
   const handlePasswordRecovery = () => {
     if (email.trim() === '') {
-      Alert.alert('Correo no ingresado', 'Por favor ingrese su correo electrónico');
+      setModalMessage('Por favor ingrese su correo electrónico');
+      setModalVisible(true);
       return;
     }
 
@@ -21,7 +24,8 @@ export default function OlvidoSuContraseña() {
       })
       .catch(error => {
         console.log(error);
-        Alert.alert("Error", error.message);
+        setModalMessage(error.message);
+        setModalVisible(true);
       });
   };
 
@@ -43,6 +47,25 @@ export default function OlvidoSuContraseña() {
           <Text style={styles.buttonText}>Volver</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>{modalMessage}</Text>
+          <TouchableOpacity
+            style={[styles.boton, styles.botonCerrar]}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textoBoton}>Cerrar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -50,9 +73,10 @@ export default function OlvidoSuContraseña() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    backgroundColor: '',
+    justifyContent: 'center',
+    padding: 20,
   },
   form: {
     width: '90%',
@@ -100,5 +124,37 @@ const styles = StyleSheet.create({
     color: 'green',
     textAlign: 'center',
     marginTop: 8,
+  },
+  modalView: {
+    margin: 40,
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 1,
+    textAlign: 'center',
+  },
+  botonCerrar: {
+    backgroundColor: '#f44336',
+  },
+  boton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  textoBoton: {
+    color: 'white',
+    textAlign: 'center',
   },
 });

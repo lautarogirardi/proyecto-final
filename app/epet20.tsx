@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { SlidingCards } from 'react-native-slide-cards';
 import { useRouter } from 'expo-router';
@@ -17,6 +17,26 @@ export default function MainScreen() {
     { id: 2, title: 'informe profesores', buttonText: 'toca para hacer un informe a algun profesor!', route: '/profesores' },
     { id: 3, title: 'alumnos', buttonText: 'toca para ver info sobre los alumnos!', route: '/alumnos' },
   ];
+
+  useEffect(() => {
+    const handleBackButton = () => {
+      // Aquí puedes verificar si el usuario está autenticado
+      const isAuthenticated = false; 
+
+      if (!isAuthenticated) {
+        router.replace("/index");//si no esta autenticado volvemos a login
+      } else {
+        // Si está autenticado, redirigimos a la pagina principal
+        router.replace('/epet20'); //llevamos a nuestra pagina principal
+      }
+    };
+
+    window.addEventListener('popstate', handleBackButton);
+
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [router]);
 
   const renderCard = (data: CardData) => (
     <View style={styles.card} key={data.id}>

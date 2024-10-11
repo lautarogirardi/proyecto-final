@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Dimensions } from 'react-native';
-import { SlidingCards } from 'react-native-slide-cards';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 
 interface CardData {
@@ -10,7 +9,7 @@ interface CardData {
   route: string;
 }
 
-export default function Slider() {
+export default function MainScreen() {
   const router = useRouter();
   const cardsData: CardData[] = [
     { id: 1, title: 'cursos', buttonText: 'toca para ver info sobre los cursos!', route: '/' },
@@ -19,26 +18,15 @@ export default function Slider() {
     { id: 4, title: 'curso', buttonText: 'toca para ver info sobre el curso!', route: '/curso' },
   ];
 
-  const renderCard = (data: CardData) => (
-    <View style={styles.card} key={data.id}>
-      <Text style={styles.cardTitle}>{data.title}</Text>
-      <View style={styles.buttonContainer}>
-        <Button title={data.buttonText} onPress={() => router.push(data.route)} />
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>EPET N20</Text>
       <View style={styles.separator} />
-      <SlidingCards
-        cards={cardsData}
-        mainContent={renderCard}
-        cardWidth={Dimensions.get('window').width * 0.8}
-        cardHeight={200}
-        direction="horizontal"
-      />
+      {cardsData.map((data) => (
+        <View style={styles.buttonContainer} key={data.id}>
+          <Button title={data.buttonText} onPress={() => router.push(data.route)} />
+        </View>
+      ))}
     </View>
   );
 }
@@ -48,35 +36,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 10,
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: 'bold',
+    marginBottom: 20,
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 20,
     height: 1,
-    width: '80%',
+    width: '90%',
     backgroundColor: '#eee',
   },
-  card: {
-    width: '80%',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  cardTitle: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
   buttonContainer: {
-    width: '60%',
-    marginTop: 5,
-  },
-  button: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    width: '80%',
+    marginVertical: 10,
   },
 });
