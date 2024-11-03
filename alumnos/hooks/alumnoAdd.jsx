@@ -21,13 +21,14 @@ function Formulario() {
             [name]: value
         });
     };
-    /* Nombre Curso dni Faltas Materia Nota MateriaPrevia */
 
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Materia || !formData.Nota || !formData.MateriaPrevia) {
+            window.alert("Error: Por favor, complete todos los campos.");
             console.log("Error", "Por favor, complete todos los campos.");
             return;
         }
+
 
         try {
             await addDoc(collection(db, 'alumno'), {
@@ -41,10 +42,12 @@ function Formulario() {
 
             });
             console.log('User added!');
-            Alert.alert("Éxito", "Usuario agregado correctamente");
+            Alert.alert("Éxito", "Estudiante agregado correctamente");
+            window.alert("Estudiante agregado correctamente");
             setFormData({ Nombre: '', Curso: '', dni: '', Faltas: '', Materia: '', Nota: '', MateriaPrevia: '' });
         } catch (error) {
             console.error("Error al agregar el usuario: ", error);
+            window.alert("No se pudo agregar el estudiante");
             Alert.alert("Error", "No se pudo agregar el usuario");
         }
     };
@@ -147,40 +150,3 @@ const styles = StyleSheet.create({
 
 });
 
-/*----------------------------------------------------------------------------------------------------------
-
-
-function AlumnoAdd() {
-    return (
-        <View style={styles.container} >
-
-            <label for="nombre" style={styles.label}>Nombre:</label>
-            <input type="text" id="nombre" name="nombre" style={styles.input}></input>
-            <label for="curso" style={styles.label}>Curso:</label>
-            <input type="text" id="curso" name="curso" style={styles.input}></input>
-            <label for="dni" style={styles.label}>DNI:</label>
-            <input type="text" id="dni" name="dni" style={styles.input}></input>
-            <label for="faltas" style={styles.label}>Faltas:</label>
-            <input type="text" id="faltas" name="faltas" style={styles.input}></input>
-            <h3 style={styles.label}>Materias y Notas</h3>
-            <label for="materia1" style={styles.label}>Materia 1:</label>
-            <input type="text" id="materia1" name="materia1" style={styles.input}></input>
-            <label for="nota1" style={styles.label}>Nota 1:</label>
-            <input type="number" id="nota1" name="nota1" style={styles.input}></input>
-
-            <label for="materiaPrevia1" style={styles.label}>Materia Previa 1:</label>
-            <input type="text" id="materiaPrevia1" name="materiaPrevia1" style={styles.input}></input>
-
-
-
-
-        </View>
-
-
-    );
-}
-export default AlumnoAdd
-
-
-
-*/

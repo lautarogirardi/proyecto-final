@@ -22,7 +22,7 @@ export default function TabOneScreen() {
     </BlurView>
     <View style={styles.br} />
     <BlurView style={styles.blur}>
-    <Link href={'/AgregarEstudiantes'} style={styles.text}>AgregarEstudiantes</Link>
+    <Link href={'/CRUDEstudiantes'} style={styles.text}>CRUD Estudiantes</Link>
     </BlurView>
     <View style={styles.br} />
     <BlurView style={styles.blur}>

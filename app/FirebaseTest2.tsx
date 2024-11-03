@@ -2,7 +2,7 @@ import { ImageBackground, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import Formulario from '@/src/services/useradd';
+
 import { ScrollView } from 'react-native';
 function agregarUsuario() {
 
@@ -10,7 +10,7 @@ function agregarUsuario() {
       <ScrollView>
         <View style={{ padding: 20 }}>
           
-          <Formulario></Formulario>
+
         </View>
         </ScrollView>
     );

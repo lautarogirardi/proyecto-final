@@ -7,6 +7,9 @@ import Comportamiento  from '@/alumnos/formComportamiento';
 import Elegir  from '@/alumnos/elegirAlumno';
 import {BlurView} from 'expo-blur';
 import EstudiantesList from '@/src/Alumno/alumnoList';
+import  Actualizar from '@/alumnos/hooks/actualizarAlumno';
+import Eliminar from '@/alumnos/hooks/eliminarAlumno';
+
 
 interface Section {
 id: number;
@@ -14,7 +17,7 @@ name: string;
 }
 
 function InformeEstudiante() {
-const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'informe' });
+const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
 
 const handleButtonClick = (section: Section) => {
     setActiveSection(section);
@@ -28,12 +31,14 @@ return (
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title} >Agregar Estudiante: </h1>
+    <h1 style={styles.title} >Modificar Estudiante: </h1>
     
 
     <View style={styles.ubicacion} >
         <button onClick={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>Agregar</button>
-        <button onClick={() => handleButtonClick({ id: 2, name: 'lista' })} style={styles.boton} >Lista de Estudiantes</button>
+        <button onClick={() => handleButtonClick({ id: 2, name: 'actualizar' })} style={styles.boton}>Actualizar</button>
+        <button onClick={() => handleButtonClick({ id: 3, name: 'eliminar' })} style={styles.boton}>Eliminar</button>
+        <button onClick={() => handleButtonClick({ id: 4, name: 'lista' })} style={styles.boton} >Lista de Estudiantes</button>
     </View>
 
     {activeSection.name === 'agregar' && (
@@ -41,11 +46,25 @@ return (
         
     )}
 
-    {activeSection.name === 'lista' && (
+        {activeSection.name === 'actualizar' && (
+        
+        <View style={styles.component}><Actualizar></Actualizar></View>
+        
+    )}
+
+    
+        {activeSection.name === 'eliminar' && (
+        
+        <View style={styles.component}><Eliminar></Eliminar></View>
+        
+    )}
+
+        {activeSection.name === 'lista' && (
         
         <View style={styles.component}><EstudiantesList></EstudiantesList></View>
         
     )}
+
     </BlurView>
     </View>
     
