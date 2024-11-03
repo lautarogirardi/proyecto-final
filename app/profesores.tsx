@@ -5,6 +5,7 @@ import Materias  from '@/profesores/formMaterias';
 import Informe from '@/profesores/formInforme';
 import ElegirP from '@/profesores/elegirProfesor';
 import { BlurView } from 'expo-blur';
+import { ScrollView } from 'react-native';
 
 
 interface Section {
@@ -21,7 +22,7 @@ const handleButtonClick = (section: Section) => {
 
 return (
   <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
-    
+    <ScrollView>
     <View style={styles.container} >
     
     
@@ -48,7 +49,7 @@ return (
     )}
     </BlurView>
     </View>
-    
+    </ScrollView>
     
     </ImageBackground>
 );

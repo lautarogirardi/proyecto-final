@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Text, View} from '@/components/Themed';
-import { ScrollView } from 'react-native';
+import { Text, View } from '@/components/Themed';
 import { ImageBackground, StyleSheet } from 'react-native';
 import Informe  from '@/alumnos/formInforme';
-import Comportamiento  from '@/alumnos/formComportamiento';
+
 import Elegir  from '@/alumnos/elegirAlumno';
 import {BlurView} from 'expo-blur';
+
 import EstudiantesList from '@/src/Alumno/alumnoList';
 
 interface Section {
@@ -21,36 +21,34 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
-  
   <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
-    <ScrollView>  
+    
     <View  style={styles.container}>
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
     <h1 style={styles.title} >Informe de Estudiante: </h1>
-    <View style={styles.elegir} ><Elegir></Elegir></View>
+
 
     <View style={styles.ubicacion} >
-        <button onClick={() => handleButtonClick({ id: 1, name: 'informe' })} style={styles.boton}>Informe</button>
+        <button onClick={() => handleButtonClick({ id: 1, name: 'informe' })} style={styles.boton}>Lista</button>
         <button onClick={() => handleButtonClick({ id: 2, name: 'comportamiento' })} style={styles.boton} >Comportamiento</button>
     </View>
 
     {activeSection.name === 'informe' && (
-        <View style={styles.component}><Informe></Informe></View>
+        <View style={styles.component}><EstudiantesList></EstudiantesList></View>
         
     )}
 
     {activeSection.name === 'comportamiento' && (
         
-        <View style={styles.component}><Comportamiento></Comportamiento></View>
+        <View style={styles.component}></View>
         
     )}
     </BlurView>
     </View>
-    
-    
-    </ScrollView>
+
+
     </ImageBackground>
 );
 }

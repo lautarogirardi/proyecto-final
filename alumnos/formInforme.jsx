@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import React from 'react';
 import { Text, View } from '@/components/Themed';
@@ -6,7 +6,7 @@ import { Text, View } from '@/components/Themed';
 
 function Materias(){
     return(
-    <View style={styles.container}>
+    <View style={styles.container} >
       
       <label  for="nombre" style={styles.label}>Nombre:</label>
       <input type="text" id="nombre" name="nombre" style={styles.input}></input>
@@ -24,7 +24,11 @@ function Materias(){
       
       <label  for="materiaPrevia1" style={styles.label}>Materia Previa 1:</label>
       <input type="text" id="materiaPrevia1" name="materiaPrevia1" style={styles.input}></input>
-     
+
+      <label  for="materiaPrevia1" style={styles.label}>Materia Previa 1:</label>
+      <input type="text" id="materiaPrevia1" name="materiaPrevia1" style={styles.input}></input>
+
+      
     </View>
 
 

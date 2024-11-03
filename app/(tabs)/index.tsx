@@ -5,6 +5,7 @@ import { Text, View } from '@/components/Themed';
 import { Link } from 'expo-router';
 import { BlurView} from 'expo-blur';
 
+
 export default function TabOneScreen() {
   return (
     
@@ -18,6 +19,14 @@ export default function TabOneScreen() {
     <View style={styles.br} />
     <BlurView style={styles.blur}>
     <Link href={'/Profesores'} style={styles.text}>Profesores</Link>
+    </BlurView>
+    <View style={styles.br} />
+    <BlurView style={styles.blur}>
+    <Link href={'/FirebaseTest'} style={styles.text}>FirebaseTest</Link>
+    </BlurView>
+    <View style={styles.br} />
+    <BlurView style={styles.blur}>
+    <Link href={'/FirebaseTest2'} style={styles.text}>FirebaseTest2</Link>
     </BlurView>
     </View>
     </ImageBackground>
