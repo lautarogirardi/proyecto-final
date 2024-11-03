@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Text, View } from '@/components/Themed';
+import { Text, View} from '@/components/Themed';
+import { ScrollView } from 'react-native';
 import { ImageBackground, StyleSheet } from 'react-native';
-import Informe  from '@/alumnos/formInforme';
-
+import  AlumnoAdd from '@/alumnos/hooks/alumnoAdd';
+import Comportamiento  from '@/alumnos/formComportamiento';
 import Elegir  from '@/alumnos/elegirAlumno';
 import {BlurView} from 'expo-blur';
-
 import EstudiantesList from '@/src/Alumno/alumnoList';
 
 interface Section {
@@ -21,34 +21,36 @@ const handleButtonClick = (section: Section) => {
 };
 
 return (
+  
   <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
-    
+    <ScrollView>  
     <View  style={styles.container}>
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title} >Informe de Estudiante: </h1>
-
+    <h1 style={styles.title} >Agregar Estudiante: </h1>
+    
 
     <View style={styles.ubicacion} >
-        <button onClick={() => handleButtonClick({ id: 1, name: 'informe' })} style={styles.boton}>Lista</button>
-        <button onClick={() => handleButtonClick({ id: 2, name: 'comportamiento' })} style={styles.boton} >Comportamiento</button>
+        <button onClick={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>Agregar</button>
+        <button onClick={() => handleButtonClick({ id: 2, name: 'lista' })} style={styles.boton} >Lista de Estudiantes</button>
     </View>
 
-    {activeSection.name === 'informe' && (
-        <View style={styles.component}><EstudiantesList></EstudiantesList></View>
+    {activeSection.name === 'agregar' && (
+        <View style={styles.component}><AlumnoAdd></AlumnoAdd></View>
         
     )}
 
-    {activeSection.name === 'comportamiento' && (
+    {activeSection.name === 'lista' && (
         
-        <View style={styles.component}></View>
+        <View style={styles.component}><EstudiantesList></EstudiantesList></View>
         
     )}
     </BlurView>
     </View>
-
-
+    
+    
+    </ScrollView>
     </ImageBackground>
 );
 }

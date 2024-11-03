@@ -4,7 +4,7 @@ import React from 'react';
 import { Text, View } from '@/components/Themed';
 
 
-function Materias(){
+function Informe(){
     return(
     <View style={styles.container} >
       
@@ -25,8 +25,7 @@ function Materias(){
       <label  for="materiaPrevia1" style={styles.label}>Materia Previa 1:</label>
       <input type="text" id="materiaPrevia1" name="materiaPrevia1" style={styles.input}></input>
 
-      <label  for="materiaPrevia1" style={styles.label}>Materia Previa 1:</label>
-      <input type="text" id="materiaPrevia1" name="materiaPrevia1" style={styles.input}></input>
+
 
       
     </View>
@@ -34,7 +33,7 @@ function Materias(){
 
     );
 }
-export default Materias
+export default Informe
 
 const styles = StyleSheet.create({
     container: {
