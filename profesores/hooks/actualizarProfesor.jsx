@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { db } from '@/firebase';
-import { TextInput, Button, Alert, View, Text } from 'react-native';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 
-function ProfesorAdd() {
+function ActualizarP() {
+    
     const [formData, setFormData] = useState({
         Nombre: '',
         dni: '',
@@ -17,6 +17,8 @@ function ProfesorAdd() {
         Puntuacion: '',
         Reportes:''
     });
+    const [dniBusqueda, setDniBusqueda] = useState('');
+    const [profesorId, setProfesorId] = useState(null);
 
     const handleChange = (name, value) => {
         setFormData({
@@ -25,51 +27,65 @@ function ProfesorAdd() {
         });
     };
 
-    const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion || !formData.Faltas || !formData.Materias || !formData.Cursos || !formData.Puntuacion ) {
-            window.alert("Error: Por favor, complete todos los campos.");
-            console.log("Error", "Por favor, complete todos los campos.");
+    const buscarPorDni = async () => {
+        if (!dniBusqueda) {
+            window.alert("Error: Por favor, ingrese un DNI para buscar");
+            Alert.alert("Error", "Por favor, ingrese un DNI para buscar");
             return;
         }
 
+        try {
+            const profesorQuery = query(collection(db, 'profesores'), where("dni", "==", dniBusqueda));
+            const querySnapshot = await getDocs(profesorQuery);
+
+            if (querySnapshot.empty) {
+                window.alert("No se encontró ningún profesor con ese DNI");
+                Alert.alert("No encontrado", "No se encontró ningún profesor con ese DNI");
+            } else {
+                const profesorEncontrado = querySnapshot.docs[0];
+                setProfesorId(profesorEncontrado.id);
+                setFormData(profesorEncontrado.data());
+            }
+        } catch (error) {
+            console.error("Error al buscar el profesor: ", error);
+            window.alert("Error", "Ocurrió un error al buscar el profesor");
+            Alert.alert("Error", "Ocurrió un error al buscar el profesor");
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion || !formData.Faltas || !formData.Materias || !formData.Cursos || !formData.Puntuacion ) {
+            Alert.alert("Error", "Por favor, complete todos los campos.");
+            window.alert("Error: Por favor, complete todos los campos.");
+            return;
+        }
 
         try {
-            const profesoresRef = collection(db, 'profesores');
-            const q = query(profesoresRef, where("dni", "==", formData.dni));
-            const querySnapshot = await getDocs(q);
-
-            if (!querySnapshot.empty) {
-                window.alert('Ya existe un profesor con ese DNI');
-                Alert.alert("Error", "Ya existe un profesor con este DNI.");
-                return;
+            if (profesorId) {
+                await updateDoc(doc(db, 'profesores', profesorId), formData);
+                window.alert("Éxito: Profesor actualizado correctamente");
+                Alert.alert("Éxito", "Profesor actualizado correctamente");
+            } else {
+                Alert.alert("Error", "Primero busca un profesor por DNI");
             }
-
-            await addDoc(profesoresRef, {
-                Nombre: formData.Nombre,
-                dni: formData.dni,
-                Telefono: formData.Telefono,
-                Email: formData.Email,
-                Direccion: formData.Direccion,
-                Faltas: formData.Faltas,
-                Materias: formData.Materias,
-                Cursos: formData.Cursos,
-                Puntuacion: formData.Puntuacion,
-                Reportes: formData.Reportes
-            });
-            console.log('User added!');
-            Alert.alert("Éxito", "Profesor agregado correctamente");
-            window.alert("Profesor agregado correctamente");
-            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '', Faltas: '', Materias: '', Cursos: '', Puntuacion: '', Reportes: '' });
         } catch (error) {
-            console.error("Error al agregar el profesor: ", error);
-            window.alert("No se pudo agregar el profesor");
-            Alert.alert("Error", "No se pudo agregar el profesor");
+            console.error("Error al actualizar el profesor: ", error);
+            window.alert("Error: No se pudo actualizar el profesor");
+            Alert.alert("Error", "No se pudo actualizar el profesor");
         }
     };
 
     return (
         <View style={styles.container}>
-            <h3 style={styles.label}>Informe</h3>
+            <TextInput
+                placeholder="Buscar por DNI"
+                value={dniBusqueda}
+                onChangeText={setDniBusqueda}
+                style={styles.input}
+            />
+            <View style={styles.br} />
+            <Button title="Buscar" onPress={buscarPorDni} />
+
             <Text style={styles.label}>Nombre Completo:</Text>
             <TextInput
                 placeholder="Ingresar Nombre Completo"
@@ -161,9 +177,7 @@ function ProfesorAdd() {
     );
 }
 
-
-
-export default ProfesorAdd;
+export default ActualizarP;
 
 const styles = StyleSheet.create({
     container: {
@@ -182,7 +196,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         fontFamily: 'arial',
-        marginVertical: 5,  
+        marginVertical: 5,
         color: '#000',
 
     },
@@ -192,7 +206,6 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
-
     br:{
         height:20,
     },
@@ -208,6 +221,4 @@ const styles = StyleSheet.create({
         color: '#000',
     },
 
-    
 });
-

@@ -12,7 +12,9 @@ function Actualizar() {
         Faltas: '',
         Materia: '',
         Nota: '',
-        MateriaPrevia: ''
+        MateriaPrevia: '',
+        Sanciones:'',
+        Reportes:''
     });
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [estudianteId, setEstudianteId] = useState(null);
@@ -51,7 +53,7 @@ function Actualizar() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Materia || !formData.Nota || !formData.MateriaPrevia) {
+        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Materia || !formData.Nota || !formData.MateriaPrevia || !formData.Sanciones || !formData.Reportes) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             window.alert("Error: Por favor, complete todos los campos.");
             return;
@@ -59,7 +61,6 @@ function Actualizar() {
 
         try {
             if (estudianteId) {
-                // Actualizar estudiante existente
                 await updateDoc(doc(db, 'alumno', estudianteId), formData);
                 window.alert("Éxito: Estudiante actualizado correctamente");
                 Alert.alert("Éxito", "Estudiante actualizado correctamente");
@@ -81,11 +82,12 @@ function Actualizar() {
                 onChangeText={setDniBusqueda}
                 style={styles.input}
             />
+            <View style={styles.br} />
             <Button title="Buscar" onPress={buscarPorDni} />
 
-            <Text style={styles.label}>Nombre:</Text>
+            <Text style={styles.label}>Nombre Completo:</Text>
             <TextInput
-                placeholder="Ingresar Nombre"
+                placeholder="Ingresar Nombre Completo"
                 value={formData.Nombre}
                 onChangeText={(value) => handleChange('Nombre', value)}
                 style={styles.input}
@@ -126,13 +128,36 @@ function Actualizar() {
                 onChangeText={(value) => handleChange('Nota', value)}
                 style={styles.input}
             />
-            <Text style={styles.label}>MateriaPrevia:</Text>
+            <Text style={styles.label}>Materia Previa:</Text>
             <TextInput
-                placeholder="Ingresar MateriaPrevia"
+                placeholder="Ingresar Materia Previa"
                 value={formData.MateriaPrevia}
                 onChangeText={(value) => handleChange('MateriaPrevia', value)}
                 style={styles.input}
             />
+            <h3 style={styles.label}>Comportamiento:</h3>
+            <Text style={styles.label}>Sanciones:</Text>
+            <TextInput
+                placeholder="Ingresar Sanciones"
+                value={formData.Sanciones}
+                onChangeText={(value) => handleChange('Sanciones', value)}
+                multiline={true}
+                numberOfLines={15} 
+                textAlignVertical="top"
+                style={styles.textarea}
+            />
+
+            <Text style={styles.label}>Reportes del Profesor:</Text>
+            <TextInput
+                placeholder="Ingresar Reportes"
+                value={formData.Reportes}
+                onChangeText={(value) => handleChange('Reportes', value)}
+                multiline={true}
+                numberOfLines={15} 
+                textAlignVertical="top"
+                style={styles.textarea}
+            />
+            <View style={styles.br} />
             <Button title="Guardar Cambios" onPress={handleSubmit} />
         </View>
     );
@@ -151,7 +176,7 @@ const styles = StyleSheet.create({
     input: {
         padding: 5,
         width: '100%',
-        borderRadius: 10,
+        borderRadius: 15,
         height: 40,
         borderColor: 'lightblue',
         borderWidth: 1,
@@ -166,6 +191,20 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
-    }
+    },
+    br:{
+        height:20,
+    },
+    textarea:{
+        padding: 5,
+        width: '100%',
+        borderRadius: 15,
+        borderColor: 'lightblue',
+        borderWidth: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        fontFamily: 'arial',
+        marginVertical: 5,  
+        color: '#000',
+    },
 
 });

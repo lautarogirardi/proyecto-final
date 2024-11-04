@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { db } from '@/firebase';
 import { TextInput, Button, Alert, View, Text } from 'react-native';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
-function Formulario() {
+function AlumnoAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
         Curso: '',
@@ -12,7 +12,9 @@ function Formulario() {
         Faltas: '',
         Materia: '',
         Nota: '',
-        MateriaPrevia: ''
+        MateriaPrevia: '',
+        Sanciones:'',
+        Reportes:''
     });
 
     const handleChange = (name, value) => {
@@ -23,7 +25,7 @@ function Formulario() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Materia || !formData.Nota || !formData.MateriaPrevia) {
+        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Materia || !formData.Nota || !formData.MateriaPrevia || !formData.Reportes || !formData.Sanciones) {
             window.alert("Error: Por favor, complete todos los campos.");
             console.log("Error", "Por favor, complete todos los campos.");
             return;
@@ -31,20 +33,31 @@ function Formulario() {
 
 
         try {
-            await addDoc(collection(db, 'alumno'), {
+            const alumnosRef = collection(db, 'alumno');
+            const q = query(alumnosRef, where("dni", "==", formData.dni));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                window.alert('Ya existe un estudiante con ese DNI');
+                Alert.alert("Error", "Ya existe un estudiante con este DNI.");
+                return;
+            }
+
+            await addDoc(alumnosRef, {
                 Nombre: formData.Nombre,
                 Curso: formData.Curso,
                 dni: formData.dni,
                 Faltas: formData.Faltas,
                 Materia: formData.Materia,
                 Nota: formData.Nota,
-                MateriaPrevia: formData.MateriaPrevia
-
+                MateriaPrevia: formData.MateriaPrevia,
+                Sanciones: formData.Sanciones,
+                Reportes: formData.Reportes
             });
             console.log('User added!');
             Alert.alert("Éxito", "Estudiante agregado correctamente");
             window.alert("Estudiante agregado correctamente");
-            setFormData({ Nombre: '', Curso: '', dni: '', Faltas: '', Materia: '', Nota: '', MateriaPrevia: '' });
+            setFormData({ Nombre: '', Curso: '', dni: '', Faltas: '', Materia: '', Nota: '', MateriaPrevia: '', Sanciones: '', Reportes: '' });
         } catch (error) {
             console.error("Error al agregar el usuario: ", error);
             window.alert("No se pudo agregar el estudiante");
@@ -54,9 +67,10 @@ function Formulario() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Nombre:</Text>
+            <h3 style={styles.label}>Informe</h3>
+            <Text style={styles.label}>Nombre Completo:</Text>
             <TextInput
-                placeholder="Ingresar Nombre"
+                placeholder="Ingresar Nombre Completo"
                 value={formData.Nombre}
                 onChangeText={(value) => handleChange('Nombre', value)}
                 style={styles.input}
@@ -81,7 +95,7 @@ function Formulario() {
 
             <Text style={styles.label}>Faltas:</Text>
             <TextInput
-                placeholder="Ingresar Curso"
+                placeholder="Ingresar Faltas"
                 value={formData.Faltas}
                 onChangeText={(value) => handleChange('Faltas', value)}
                 style={styles.input}
@@ -104,13 +118,37 @@ function Formulario() {
                 style={styles.input}
             />
 
-            <Text style={styles.label}>MateriaPrevia:</Text>
+            <Text style={styles.label}>Materia Previa:</Text>
             <TextInput
-                placeholder="Ingresar MateriaPrevia"
+                placeholder="Ingresar Materia Previa"
                 value={formData.MateriaPrevia}
                 onChangeText={(value) => handleChange('MateriaPrevia', value)}
                 style={styles.input}
             />
+            <h3 style={styles.label}>Comportamiento:</h3>
+            <Text style={styles.label}>Sanciones:</Text>
+            <TextInput
+                placeholder="Ingresar Sanciones"
+                value={formData.Sanciones}
+                onChangeText={(value) => handleChange('Sanciones', value)}
+                multiline={true}
+                numberOfLines={15} 
+                textAlignVertical="top"
+                style={styles.textarea}
+            />
+
+            <Text style={styles.label}>Reportes del Profesor:</Text>
+            <TextInput
+                placeholder="Ingresar Reportes"
+                value={formData.Reportes}
+                onChangeText={(value) => handleChange('Reportes', value)}
+                multiline={true}
+                numberOfLines={15} 
+                textAlignVertical="top"
+                style={styles.textarea}
+            />
+
+            <View style={styles.br} />
             <Button title="Enviar" onPress={handleSubmit}  />
         </View>
     );
@@ -118,7 +156,7 @@ function Formulario() {
 /* Nombre Curso dni Faltas Materia Nota MateriaPrevia */
 
 
-export default Formulario;
+export default AlumnoAdd;
 
 const styles = StyleSheet.create({
     container: {
@@ -131,13 +169,13 @@ const styles = StyleSheet.create({
     input: {
         padding: 5,
         width: '100%',
-        borderRadius: 10,
+        borderRadius: 15,
         height: 40,
         borderColor: 'lightblue',
         borderWidth: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         fontFamily: 'arial',
-        marginVertical: 5,
+        marginVertical: 5,  
         color: '#000',
 
     },
@@ -146,7 +184,23 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
-    }
+    },
 
+    br:{
+        height:20,
+    },
+    textarea:{
+        padding: 5,
+        width: '100%',
+        borderRadius: 15,
+        borderColor: 'lightblue',
+        borderWidth: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        fontFamily: 'arial',
+        marginVertical: 5,  
+        color: '#000',
+    },
+
+    
 });
 

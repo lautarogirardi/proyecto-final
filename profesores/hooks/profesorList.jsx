@@ -1,16 +1,16 @@
 import React from 'react';
-import useFirestoreCollection from '../hooks/useFirestoreCollection';
+import useFirestoreCollection from '@/src/hooks/useFirestoreCollection';
 import { StyleSheet } from 'react-native';
-const EstudiantesList = () => {
-  const estudiantes = useFirestoreCollection('alumno');
+const ProfesoresList = () => {
+  const estudiantes = useFirestoreCollection('profesores');
 
   return (
     <div>
-      <h1 style={styles.label}>Lista de Estudiantes</h1>
+      <h1 style={styles.label}>Lista de Profesores</h1>
       <ul>
-        {estudiantes.map(alumno => (
-          <li key={alumno.id} style={styles.label}>
-            {alumno.Nombre} {alumno.Apellido} - DNI: {alumno.dni}
+        {estudiantes.map(profesor => (
+          <li key={profesor.id} style={styles.label}>
+            {profesor.Nombre} - DNI: {profesor.dni}
           </li>
         ))}
       </ul>
@@ -18,7 +18,7 @@ const EstudiantesList = () => {
   );
 };
 
-export default EstudiantesList;
+export default ProfesoresList;
 
 const styles = StyleSheet.create({
   container: {

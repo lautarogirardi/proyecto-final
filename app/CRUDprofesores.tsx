@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { Text, View} from '@/components/Themed';
 import { ScrollView } from 'react-native';
 import { ImageBackground, StyleSheet } from 'react-native';
-import  AlumnoAdd from '@/alumnos/hooks/alumnoAdd';
-import Comportamiento  from '@/alumnos/formComportamiento';
-import Elegir  from '@/alumnos/elegirAlumno';
+import ProfesorAdd from '@/profesores/hooks/profesorAdd';
 import {BlurView} from 'expo-blur';
-import EstudiantesList from '@/alumnos/hooks/alumnoList';
-import  Actualizar from '@/alumnos/hooks/actualizarAlumno';
-import Eliminar from '@/alumnos/hooks/eliminarAlumno';
+import ActualizarP from '@/profesores/hooks/actualizarProfesor';
+import EliminarP from '@/profesores/hooks/eliminarProfesor';
+import ProfesoresList from '@/profesores/hooks/profesorList';
+
 
 
 interface Section {
@@ -31,7 +30,7 @@ return (
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title} >Modificar Estudiante: </h1>
+    <h1 style={styles.title} >Modificar Profesor: </h1>
     
 
     <View style={styles.ubicacion} >
@@ -42,26 +41,34 @@ return (
     </View>
 
     {activeSection.name === 'agregar' && (
-        <View style={styles.component}><AlumnoAdd></AlumnoAdd></View>
+        <View style={styles.component}>
+            <ProfesorAdd></ProfesorAdd>
+        </View>
         
     )}
 
         {activeSection.name === 'actualizar' && (
         
-        <View style={styles.component}><Actualizar></Actualizar></View>
+        <View style={styles.component}>
+          <ActualizarP></ActualizarP>
+          </View>
         
     )}
 
     
         {activeSection.name === 'eliminar' && (
         
-        <View style={styles.component}><Eliminar></Eliminar></View>
+        <View style={styles.component}>
+          <EliminarP></EliminarP>
+        </View>
         
     )}
 
         {activeSection.name === 'lista' && (
         
-        <View style={styles.component}><EstudiantesList></EstudiantesList></View>
+        <View style={styles.component}>
+          <ProfesoresList></ProfesoresList>
+        </View>
         
     )}
 

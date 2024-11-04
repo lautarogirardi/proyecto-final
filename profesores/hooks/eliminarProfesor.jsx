@@ -3,9 +3,9 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { db } from '@/firebase';
 import { collection, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore';
 
-function Eliminar() {
+function EliminarP() {
     const [dniBusqueda, setDniBusqueda] = useState('');
-    const [estudianteId, setEstudianteId] = useState(null);
+    const [profesorId, setProfesorId] = useState(null);
     const [formData, setFormData] = useState(null); 
 
     const buscarPorDni = async () => {
@@ -16,47 +16,47 @@ function Eliminar() {
         }
 
         try {
-            const estudianteQuery = query(
-                collection(db, 'alumno'),
+            const profesorQuery = query(
+                collection(db, 'profesores'),
                 where("dni", "==", dniBusqueda)
             );
-            const querySnapshot = await getDocs(estudianteQuery);
+            const querySnapshot = await getDocs(profesorQuery);
 
             if (querySnapshot.empty) {
-                window.alert("No se encontró ningún estudiante con ese DNI");
-                Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
+                window.alert("No se encontró ningún profesor con ese DNI");
+                Alert.alert("No encontrado", "No se encontró ningún profesor con ese DNI");
             } else {
-                const estudianteEncontrado = querySnapshot.docs[0];
-                setEstudianteId(estudianteEncontrado.id);
-                setFormData(estudianteEncontrado.data());
-                window.alert("Estudiante Encontrado");
-                Alert.alert("Estudiante encontrado", "Puedes eliminarlo ahora");
+                const profesorEncontrado = querySnapshot.docs[0];
+                setProfesorId(profesorEncontrado.id);
+                setFormData(profesorEncontrado.data());
+                window.alert("Profesor Encontrado");
+                Alert.alert("Profesor encontrado", "Puedes eliminarlo ahora");
             }
         } catch (error) {
-            console.error("Error al buscar el estudiante: ", error);
-            window.alert("Ocurrió un error al buscar el estudiante");
-            Alert.alert("Error", "Ocurrió un error al buscar el estudiante");
+            console.error("Error al buscar el profesor: ", error);
+            window.alert("Ocurrió un error al buscar el profesor");
+            Alert.alert("Error", "Ocurrió un error al buscar el profesor");
         }
     };
 
-    const eliminarEstudiante = async () => {
-        if (!estudianteId) {
-            window.alert("Primero busca un estudiante por DNI");
-            Alert.alert("Error", "Primero busca un estudiante por DNI");
+    const eliminarProfesor = async () => {
+        if (!profesorId) {
+            window.alert("Primero busca un profesor por DNI");
+            Alert.alert("Error", "Primero busca un profesor por DNI");
             return;
         }
 
         try {
-            await deleteDoc(doc(db, 'alumno', estudianteId));
-            window.alert("El estudiante ha sido eliminado correctamente");
-            Alert.alert("Estudiante eliminado", "El estudiante ha sido eliminado correctamente");
-            setEstudianteId(null);
+            await deleteDoc(doc(db, 'profesores', profesorId));
+            window.alert("El profesor ha sido eliminado correctamente");
+            Alert.alert("Profesor eliminado", "El profesor ha sido eliminado correctamente");
+            setProfesorId(null);
             setFormData(null);
             setDniBusqueda('');
         } catch (error) {
-            console.error("Error al eliminar el estudiante: ", error);
-            window.alert("No se pudo eliminar el estudiante");
-            Alert.alert("Error", "No se pudo eliminar el estudiante");
+            console.error("Error al eliminar el profesor: ", error);
+            window.alert("No se pudo eliminar el profesor");
+            Alert.alert("Error", "No se pudo eliminar el profesor");
         }
     };
 
@@ -75,11 +75,12 @@ function Eliminar() {
             {formData && (
                 <View style={styles.container}>
                     <Text style={styles.label}>Nombre: {formData.Nombre}</Text>
-                    <Text style={styles.label}>Curso: {formData.Curso}</Text>
+                    <Text style={styles.label}>Curso: {formData.Cursos}</Text>
+                    <Text style={styles.label}>Materia: {formData.Materias}</Text>
                     <View style={styles.br} />
                     <Button
-                        title="Eliminar Estudiante"
-                        onPress={eliminarEstudiante}
+                        title="Eliminar Profesor"
+                        onPress={eliminarProfesor}
                         color="red"
                     />
                 </View>
@@ -88,7 +89,7 @@ function Eliminar() {
     );
 }
 
-export default Eliminar;
+export default EliminarP;
 
 const styles = StyleSheet.create({
     container: {
