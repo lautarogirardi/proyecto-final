@@ -2,7 +2,7 @@ import React from 'react';
 import useFirestoreCollection from '@/src/hooks/useFirestoreCollection';
 import { StyleSheet } from 'react-native';
 const EstudiantesList = () => {
-  const estudiantes = useFirestoreCollection('alumno');
+  const estudiantes = useFirestoreCollection('alumnos');
 
   return (
     <div>

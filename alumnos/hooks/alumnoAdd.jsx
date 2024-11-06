@@ -33,7 +33,7 @@ function AlumnoAdd() {
 
 
         try {
-            const alumnosRef = collection(db, 'alumno');
+            const alumnosRef = collection(db, 'alumnos');
             const q = query(alumnosRef, where("dni", "==", formData.dni));
             const querySnapshot = await getDocs(q);
 

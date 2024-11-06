@@ -34,7 +34,7 @@ function Actualizar() {
         }
 
         try {
-            const estudianteQuery = query(collection(db, 'alumno'), where("dni", "==", dniBusqueda));
+            const estudianteQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
             const querySnapshot = await getDocs(estudianteQuery);
 
             if (querySnapshot.empty) {
@@ -61,7 +61,7 @@ function Actualizar() {
 
         try {
             if (estudianteId) {
-                await updateDoc(doc(db, 'alumno', estudianteId), formData);
+                await updateDoc(doc(db, 'alumnos', estudianteId), formData);
                 window.alert("Éxito: Estudiante actualizado correctamente");
                 Alert.alert("Éxito", "Estudiante actualizado correctamente");
             } else {

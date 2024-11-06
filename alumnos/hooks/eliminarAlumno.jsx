@@ -17,7 +17,7 @@ function Eliminar() {
 
         try {
             const estudianteQuery = query(
-                collection(db, 'alumno'),
+                collection(db, 'alumnos'),
                 where("dni", "==", dniBusqueda)
             );
             const querySnapshot = await getDocs(estudianteQuery);
@@ -47,7 +47,7 @@ function Eliminar() {
         }
 
         try {
-            await deleteDoc(doc(db, 'alumno', estudianteId));
+            await deleteDoc(doc(db, 'alumnos', estudianteId));
             window.alert("El estudiante ha sido eliminado correctamente");
             Alert.alert("Estudiante eliminado", "El estudiante ha sido eliminado correctamente");
             setEstudianteId(null);
