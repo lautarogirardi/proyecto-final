@@ -1,9 +1,7 @@
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { db } from '@/firebase';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
-
 
 function Actualizar() {
     const [formData, setFormData] = useState({
@@ -72,7 +70,7 @@ function Actualizar() {
 
         if (materiaPreviaExiste) {
             Alert.alert("Error", "La materia previa no puede duplicarse ni coincidir con una materia.");
-            window.alert("Error", "La materia previa no puede duplicarse ni coincidir con una materia.");
+            window.alert("Error: La materia previa no puede duplicarse ni coincidir con una materia.");
             return;
         }
 
@@ -281,7 +279,6 @@ const styles = StyleSheet.create({
         fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
-
     },
     label: {
         fontFamily: 'arial',
@@ -289,10 +286,7 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
-    br:{
-        height:20,
-    },
-    textarea:{
+    textarea: {
         padding: 5,
         width: '100%',
         borderRadius: 15,

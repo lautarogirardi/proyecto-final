@@ -25,12 +25,12 @@ function AlumnoAdd() {
 
     const agregarMateria = () => {
         const lastMateria = materias[materias.length - 1];
+
         if (!lastMateria.materia || !lastMateria.nota) {
-            Alert.alert("Error", "Completar materia y nota.");
-            window.alert("Error: Completar materia y nota.");
+            Alert.alert("Error", "Complete todos los campos de la materia antes de agregar otra.");
+            window.alert("Error: Complete todos los campos de la materia antes de agregar otra.");
             return;
         }
-
 
         const materiaExiste = materias.some((item, index) => item.materia === lastMateria.materia && index !== materias.length - 1) ||
             materiasPrevias.some(item => item.materiaPrevia === lastMateria.materia);
@@ -52,7 +52,6 @@ function AlumnoAdd() {
             window.alert("Error: Complete todos los campos de la materia previa antes de agregar otra.");
             return;
         }
-
 
         const materiaPreviaExiste = materiasPrevias.some((item, index) => item.materiaPrevia === lastMateriaPrevia.materiaPrevia && index !== materiasPrevias.length - 1) ||
             materias.some(item => item.materia === lastMateriaPrevia.materiaPrevia);
@@ -81,7 +80,7 @@ function AlumnoAdd() {
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Sanciones || !formData.Reportes) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
-            window.alert("Error", "Por favor, complete todos los campos.");
+            window.alert("Error: Por favor, complete todos los campos.");
             return;
         }
 
@@ -92,15 +91,14 @@ function AlumnoAdd() {
 
             if (!querySnapshot.empty) {
                 Alert.alert("Error", "Ya existe un estudiante con este DNI.");
-                window.alert("Error", "Ya existe un estudiante con este DNI.");
+                window.alert("Error: Ya existe un estudiante con este DNI.");
                 return;
             }
 
-
             await addDoc(alumnosRef, {
                 ...formData,
-                materias: materias.filter(item => item.materia && item.nota),  // Filtra materias vacías
-                materiasPrevias: materiasPrevias.filter(item => item.materiaPrevia && item.notaMateriaPrevia)  // Filtra materiasPrevias vacías
+                materias: materias.filter(item => item.materia && item.nota),
+                materiasPrevias: materiasPrevias.filter(item => item.materiaPrevia && item.notaMateriaPrevia)
             });
 
             Alert.alert("Éxito", "Estudiante agregado correctamente");
@@ -113,7 +111,7 @@ function AlumnoAdd() {
         } catch (error) {
             console.error("Error al agregar el usuario: ", error);
             Alert.alert("Error", "No se pudo agregar el usuario");
-            window.alert("Error", "No se pudo agregar el usuario");
+            window.alert("Error: No se pudo agregar el usuario");
         }
     };
 
@@ -220,9 +218,7 @@ export default AlumnoAdd;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
         justifyContent: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
     input: {
@@ -233,21 +229,16 @@ const styles = StyleSheet.create({
         borderColor: 'lightblue',
         borderWidth: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
-
     },
     label: {
-        fontFamily: 'arial',
         marginVertical: 5,
-        color: '#000',
         fontWeight: 'bold',
     },
-    br:{
-        height:20,
-    },
-    textarea:{
+    textarea: {
+       
+
         padding: 5,
         width: '100%',
         borderRadius: 15,
@@ -258,5 +249,4 @@ const styles = StyleSheet.create({
         marginVertical: 5,  
         color: '#000',
     },
-
 });
