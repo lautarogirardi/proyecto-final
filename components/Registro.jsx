@@ -72,7 +72,7 @@ export default function RegistroForm() {
         }}
       >
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{modalMessage}</Text>
+          <Text style={styles.modalText}>Error de conexion</Text>
           <TouchableOpacity
             style={[styles.boton, styles.botonCerrar]}
             onPress={() => setModalVisible(!modalVisible)}
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   modalView: {
-    margin: 40,
+    marginHorizontal: 350,
     backgroundColor: 'white',
     borderRadius: 16,
     padding: 15,

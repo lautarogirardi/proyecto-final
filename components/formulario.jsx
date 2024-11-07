@@ -79,7 +79,7 @@ export default function LoginForm() {
         }}
       >
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{modalMessage}</Text>
+          <Text style={styles.modalText}>El usuario o la contraseña son incorrectos</Text>
           <TouchableOpacity
             style={[styles.boton, styles.botonCerrar]}
             onPress={() => setModalVisible(!modalVisible)}
@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   modalView: {
-    margin: 40,
-    backgroundColor: 'white',
+    marginHorizontal: 350,
+    backgroundColor: 'darkred',
     borderRadius: 16,
     padding:15,
     alignItems: 'center',
@@ -151,10 +151,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
+    marginHorizontal: 80,
     marginBottom: 1,
     textAlign: 'center',
+    color: 'white'
   },
   botonCerrar: {
     backgroundColor: '#f44336',
+    borderColor: 'white'
   },
 });
