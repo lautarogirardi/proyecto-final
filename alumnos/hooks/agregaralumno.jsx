@@ -1,11 +1,9 @@
-
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { StyleSheet, Alert, View, Text, TextInput, Button } from 'react-native';
 import { db } from '@/firebase';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
-
-function Actualizar() {
+function AlumnoAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
         Curso: '',
@@ -14,28 +12,15 @@ function Actualizar() {
         Sanciones: '',
         Reportes: ''
     });
+
     const [materias, setMaterias] = useState([{ materia: '', nota: '' }]);
     const [materiasPrevias, setMateriasPrevias] = useState([{ materiaPrevia: '', notaMateriaPrevia: '' }]);
-    const [dniBusqueda, setDniBusqueda] = useState('');
-    const [estudianteId, setEstudianteId] = useState(null);
 
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
             [name]: value
         });
-    };
-
-    const handleMateriaChange = (index, field, value) => {
-        const newMaterias = [...materias];
-        newMaterias[index][field] = value;
-        setMaterias(newMaterias);
-    };
-
-    const handleMateriaPreviaChange = (index, field, value) => {
-        const newMateriasPrevias = [...materiasPrevias];
-        newMateriasPrevias[index][field] = value;
-        setMateriasPrevias(newMateriasPrevias);
     };
 
     const agregarMateria = () => {
@@ -45,6 +30,7 @@ function Actualizar() {
             window.alert("Error: Completar materia y nota.");
             return;
         }
+
 
         const materiaExiste = materias.some((item, index) => item.materia === lastMateria.materia && index !== materias.length - 1) ||
             materiasPrevias.some(item => item.materiaPrevia === lastMateria.materia);
@@ -67,105 +53,72 @@ function Actualizar() {
             return;
         }
 
+
         const materiaPreviaExiste = materiasPrevias.some((item, index) => item.materiaPrevia === lastMateriaPrevia.materiaPrevia && index !== materiasPrevias.length - 1) ||
             materias.some(item => item.materia === lastMateriaPrevia.materiaPrevia);
 
         if (materiaPreviaExiste) {
             Alert.alert("Error", "La materia previa no puede duplicarse ni coincidir con una materia.");
-            window.alert("Error", "La materia previa no puede duplicarse ni coincidir con una materia.");
+            window.alert("Error: La materia previa no puede duplicarse ni coincidir con una materia.");
             return;
         }
 
         setMateriasPrevias([...materiasPrevias, { materiaPrevia: '', notaMateriaPrevia: '' }]);
     };
 
-    const buscarPorDni = async () => {
-        if (!dniBusqueda) {
-            Alert.alert("Error", "Por favor, ingrese un DNI para buscar");
-            window.alert("Error: Por favor, ingrese un DNI para buscar");
-            return;
-        }
-    
-        try {
-            const estudianteQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
-            const querySnapshot = await getDocs(estudianteQuery);
-    
-            if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
-                window.alert("No se encontró ningún estudiante con ese DNI");
-            } else {
-                const estudianteEncontrado = querySnapshot.docs[0];
-                setEstudianteId(estudianteEncontrado.id);
-                const data = estudianteEncontrado.data();
-    
-                setFormData({
-                    Nombre: data.Nombre || '',
-                    Curso: data.Curso || '',
-                    dni: data.dni || '',
-                    Faltas: data.Faltas || '',
-                    Sanciones: data.Sanciones || '',
-                    Reportes: data.Reportes || ''
-                });
-                setMaterias(data.materias || [{ materia: '', nota: '' }]);
-                setMateriasPrevias(data.materiasPrevias || [{ materiaPrevia: '', notaMateriaPrevia: '' }]);
-            }
-        } catch (error) {
-            console.error("Error al buscar el estudiante: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el estudiante");
-            window.alert("Error al buscar el estudiante");
-        }
+    const handleMateriaChange = (index, field, value) => {
+        const newMaterias = [...materias];
+        newMaterias[index][field] = value;
+        setMaterias(newMaterias);
     };
-    
+
+    const handleMateriaPreviaChange = (index, field, value) => {
+        const newMateriasPrevias = [...materiasPrevias];
+        newMateriasPrevias[index][field] = value;
+        setMateriasPrevias(newMateriasPrevias);
+    };
 
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Sanciones || !formData.Reportes) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
-            window.alert("Por favor, complete todos los campos.");
+            window.alert("Error", "Por favor, complete todos los campos.");
             return;
         }
 
         try {
-            const dniQuery = query(
-                collection(db, 'alumnos'),
-                where("dni", "==", formData.dni)
-            );
-            const dniSnapshot = await getDocs(dniQuery);
-            
-            if (!dniSnapshot.empty && dniSnapshot.docs[0].id !== estudianteId) {
-                Alert.alert("Error", "El DNI ya está registrado con otro estudiante.");
-                window.alert("Error: El DNI ya está registrado con otro estudiante.");
+            const alumnosRef = collection(db, 'alumnos');
+            const q = query(alumnosRef, where("dni", "==", formData.dni));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                Alert.alert("Error", "Ya existe un estudiante con este DNI.");
+                window.alert("Error", "Ya existe un estudiante con este DNI.");
                 return;
             }
-    
-            if (estudianteId) {
-                await updateDoc(doc(db, 'alumnos', estudianteId), {
-                    ...formData,
-                    materias: materias.filter(item => item.materia && item.nota),
-                    materiasPrevias: materiasPrevias.filter(item => item.materiaPrevia && item.notaMateriaPrevia)
-                });
-                Alert.alert("Éxito", "Estudiante actualizado correctamente");
-                window.alert("Estudiante actualizado correctamente");
-            } else {
-                Alert.alert("Error", "Primero busca un estudiante por DNI");
-                window.alert("Primero busca un estudiante por DNI");
-            }
+
+
+            await addDoc(alumnosRef, {
+                ...formData,
+                materias: materias.filter(item => item.materia && item.nota),  // Filtra materias vacías
+                materiasPrevias: materiasPrevias.filter(item => item.materiaPrevia && item.notaMateriaPrevia)  // Filtra materiasPrevias vacías
+            });
+
+            Alert.alert("Éxito", "Estudiante agregado correctamente");
+            window.alert("Éxito: Estudiante agregado correctamente");
+
+            setFormData({ Nombre: '', Curso: '', dni: '', Faltas: '', Sanciones: '', Reportes: '' });
+            setMaterias([{ materia: '', nota: '' }]);
+            setMateriasPrevias([{ materiaPrevia: '', notaMateriaPrevia: '' }]);
+
         } catch (error) {
-            console.error("Error al actualizar el estudiante: ", error);
-            Alert.alert("Error", "No se pudo actualizar el estudiante");
-            window.alert("Error: No se pudo actualizar el estudiante");
+            console.error("Error al agregar el usuario: ", error);
+            Alert.alert("Error", "No se pudo agregar el usuario");
+            window.alert("Error", "No se pudo agregar el usuario");
         }
     };
 
     return (
         <View style={styles.container}>
-            <TextInput
-                placeholder="Buscar por DNI"
-                value={dniBusqueda}
-                onChangeText={setDniBusqueda}
-                style={styles.input}
-            />
-            <Button title="Buscar" onPress={buscarPorDni} />
-
             <Text style={styles.label}>Nombre Completo:</Text>
             <TextInput
                 placeholder="Ingresar Nombre Completo"
@@ -242,7 +195,7 @@ function Actualizar() {
                 placeholder="Ingresar Sanciones"
                 value={formData.Sanciones}
                 onChangeText={(value) => handleChange('Sanciones', value)}
-                multiline
+                multiline={true}
                 numberOfLines={4}
                 style={styles.textarea}
             />
@@ -252,22 +205,24 @@ function Actualizar() {
                 placeholder="Ingresar Reportes"
                 value={formData.Reportes}
                 onChangeText={(value) => handleChange('Reportes', value)}
-                multiline
+                multiline={true}
                 numberOfLines={4}
                 style={styles.textarea}
             />
 
-            <Button title="Guardar Cambios" onPress={handleSubmit} />
+            <Button title="Enviar" onPress={handleSubmit} />
         </View>
     );
 }
 
-export default Actualizar;
+export default AlumnoAdd;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
         justifyContent: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
     input: {
@@ -303,4 +258,5 @@ const styles = StyleSheet.create({
         marginVertical: 5,  
         color: '#000',
     },
+
 });

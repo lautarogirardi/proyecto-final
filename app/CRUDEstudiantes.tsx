@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View} from '@/components/Themed';
 import { ScrollView } from 'react-native';
 import { ImageBackground, StyleSheet } from 'react-native';
-import  AlumnoAdd from '@/alumnos/hooks/alumnoAdd';
+import  AlumnoAdd from '@/alumnos/hooks/agregaralumno';
 import Comportamiento  from '@/alumnos/formComportamiento';
 import Elegir  from '@/alumnos/elegirAlumno';
 import {BlurView} from 'expo-blur';

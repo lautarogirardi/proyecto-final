@@ -11,22 +11,15 @@ export default function TabOneScreen() {
     
     <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
     <View style={styles.container}>
-      <Text style={styles.title}>EPET N°20</Text>
+      <Text style={styles.title}>ADMIN</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+    <View style={styles.br} />
     <BlurView style={styles.blur}>
-    <Link href={'/Alumnos'} style={styles.text}>Alumnos</Link>
+    <Link href={'/CRUDEstudiantes'} style={styles.text}>CRUD Estudiantes</Link>
     </BlurView>
     <View style={styles.br} />
     <BlurView style={styles.blur}>
-    <Link href={'/Profesores'} style={styles.text}>Profesores</Link>
-    </BlurView>
-    <View style={styles.br} />
-    <BlurView style={styles.blur}>
-    <Link href={'/admin'} style={styles.text}>ADMIN</Link>
-    </BlurView>
-    <View style={styles.br} />
-    <BlurView style={styles.blur}>
-    <Link href={'/FirebaseTest2'} style={styles.text}>FirebaseTest2</Link>
+    <Link href={'/CRUDprofesores'} style={styles.text}>CRUD Profesores</Link>
     </BlurView>
     </View>
     </ImageBackground>

@@ -4,13 +4,14 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import EliminarP from '@/profesores/hooks/eliminarProfesor';
 import { ScrollView } from 'react-native';
+
 function agregarUsuario() {
 
     return (
       <ScrollView>
         <View style={{ padding: 20 }}>
           
-         
+
         </View>
         </ScrollView>
     );
