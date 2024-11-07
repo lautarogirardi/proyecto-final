@@ -1,55 +1,47 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig'; 
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebaseConfig'; 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-export default function LoginForm() {
+export default function RegistroForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const navigation = useNavigation();
 
-  const HandleSignIn = () => {
-    if (email.trim() === '' || password.trim() === '') {
-      setModalMessage('Por favor llene los espacios para poder iniciar sesión de su cuenta');
+  const handleSignUp = () => {
+    if (email.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+      setModalMessage('Por favor llene todos los campos para registrarse');
       setModalVisible(true);
       return;
     }
 
-    signInWithEmailAndPassword(auth, email, password)
+    if (password !== confirmPassword) {
+      setModalMessage('Por favor asegúrese de que las contraseñas coincidan');
+      setModalVisible(true);
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log('Sesión iniciada');
+        console.log('Usuario registrado');
         const user = userCredential.user;
         navigation.navigate("epet20");
         console.log(user);
       })
       .catch(error => {
         console.log(error);
-        switch (error.message) {
-          case "Firebase: Error (auth/invalid-login-credentials).":
-            setModalMessage("No existe la cuenta.");
-            break;
-          default:
-            setModalMessage(error.message);
-            break;
-        }
+        setModalMessage(error.message);
         setModalVisible(true);
       });
   };
 
-  const handleForgotPassword = () => {
-    navigation.navigate("olvidosucontrasena");
-  };
-
-  const direccionRegistro = () => {
-    navigation.navigate("register");
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Inicia sesión</Text>
+      <Text style={styles.titulo}>¡Crea una cuenta!</Text>   
       <TextInput
         placeholder='Email'
         style={styles.textInput}
@@ -61,13 +53,14 @@ export default function LoginForm() {
         onChangeText={(text) => setPassword(text)}
         secureTextEntry 
       />
-      <Text style={styles.olvideContra} onPress={handleForgotPassword}>Olvidé la Contraseña</Text>
-      <TouchableOpacity style={styles.boton} onPress={HandleSignIn}>
-        <Text style={styles.textoBoton}>Iniciar sesión</Text>
-      </TouchableOpacity>
-      <Text style={styles.registrate}>¿No tienes una cuenta? </Text>
-      <TouchableOpacity style={styles.boton2} onPress={direccionRegistro}>
-        <Text style={styles.textoBoton}>Regístrate</Text>
+      <TextInput
+        placeholder='Confirmar Contraseña'
+        style={styles.textInput}
+        onChangeText={(text) => setConfirmPassword(text)}
+        secureTextEntry 
+      />
+      <TouchableOpacity style={styles.boton} onPress={handleSignUp}>
+        <Text style={styles.textoBoton}>Registrarse</Text>
       </TouchableOpacity>
 
       <Modal
@@ -79,7 +72,7 @@ export default function LoginForm() {
         }}
       >
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>El usuario o la contraseña son incorrectos</Text>
+          <Text style={styles.modalText}>Error de conexion</Text>
           <TouchableOpacity
             style={[styles.boton, styles.botonCerrar]}
             onPress={() => setModalVisible(!modalVisible)}
@@ -137,9 +130,9 @@ const styles = StyleSheet.create({
   },
   modalView: {
     marginHorizontal: 350,
-    backgroundColor: 'darkred',
+    backgroundColor: 'white',
     borderRadius: 16,
-    padding:15,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -151,13 +144,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    marginHorizontal: 80,
     marginBottom: 1,
     textAlign: 'center',
-    color: 'white'
   },
   botonCerrar: {
     backgroundColor: '#f44336',
-    borderColor: 'white'
   },
 });

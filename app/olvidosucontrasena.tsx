@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ImageBackground, StyleSheet } from 'react-native';
-import OlvidoSuContraseña from '../components/olvidosucontrasena'; // Importamos el componente OlvidoSuContraseña
+import OlvidoSuContraseña from '../components/login/olvidosucontrasena'; // Importamos el componente OlvidoSuContraseña
 
 export default function OlvidoSuContraseñaScreen() {
   return (

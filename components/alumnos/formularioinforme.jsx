@@ -2,9 +2,7 @@ import { StyleSheet } from 'react-native';
 import React from 'react';
 import { Text, View } from '@/components/Themed';
 
-interface InformeProps {}
-
-const Informe: React.FC<InformeProps> = () => {
+const Informe = () => {
   return (
     <View style={styles.container}>
       <label htmlFor="nombre">Nombre:</label>

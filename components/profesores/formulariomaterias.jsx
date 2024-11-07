@@ -2,7 +2,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import React from 'react';
 import { Text, View } from '@/components/Themed';
 
-const Materias: React.FC = () => {
+const Materias = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.labelText}>Nombre:</Text>

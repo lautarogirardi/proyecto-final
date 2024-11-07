@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Text, View } from '@/components/Themed';
+import { Text, View } from '../components/Themed';
 import { StyleSheet } from 'react-native';
-import Materias  from '@/components/formulariomaterias';
-import Informe from '@/components/informeprofesor';
-import ElegirP from '@/components/elegirprofesor';
+import Materias  from '@/components/profesores/formulariomaterias';
+import Informe from '@/components/profesores/informeprofesor';
+import ElegirP from '@/components/profesores/elegirprofesor';
 
 interface Section {
 id: number;

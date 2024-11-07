@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import { Text, View } from '@/components/Themed';
-import { db } from '../firebaseConfig'; 
+import { db } from '../../firebaseConfig'; 
 import { collection, addDoc } from 'firebase/firestore';
 
 function ElegirP() {
