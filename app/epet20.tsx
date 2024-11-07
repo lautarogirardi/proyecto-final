@@ -24,7 +24,7 @@ export default function MainScreen() {
       const isAuthenticated = false; 
 
       if (!isAuthenticated) {
-        router.replace("/index");//si no esta autenticado volvemos a login
+        router.replace("/(tabs)/");//si no esta autenticado volvemos a login
       } else {
         // Si está autenticado, redirigimos a la pagina principal
         router.replace('/epet20'); //llevamos a nuestra pagina principal

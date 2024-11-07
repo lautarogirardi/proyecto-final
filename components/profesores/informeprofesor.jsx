@@ -1,10 +1,10 @@
 import { StyleSheet, TextInput, Button, FlatList } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Text, View } from '@/components/Themed';
-import { db } from '../firebaseConfig'; 
+import { db } from '../../firebaseConfig'; 
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
-const Informe: React.FC = () => {
+const Informe = () => {
     const [puntuacion, setPuntuacion] = useState('');
     const [reporte, setReporte] = useState('');
     const [informes, setInformes] = useState([]);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ImageBackground, StyleSheet } from 'react-native';
-import LoginForm from '../../components/formulario'; // Importamos el componente LoginForm
+import LoginForm from '../../components/login/formulario'; // Importamos el componente LoginForm
 
 export default function LoginScreen() {
   return (

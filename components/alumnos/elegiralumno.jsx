@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const Elegir: React.FC = () => {
-  const [selectedValue, setSelectedValue] = React.useState<string>('alumno1');
+const Elegir = () => {
+  const [selectedValue, setSelectedValue] = useState('alumno1');
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ImageBackground, StyleSheet } from 'react-native';
-import RegistroForm from '../components/Registro'; 
+import RegistroForm from '../components/login/Registro'; 
 
 export default function RegistroScreen() {
   return (

@@ -1,47 +1,55 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../firebaseConfig'; 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebaseConfig'; 
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-export default function RegistroForm() {
+export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const navigation = useNavigation();
 
-  const handleSignUp = () => {
-    if (email.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
-      setModalMessage('Por favor llene todos los campos para registrarse');
+  const HandleSignIn = () => {
+    if (email.trim() === '' || password.trim() === '') {
+      setModalMessage('Por favor llene los espacios para poder iniciar sesión de su cuenta');
       setModalVisible(true);
       return;
     }
 
-    if (password !== confirmPassword) {
-      setModalMessage('Por favor asegúrese de que las contraseñas coincidan');
-      setModalVisible(true);
-      return;
-    }
-
-    createUserWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log('Usuario registrado');
+        console.log('Sesión iniciada');
         const user = userCredential.user;
         navigation.navigate("epet20");
         console.log(user);
       })
       .catch(error => {
         console.log(error);
-        setModalMessage(error.message);
+        switch (error.message) {
+          case "Firebase: Error (auth/invalid-login-credentials).":
+            setModalMessage("No existe la cuenta.");
+            break;
+          default:
+            setModalMessage(error.message);
+            break;
+        }
         setModalVisible(true);
       });
   };
 
+  const handleForgotPassword = () => {
+    navigation.navigate("olvidosucontrasena");
+  };
+
+  const direccionRegistro = () => {
+    navigation.navigate("register");
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>¡Crea una cuenta!</Text>   
+      <Text style={styles.titulo}>Inicia sesión</Text>
       <TextInput
         placeholder='Email'
         style={styles.textInput}
@@ -53,14 +61,13 @@ export default function RegistroForm() {
         onChangeText={(text) => setPassword(text)}
         secureTextEntry 
       />
-      <TextInput
-        placeholder='Confirmar Contraseña'
-        style={styles.textInput}
-        onChangeText={(text) => setConfirmPassword(text)}
-        secureTextEntry 
-      />
-      <TouchableOpacity style={styles.boton} onPress={handleSignUp}>
-        <Text style={styles.textoBoton}>Registrarse</Text>
+      <Text style={styles.olvideContra} onPress={handleForgotPassword}>Olvidé la Contraseña</Text>
+      <TouchableOpacity style={styles.boton} onPress={HandleSignIn}>
+        <Text style={styles.textoBoton}>Iniciar sesión</Text>
+      </TouchableOpacity>
+      <Text style={styles.registrate}>¿No tienes una cuenta? </Text>
+      <TouchableOpacity style={styles.boton2} onPress={direccionRegistro}>
+        <Text style={styles.textoBoton}>Regístrate</Text>
       </TouchableOpacity>
 
       <Modal
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
     margin: 40,
     backgroundColor: 'white',
     borderRadius: 16,
-    padding: 15,
+    padding:15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {

@@ -1,9 +1,7 @@
 import { StyleSheet, TextInput, View, Text } from 'react-native';
 import React from 'react';
 
-interface ComportamientoProps {}
-
-const Comportamiento: React.FC<ComportamientoProps> = () => {
+const Comportamiento = () => {
   return (
     <View style={styles.container}>
       <Text>Sanciones:</Text>

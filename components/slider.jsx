@@ -2,16 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 
-interface CardData {
-  id: number;
-  title: string;
-  buttonText: string;
-  route: string;
-}
-
-export default function MainScreen() {
+const MainScreen = () => {
   const router = useRouter();
-  const cardsData: CardData[] = [
+  const cardsData = [
     { id: 1, title: 'cursos', buttonText: 'toca para ver info sobre los cursos!', route: '/' },
     { id: 2, title: 'informe profesores', buttonText: 'toca para hacer un informe a algun profesor!', route: '/informeprofesor' },
     { id: 3, title: 'alumnos', buttonText: 'toca para ver info sobre los alumnos!', route: '/alumnos' },
@@ -29,7 +22,9 @@ export default function MainScreen() {
       ))}
     </View>
   );
-}
+};
+
+export default MainScreen;
 
 const styles = StyleSheet.create({
   container: {
