@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Picker, Alert, StyleSheet, ScrollView } from 'react-native';
-import { db } from '../../firebaseConfig';
+import { View, Text, Button, Alert, StyleSheet, Picker } from 'react-native';
+import { db } from '../../../firebaseConfig';
 import { collection, getDocs, updateDoc, doc, arrayUnion } from 'firebase/firestore';
-import useFirestoreCollection from '../../src/useFirestoreCollection';
+import useFirestoreCollection from '../../../src/useFirestoreCollection';  // Hook personalizado para obtener los alumnos
 
-const Curso: React.FC = () => {
+const AsignarCurso = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedAlumno, setSelectedAlumno] = useState('');
-  const cursos = ['1°', '2°', '3°', '4°', '5°', '6°'];
+  const cursos = useFirestoreCollection('cursos'); // Hook personalizado para obtener los cursos
   const alumnos = useFirestoreCollection('alumnos'); // Hook personalizado para obtener los alumnos
 
   const handleAddAlumnoToCurso = async () => {
@@ -29,7 +29,7 @@ const Curso: React.FC = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Asignar Alumnos a Cursos</Text>
       <View style={styles.pickerContainer}>
         <Text style={styles.label}>Seleccionar Curso:</Text>
@@ -39,8 +39,8 @@ const Curso: React.FC = () => {
           style={styles.picker}
         >
           <Picker.Item label="Seleccione un Curso" value="" />
-          {cursos.map((curso, index) => (
-            <Picker.Item key={index} label={curso} value={curso} />
+          {cursos.map((curso) => (
+            <Picker.Item key={curso.id} label={curso.NombreCurso} value={curso.id} />
           ))}
         </Picker>
       </View>
@@ -60,15 +60,15 @@ const Curso: React.FC = () => {
       </View>
 
       <Button title="Agregar Alumno al Curso" onPress={handleAddAlumnoToCurso} />
-    </ScrollView>
+    </View>
   );
 };
 
-export default Curso;
+export default AsignarCurso;
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
