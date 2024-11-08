@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Alert, StyleSheet, Picker } from 'react-native';
-import { db } from '../../../firebaseConfig';
+import { View, Text, Button, Alert, StyleSheet, Picker, Modal } from 'react-native';
+import { db } from '../../firebaseConfig';
 import { collection, getDocs, updateDoc, doc, arrayUnion } from 'firebase/firestore';
-import useFirestoreCollection from '../../../src/useFirestoreCollection';  // Hook personalizado para obtener los alumnos
-
+import useFirestoreCollection from '../../src/useFirestoreCollection';
 const AsignarCurso = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedAlumno, setSelectedAlumno] = useState('');
-  const cursos = useFirestoreCollection('cursos'); // Hook personalizado para obtener los cursos
-  const alumnos = useFirestoreCollection('alumnos'); // Hook personalizado para obtener los alumnos
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const cursos = useFirestoreCollection('cursos'); 
+  const alumnos = useFirestoreCollection('alumnos'); 
   const handleAddAlumnoToCurso = async () => {
     if (!selectedCurso || !selectedAlumno) {
       Alert.alert("Error", "Seleccione un curso y un alumno");
@@ -21,7 +20,7 @@ const AsignarCurso = () => {
       await updateDoc(cursoRef, {
         alumnos: arrayUnion(selectedAlumno)
       });
-      Alert.alert("Éxito", "Alumno agregado al curso correctamente");
+      setModalVisible(true);
     } catch (error) {
       console.error("Error al agregar el alumno al curso: ", error);
       Alert.alert("Error", "No se pudo agregar el alumno al curso");
@@ -60,6 +59,25 @@ const AsignarCurso = () => {
       </View>
 
       <Button title="Agregar Alumno al Curso" onPress={handleAddAlumnoToCurso} />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>¡Alumno agregado al curso correctamente!</Text>
+            <Button
+              title="Cerrar"
+              onPress={() => setModalVisible(!modalVisible)}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -91,5 +109,27 @@ const styles = StyleSheet.create({
     width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 20,
+    marginBottom: 20,
   },
 });

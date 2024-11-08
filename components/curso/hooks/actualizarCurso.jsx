@@ -1,51 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { db } from '../../../firebaseConfig';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 
 function ActualizarCurso() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
-        CodigoCurso: '',
+        Division: '',
         Descripcion: '',
         Profesores: '',
         Horario: ''
     });
-    const [codigoBusqueda, setCodigoBusqueda] = useState('');
     const [cursoId, setCursoId] = useState(null);
+    const [cursos, setCursos] = useState([]);
+    const [selectedCurso, setSelectedCurso] = useState('');
+
+    useEffect(() => {
+        const fetchCursos = async () => {
+            try {
+                const cursosCollection = collection(db, 'cursos');
+                const cursosSnapshot = await getDocs(cursosCollection);
+                const cursosList = cursosSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setCursos(cursosList);
+            } catch (error) {
+                console.error("Error al obtener los cursos: ", error);
+            }
+        };
+        fetchCursos();
+    }, []);
 
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
-            [name]: value
+            [name]: value !== undefined ? value : '' // Asegúrate de que el valor no sea undefined
         });
     };
 
-    const buscarPorCodigo = async () => {
-        if (!codigoBusqueda) {
-            Alert.alert("Error", "Por favor, ingrese un código de curso para buscar");
-            return;
-        }
-
-        try {
-            const cursoQuery = query(collection(db, 'cursos'), where("CodigoCurso", "==", codigoBusqueda));
-            const querySnapshot = await getDocs(cursoQuery);
-
-            if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningún curso con ese código");
-            } else {
-                const cursoEncontrado = querySnapshot.docs[0];
-                setCursoId(cursoEncontrado.id);
-                setFormData(cursoEncontrado.data());
-            }
-        } catch (error) {
-            console.error("Error al buscar el curso: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el curso");
+    const handleCursoChange = (cursoId) => {
+        setSelectedCurso(cursoId);
+        const selectedCursoData = cursos.find(curso => curso.id === cursoId);
+        if (selectedCursoData) {
+            setFormData({
+                NombreCurso: selectedCursoData.NombreCurso || '',
+                Division: selectedCursoData.Division || '',
+                Descripcion: selectedCursoData.Descripcion || '',
+                Profesores: selectedCursoData.Profesores || '',
+                Horario: selectedCursoData.Horario || ''
+            });
+            setCursoId(cursoId);
         }
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.CodigoCurso || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
+        if (!formData.NombreCurso || !formData.Division || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             return;
         }
@@ -55,7 +66,7 @@ function ActualizarCurso() {
                 await updateDoc(doc(db, 'cursos', cursoId), formData);
                 Alert.alert("Éxito", "Curso actualizado correctamente");
             } else {
-                Alert.alert("Error", "Primero busca un curso por su código");
+                Alert.alert("Error", "Primero busca un curso");
             }
         } catch (error) {
             console.error("Error al actualizar el curso: ", error);
@@ -65,14 +76,17 @@ function ActualizarCurso() {
 
     return (
         <View style={styles.container}>
-            <TextInput
-                placeholder="Buscar por Código"
-                value={codigoBusqueda}
-                onChangeText={setCodigoBusqueda}
+            <Text style={styles.label}>Seleccionar Curso:</Text>
+            <Picker
+                selectedValue={selectedCurso}
+                onValueChange={handleCursoChange}
                 style={styles.input}
-            />
-            <View style={styles.br} />
-            <Button title="Buscar" onPress={buscarPorCodigo} />
+            >
+                <Picker.Item label="Seleccione un Curso" value="" />
+                {cursos.map(curso => (
+                    <Picker.Item key={curso.id} label={`${curso.NombreCurso} - ${curso.Division}`} value={curso.id} />
+                ))}
+            </Picker>
 
             <Text style={styles.label}>Nombre del Curso:</Text>
             <TextInput
@@ -81,11 +95,11 @@ function ActualizarCurso() {
                 onChangeText={(value) => handleChange('NombreCurso', value)}
                 style={styles.input}
             />
-            <Text style={styles.label}>Código del Curso:</Text>
+            <Text style={styles.label}>División:</Text>
             <TextInput
-                placeholder="Ingresar Código del Curso"
-                value={formData.CodigoCurso}
-                onChangeText={(value) => handleChange('CodigoCurso', value)}
+                placeholder="Ingresar División"
+                value={formData.Division}
+                onChangeText={(value) => handleChange('Division', value)}
                 style={styles.input}
             />
             <Text style={styles.label}>Descripción:</Text>

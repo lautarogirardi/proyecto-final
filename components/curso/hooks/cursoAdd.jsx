@@ -6,7 +6,7 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 function CursoAdd() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
-        CodigoCurso: '',
+        Division: '',
         Descripcion: '',
         Profesores: '',
         Horario: ''
@@ -20,31 +20,31 @@ function CursoAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.CodigoCurso || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
+        if (!formData.NombreCurso || !formData.Division || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             return;
         }
 
         try {
             const cursosRef = collection(db, 'cursos');
-            const q = query(cursosRef, where("CodigoCurso", "==", formData.CodigoCurso));
+            const q = query(cursosRef, where("NombreCurso", "==", `${formData.NombreCurso} - ${formData.Division}`));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                Alert.alert("Error", "Ya existe un curso con este código.");
+                Alert.alert("Error", "Ya existe un curso con esta combinación de curso y división.");
                 return;
             }
 
             await addDoc(cursosRef, {
-                NombreCurso: formData.NombreCurso,
-                CodigoCurso: formData.CodigoCurso,
+                NombreCurso: `${formData.NombreCurso} - ${formData.Division}`,
+                Division: formData.Division,
                 Descripcion: formData.Descripcion,
                 Profesores: formData.Profesores,
                 Horario: formData.Horario
             });
 
             Alert.alert("Éxito", "Curso agregado correctamente");
-            setFormData({ NombreCurso: '', CodigoCurso: '', Descripcion: '', Profesores: '', Horario: '' });
+            setFormData({ NombreCurso: '', Division: '', Descripcion: '', Profesores: '', Horario: '' });
         } catch (error) {
             console.error("Error al agregar el curso: ", error);
             Alert.alert("Error", "No se pudo agregar el curso");
@@ -62,11 +62,11 @@ function CursoAdd() {
                 style={styles.input}
             />
 
-            <Text style={styles.label}>Código del Curso:</Text>
+            <Text style={styles.label}>División:</Text>
             <TextInput
-                placeholder="Ingresar Código del Curso"
-                value={formData.CodigoCurso}
-                onChangeText={(value) => handleChange('CodigoCurso', value)}
+                placeholder="Ingresar División"
+                value={formData.Division}
+                onChangeText={(value) => handleChange('Division', value)}
                 style={styles.input}
             />
 
