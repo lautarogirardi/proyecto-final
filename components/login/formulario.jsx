@@ -1,15 +1,28 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../../firebaseConfig'; 
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from '../../firebaseConfig';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = await AsyncStorage.getItem('user');
+      if (user) {
+        navigation.navigate("epet20");
+      }
+      setLoading(false);
+    };
+    checkUser();
+  }, []);
 
   const HandleSignIn = () => {
     if (email.trim() === '' || password.trim() === '') {
@@ -19,9 +32,10 @@ export default function LoginForm() {
     }
 
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         console.log('Sesión iniciada');
         const user = userCredential.user;
+        await AsyncStorage.setItem('user', JSON.stringify(user));
         navigation.navigate("epet20");
         console.log(user);
       })
@@ -47,6 +61,14 @@ export default function LoginForm() {
     navigation.navigate("register");
   };
 
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Inicia sesión</Text>
@@ -59,7 +81,7 @@ export default function LoginForm() {
         placeholder='Contraseña'
         style={styles.textInput}
         onChangeText={(text) => setPassword(text)}
-        secureTextEntry 
+        secureTextEntry
       />
       <Text style={styles.olvideContra} onPress={handleForgotPassword}>Olvidé la Contraseña</Text>
       <TouchableOpacity style={styles.boton} onPress={HandleSignIn}>
@@ -139,7 +161,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 350,
     backgroundColor: 'darkred',
     borderRadius: 16,
-    padding:15,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {

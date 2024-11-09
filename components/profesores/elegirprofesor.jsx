@@ -1,52 +1,64 @@
+
 import { StyleSheet } from 'react-native';
-import React, { useState } from 'react';
+
+import React from 'react';
 import { Text, View } from '@/components/Themed';
-import { db } from '../../firebaseConfig'; 
-import { collection, addDoc } from 'firebase/firestore';
 
-function ElegirP() {
-    const [selectedProfesor, setSelectedProfesor] = useState('');
 
-    const handleSelectChange = async (event) => {
-        const profesor = event.target.value;
-        setSelectedProfesor(profesor);
-        try {
-            await addDoc(collection(db, 'profesores'), {
-                profesor: profesor,
-                timestamp: new Date(),
-            });
-            alert('Profesor seleccionado: ' + profesor);
-        } catch (e) {
-            console.error('Error adding document: ', e);
-        }
-    };
+function ElegirP(){
+    return(
+        
+        <View style={styles.container} >
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.labelText}>Elegir Profesor:</Text>
-            <select id="elegirP" onChange={handleSelectChange}>
-                <option value="">Selecciona un profesor</option>
-                <option value="profesor1">Profesor 1</option>
-                <option value="profesor2">Profesor 2</option>
-                <option value="profesor3">Profesor 3</option>
-            </select>
-        </View>
+    <label style={styles.label} >Elegir Profesor: </label>
+    <select id= "elegirP" style={styles.select}>
+        <option  value="profesor1">Profesor 1</option>
+        <option value="profesor2">Profesor 2</option>
+        <option value="profesor3">Profesor 3</option>
+    </select>
+  
+    </View>
+    
+
     );
 }
-
-export default ElegirP;
+export default ElegirP
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        width: '100%',
-        padding: 10,
+  container: {
+
+    flex: 1,
+    alignItems: 'Right',
+    justifyContent: 'Right',
+    width: '70%',
+    backgroundColor:'transparent' ,
+  },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    separator: {
+      marginVertical: 30,
+      height: 1,
+      width: '80%',
     },
     labelText: {
-        color: 'black',
-        fontSize: 16,
-        marginBottom: 10,
+      color: 'white',
     },
-});
+    select: {
+      width: '100%', 
+      maxWidth: '300px', 
+      padding: 5,
+      borderRadius: 5,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+      borderWidth: 1,
+      borderColor: '#ccc',
+      fontFamily: 'arial',
+      fontWeight:'bold',
+      borderColor:'lightblue',
+    },
+    label:{
+      fontFamily: 'arial',
+      fontWeight:'bold',
+    }
+  });
