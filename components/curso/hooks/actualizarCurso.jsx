@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Modal, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../../../firebaseConfig';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
@@ -7,7 +7,6 @@ import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 function ActualizarCurso() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
-        Division: '',
         Descripcion: '',
         Profesores: '',
         Horario: ''
@@ -15,6 +14,8 @@ function ActualizarCurso() {
     const [cursoId, setCursoId] = useState(null);
     const [cursos, setCursos] = useState([]);
     const [selectedCurso, setSelectedCurso] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     useEffect(() => {
         const fetchCursos = async () => {
@@ -23,7 +24,10 @@ function ActualizarCurso() {
                 const cursosSnapshot = await getDocs(cursosCollection);
                 const cursosList = cursosSnapshot.docs.map(doc => ({
                     id: doc.id,
-                    ...doc.data()
+                    NombreCurso: doc.data().NombreCurso || '',
+                    Descripcion: doc.data().Descripcion || '',
+                    Profesores: doc.data().Profesores || '',
+                    Horario: doc.data().Horario || ''
                 }));
                 setCursos(cursosList);
             } catch (error) {
@@ -45,32 +49,34 @@ function ActualizarCurso() {
         const selectedCursoData = cursos.find(curso => curso.id === cursoId);
         if (selectedCursoData) {
             setFormData({
-                NombreCurso: selectedCursoData.NombreCurso || '',
-                Division: selectedCursoData.Division || '',
-                Descripcion: selectedCursoData.Descripcion || '',
-                Profesores: selectedCursoData.Profesores || '',
-                Horario: selectedCursoData.Horario || ''
+                NombreCurso: selectedCursoData.NombreCurso,
+                Descripcion: selectedCursoData.Descripcion,
+                Profesores: selectedCursoData.Profesores,
+                Horario: selectedCursoData.Horario
             });
             setCursoId(cursoId);
         }
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.Division || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
-            Alert.alert("Error", "Por favor, complete todos los campos.");
+        if (!formData.NombreCurso || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
+            setModalMessage("Por favor, complete todos los campos.");
+            setModalVisible(true);
             return;
         }
 
         try {
             if (cursoId) {
                 await updateDoc(doc(db, 'cursos', cursoId), formData);
-                Alert.alert("Éxito", "Curso actualizado correctamente");
+                setModalMessage("Curso actualizado correctamente");
             } else {
-                Alert.alert("Error", "Primero busca un curso");
+                setModalMessage("Primero busca un curso");
             }
+            setModalVisible(true);
         } catch (error) {
             console.error("Error al actualizar el curso: ", error);
-            Alert.alert("Error", "No se pudo actualizar el curso");
+            setModalMessage("No se pudo actualizar el curso");
+            setModalVisible(true);
         }
     };
 
@@ -84,7 +90,7 @@ function ActualizarCurso() {
             >
                 <Picker.Item label="Seleccione un Curso" value="" />
                 {cursos.map(curso => (
-                    <Picker.Item key={curso.id} label={`${curso.NombreCurso} - ${curso.Division}`} value={curso.id} />
+                    <Picker.Item key={curso.id} label={curso.NombreCurso} value={curso.id} />
                 ))}
             </Picker>
 
@@ -93,13 +99,6 @@ function ActualizarCurso() {
                 placeholder="Ingresar Nombre del Curso"
                 value={formData.NombreCurso}
                 onChangeText={(value) => handleChange('NombreCurso', value)}
-                style={styles.input}
-            />
-            <Text style={styles.label}>División:</Text>
-            <TextInput
-                placeholder="Ingresar División"
-                value={formData.Division}
-                onChangeText={(value) => handleChange('Division', value)}
                 style={styles.input}
             />
             <Text style={styles.label}>Descripción:</Text>
@@ -125,6 +124,25 @@ function ActualizarCurso() {
             />
             <View style={styles.br} />
             <Button title="Guardar Cambios" onPress={handleSubmit} />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{modalMessage}</Text>
+                        <Button
+                            title="Cerrar"
+                            onPress={() => setModalVisible(!modalVisible)}
+                        />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -160,5 +178,27 @@ const styles = StyleSheet.create({
     },
     br: {
         height: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalText: {
+        fontSize: 20,
+        marginBottom: 20,
     },
 });

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, Button, Alert, View, Text } from 'react-native';
+import { StyleSheet, TextInput, Button, View, Text, Modal, Picker } from 'react-native';
 import { db } from '../../../firebaseConfig';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 function CursoAdd() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
-        Division: '',
-        Descripcion: '',
+        Turno: '',
         Profesores: '',
         Horario: ''
     });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     const handleChange = (name, value) => {
         setFormData({
@@ -20,63 +21,62 @@ function CursoAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.Division || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
-            Alert.alert("Error", "Por favor, complete todos los campos.");
+        if (!formData.NombreCurso || !formData.Turno || !formData.Profesores || !formData.Horario) {
+            setModalMessage("Por favor, complete todos los campos.");
+            setModalVisible(true);
             return;
         }
 
         try {
             const cursosRef = collection(db, 'cursos');
-            const q = query(cursosRef, where("NombreCurso", "==", `${formData.NombreCurso} - ${formData.Division}`));
+            const q = query(cursosRef, where("NombreCurso", "==", formData.NombreCurso));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                Alert.alert("Error", "Ya existe un curso con esta combinación de curso y división.");
+                setModalMessage("Ya existe un curso con esta combinación de curso y división.");
+                setModalVisible(true);
                 return;
             }
 
             await addDoc(cursosRef, {
-                NombreCurso: `${formData.NombreCurso} - ${formData.Division}`,
-                Division: formData.Division,
-                Descripcion: formData.Descripcion,
+                NombreCurso: formData.NombreCurso,
+                Turno: formData.Turno,
                 Profesores: formData.Profesores,
                 Horario: formData.Horario
             });
 
-            Alert.alert("Éxito", "Curso agregado correctamente");
-            setFormData({ NombreCurso: '', Division: '', Descripcion: '', Profesores: '', Horario: '' });
+            setModalMessage("Curso agregado correctamente");
+            setModalVisible(true);
+            setFormData({ NombreCurso: '', Turno: '', Profesores: '', Horario: '' });
         } catch (error) {
             console.error("Error al agregar el curso: ", error);
-            Alert.alert("Error", "No se pudo agregar el curso");
+            setModalMessage("No se pudo agregar el curso");
+            setModalVisible(true);
         }
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Agregar Curso</Text>
-            <Text style={styles.label}>Nombre del Curso:</Text>
+            <Text style={styles.label}>Nombre del Curso (incluya la división):</Text>
             <TextInput
-                placeholder="Ingresar Nombre del Curso"
+                placeholder="Ingresar Nombre del Curso y División"
                 value={formData.NombreCurso}
                 onChangeText={(value) => handleChange('NombreCurso', value)}
                 style={styles.input}
             />
 
-            <Text style={styles.label}>División:</Text>
-            <TextInput
-                placeholder="Ingresar División"
-                value={formData.Division}
-                onChangeText={(value) => handleChange('Division', value)}
+            <Text style={styles.label}>Turno:</Text>
+            <Picker
+                selectedValue={formData.Turno}
+                onValueChange={(value) => handleChange('Turno', value)}
                 style={styles.input}
-            />
-
-            <Text style={styles.label}>Descripción:</Text>
-            <TextInput
-                placeholder="Ingresar Descripción"
-                value={formData.Descripcion}
-                onChangeText={(value) => handleChange('Descripcion', value)}
-                style={styles.input}
-            />
+            >
+                <Picker.Item label="Seleccionar Turno" value="" />
+                <Picker.Item label="Mañana" value="Mañana" />
+                <Picker.Item label="Tarde" value="Tarde" />
+                <Picker.Item label="Vespertino" value="Vespertino" />
+            </Picker>
 
             <Text style={styles.label}>Profesores:</Text>
             <TextInput
@@ -96,6 +96,20 @@ function CursoAdd() {
 
             <View style={styles.br} />
             <Button title="Enviar" onPress={handleSubmit} />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(!modalVisible)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{modalMessage}</Text>
+                        <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -132,5 +146,27 @@ const styles = StyleSheet.create({
     },
     br: {
         height: 20,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalText: {
+        fontSize: 20,
+        marginBottom: 20,
     },
 });
