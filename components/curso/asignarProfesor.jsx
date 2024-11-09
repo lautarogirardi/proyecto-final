@@ -5,49 +5,49 @@ import { db } from '../../firebaseConfig';
 import { collection, getDocs, updateDoc, doc, arrayUnion, query, where } from 'firebase/firestore';
 import useFirestoreCollection from '../../src/useFirestoreCollection';
 
-const AsignarCurso = () => {
+const AsignarProfesor = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
-  const [selectedAlumno, setSelectedAlumno] = useState('');
+  const [selectedProfesor, setSelectedProfesor] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [errorModalVisible, setErrorModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const cursos = useFirestoreCollection('cursos'); 
-  const alumnos = useFirestoreCollection('alumnos'); 
+  const cursos = useFirestoreCollection('cursos');
+  const profesores = useFirestoreCollection('profesores');
 
-  const handleAddAlumnoToCurso = async () => {
-    if (!selectedCurso || !selectedAlumno) {
-      Alert.alert("Error", "Seleccione un curso y un alumno");
+  const handleAddProfesorToCurso = async () => {
+    if (!selectedCurso || !selectedProfesor) {
+      Alert.alert("Error", "Seleccione un curso y un profesor");
       return;
     }
 
     try {
-      // Verificar si el alumno ya está en algún curso
-      const q = query(collection(db, 'cursos'), where('alumnos', 'array-contains', selectedAlumno));
+      // Verificar si el profesor ya está en algún curso
+      const q = query(collection(db, 'cursos'), where('profesores', 'array-contains', selectedProfesor));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        setErrorMessage("El alumno ya está registrado en otro curso.");
+        setErrorMessage("El profesor ya está asignado a otro curso.");
         setErrorModalVisible(true);
         return;
       }
 
       const cursoRef = doc(db, 'cursos', selectedCurso);
       await updateDoc(cursoRef, {
-        alumnos: arrayUnion(selectedAlumno)
+        profesores: arrayUnion(selectedProfesor)
       });
       setModalVisible(true);
       setSelectedCurso('');
-      setSelectedAlumno('');
+      setSelectedProfesor('');
     } catch (error) {
-      console.error("Error al agregar el alumno al curso: ", error);
-      Alert.alert("Error", "No se pudo agregar el alumno al curso");
+      console.error("Error al agregar el profesor al curso: ", error);
+      Alert.alert("Error", "No se pudo agregar el profesor al curso");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Asignar Alumnos a Cursos</Text>
+      <Text style={styles.title}>Asignar Profesores a Cursos</Text>
       <View style={styles.pickerContainer}>
         <Text style={styles.label}>Seleccionar Curso:</Text>
         <Picker
@@ -63,20 +63,20 @@ const AsignarCurso = () => {
       </View>
 
       <View style={styles.pickerContainer}>
-        <Text style={styles.label}>Seleccionar Alumno:</Text>
+        <Text style={styles.label}>Seleccionar Profesor:</Text>
         <Picker
-          selectedValue={selectedAlumno}
-          onValueChange={(itemValue) => setSelectedAlumno(itemValue)}
+          selectedValue={selectedProfesor}
+          onValueChange={(itemValue) => setSelectedProfesor(itemValue)}
           style={styles.picker}
         >
-          <Picker.Item label="Seleccione un Alumno" value="" />
-          {alumnos.map((alumno) => (
-            <Picker.Item key={alumno.id} label={`${alumno.Nombre || ''} ${alumno.Apellido || ''} - DNI: ${alumno.dni || ''}`} value={alumno.id} />
+          <Picker.Item label="Seleccione un Profesor" value="" />
+          {profesores.map((profesor) => (
+            <Picker.Item key={profesor.id} label={`${profesor.Nombre || ''} ${profesor.Apellido || ''} - DNI: ${profesor.dni || ''}`} value={profesor.id} />
           ))}
         </Picker>
       </View>
 
-      <Button title="Agregar Alumno al Curso" onPress={handleAddAlumnoToCurso} />
+      <Button title="Agregar Profesor al Curso" onPress={handleAddProfesorToCurso} />
 
       <Modal
         animationType="slide"
@@ -86,7 +86,7 @@ const AsignarCurso = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>¡Alumno agregado al curso correctamente!</Text>
+            <Text style={styles.modalText}>¡Profesor agregado al curso correctamente!</Text>
             <Button
               title="Cerrar"
               onPress={() => setModalVisible(!modalVisible)}
@@ -115,7 +115,7 @@ const AsignarCurso = () => {
   );
 };
 
-export default AsignarCurso;
+export default AsignarProfesor;
 
 const styles = StyleSheet.create({
   container: {

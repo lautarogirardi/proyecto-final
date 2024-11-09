@@ -5,6 +5,7 @@ import ActualizarCurso from '@/components/curso/hooks/actualizarCurso';
 import EliminarCurso from '@/components/curso/hooks/eliminarCurso';
 import CursosList from '@/components/curso/hooks/cursoList';
 import AsignarCurso from '@/components/curso/asignarCurso';
+import AsignarProfesor from '@/components/curso/asignarProfesor'; 
 import { BlurView } from 'expo-blur';
 
 interface Section {
@@ -42,6 +43,9 @@ const Curso: React.FC = () => {
               <TouchableOpacity onPress={() => handleButtonClick({ id: 5, name: 'asignar' })} style={styles.boton}>
                 <Text style={styles.botonText}>Asignar Alumnos</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleButtonClick({ id: 6, name: 'asignarProfesor' })} style={styles.boton}>
+                <Text style={styles.botonText}>Asignar Profesores</Text>
+              </TouchableOpacity>
             </View>
 
             {activeSection.name === 'agregar' && (
@@ -58,6 +62,9 @@ const Curso: React.FC = () => {
             )}
             {activeSection.name === 'asignar' && (
               <View style={styles.component}><AsignarCurso /></View>
+            )}
+            {activeSection.name === 'asignarProfesor' && (
+              <View style={styles.component}><AsignarProfesor /></View>
             )}
           </BlurView>
         </View>

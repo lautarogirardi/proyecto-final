@@ -7,8 +7,8 @@ import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 function ActualizarCurso() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
-        Descripcion: '',
-        Profesores: '',
+        Turno: '',
+        Profesores: [],  // Cambio para manejar una lista de profesores
         Horario: ''
     });
     const [cursoId, setCursoId] = useState(null);
@@ -25,8 +25,8 @@ function ActualizarCurso() {
                 const cursosList = cursosSnapshot.docs.map(doc => ({
                     id: doc.id,
                     NombreCurso: doc.data().NombreCurso || '',
-                    Descripcion: doc.data().Descripcion || '',
-                    Profesores: doc.data().Profesores || '',
+                    Turno: doc.data().Turno || '',
+                    Profesores: doc.data().Profesores || [],
                     Horario: doc.data().Horario || ''
                 }));
                 setCursos(cursosList);
@@ -40,7 +40,7 @@ function ActualizarCurso() {
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
-            [name]: value !== undefined ? value : '' // Asegúrate de que el valor no sea undefined
+            [name]: value !== undefined ? value : ''
         });
     };
 
@@ -50,7 +50,7 @@ function ActualizarCurso() {
         if (selectedCursoData) {
             setFormData({
                 NombreCurso: selectedCursoData.NombreCurso,
-                Descripcion: selectedCursoData.Descripcion,
+                Turno: selectedCursoData.Turno,
                 Profesores: selectedCursoData.Profesores,
                 Horario: selectedCursoData.Horario
             });
@@ -59,7 +59,7 @@ function ActualizarCurso() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.Descripcion || !formData.Profesores || !formData.Horario) {
+        if (!formData.NombreCurso || !formData.Turno || !formData.Profesores.length || !formData.Horario) {
             setModalMessage("Por favor, complete todos los campos.");
             setModalVisible(true);
             return;
@@ -101,20 +101,26 @@ function ActualizarCurso() {
                 onChangeText={(value) => handleChange('NombreCurso', value)}
                 style={styles.input}
             />
-            <Text style={styles.label}>Descripción:</Text>
-            <TextInput
-                placeholder="Ingresar Descripción"
-                value={formData.Descripcion}
-                onChangeText={(value) => handleChange('Descripcion', value)}
+
+            <Text style={styles.label}>Turno:</Text>
+            <Picker
+                selectedValue={formData.Turno}
+                onValueChange={(value) => handleChange('Turno', value)}
                 style={styles.input}
-            />
+            >
+                <Picker.Item label="Seleccione un Turno" value="" />
+                <Picker.Item label="Vespertino" value="vespertino" />
+                <Picker.Item label="Tarde" value="tarde" />
+                <Picker.Item label="Mañana" value="mañana" />
+            </Picker>
+
             <Text style={styles.label}>Profesores:</Text>
-            <TextInput
-                placeholder="Ingresar Profesores"
-                value={formData.Profesores}
-                onChangeText={(value) => handleChange('Profesores', value)}
-                style={styles.input}
-            />
+            <View style={styles.profesorContainer}>
+                {formData.Profesores.map((profesor, index) => (
+                    <Text key={index} style={styles.profesorText}>{profesor}</Text>
+                ))}
+            </View>
+
             <Text style={styles.label}>Horario:</Text>
             <TextInput
                 placeholder="Ingresar Horario"
@@ -122,6 +128,7 @@ function ActualizarCurso() {
                 onChangeText={(value) => handleChange('Horario', value)}
                 style={styles.input}
             />
+
             <View style={styles.br} />
             <Button title="Guardar Cambios" onPress={handleSubmit} />
 
@@ -129,17 +136,12 @@ function ActualizarCurso() {
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
+                onRequestClose={() => setModalVisible(!modalVisible)}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>{modalMessage}</Text>
-                        <Button
-                            title="Cerrar"
-                            onPress={() => setModalVisible(!modalVisible)}
-                        />
+                        <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
                     </View>
                 </View>
             </Modal>
@@ -200,5 +202,12 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: 20,
         marginBottom: 20,
+    },
+    profesorContainer: {
+        marginBottom: 10,
+    },
+    profesorText: {
+        fontSize: 16,
+        color: '#000',
     },
 });
