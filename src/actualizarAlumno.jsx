@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, Picker } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { db } from '@/firebase';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+
 function Actualizar() {
     const [formData, setFormData] = useState({
         Nombre: '',
@@ -18,20 +19,6 @@ function Actualizar() {
     const [materiasPrevias, setMateriasPrevias] = useState([{ materiaPrevia: '', notaMateriaPrevia: '' }]);
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [estudianteId, setEstudianteId] = useState(null);
-    const [listaMaterias, setListaMaterias] = useState([]);
-
-    useEffect(() => {
-        const cargarMaterias = async () => {
-            try {
-                const querySnapshot = await getDocs(collection(db, 'materias'));
-                const materiasData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setListaMaterias(materiasData);
-            } catch (error) {
-                console.error("Error al obtener materias: ", error);
-            }
-        };
-        cargarMaterias();
-    }, []);
 
     const handleChange = (name, value) => {
         setFormData({
@@ -56,10 +43,9 @@ function Actualizar() {
         const lastMateria = materias[materias.length - 1];
         if (!lastMateria.materia || !lastMateria.nota) {
             Alert.alert("Error", "Completar materia y nota.");
+            window.alert("Error: Completar materia y nota.");
             return;
         }
-        setMaterias([...materias, { materia: '', nota: '' }]);
-    
 
         const materiaExiste = materias.some((item, index) => item.materia === lastMateria.materia && index !== materias.length - 1) ||
             materiasPrevias.some(item => item.materiaPrevia === lastMateria.materia);
@@ -134,6 +120,7 @@ function Actualizar() {
         }
     };
     
+
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Sanciones || !formData.Reportes || !formData.Telefono || !formData.Email || !formData.Direccion) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
@@ -172,6 +159,7 @@ function Actualizar() {
             window.alert("Error: No se pudo actualizar el estudiante");
         }
     };
+
     return (
         <View style={styles.container}>
             <TextInput
@@ -243,19 +231,14 @@ function Actualizar() {
 
 
 <Text style={styles.label}>Materias y Notas</Text>
-{materias.map((item, index) => (
+            {materias.map((item, index) => (
                 <View key={index} style={{ marginBottom: 10 }}>
-                    <Text style={styles.label}>Materia:</Text>
-                    <Picker
-                        selectedValue={item.materia}
-                        onValueChange={(value) => handleMateriaChange(index, 'materia', value)}
+                    <TextInput
+                        placeholder="Ingresar Materia"
+                        value={item.materia}
+                        onChangeText={(value) => handleMateriaChange(index, 'materia', value)}
                         style={styles.input}
-                    >
-                        <Picker.Item label="Seleccionar Materia" value="" />
-                        {listaMaterias.map((materia) => (
-                            <Picker.Item key={materia.id} label={materia.materia} value={materia.materia} />
-                        ))}
-                    </Picker>
+                    />
                     <TextInput
                         placeholder="Ingresar Nota"
                         value={item.nota}
@@ -265,6 +248,7 @@ function Actualizar() {
                 </View>
             ))}
             <Button title="Agregar Materia" onPress={agregarMateria} />
+
             <Text style={styles.label}>Materias Previas</Text>
             {materiasPrevias.map((item, index) => (
                 <View key={index} style={{ marginBottom: 10 }}>

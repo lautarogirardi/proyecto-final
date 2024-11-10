@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Text, View} from '@/components/Themed';
 import { ScrollView } from 'react-native';
 import { ImageBackground, StyleSheet } from 'react-native';
-import ProfesorAdd from '@/profesores/hooks/profesorAdd';
+import AgregarMateria from '@/materias/agregarMateria';
+import Actualizar from '@/materias/actualizarMateria';
+import Eliminar from '@/materias/eliminarMateria';
+import MateriasList from '@/materias/listarMateria';
+
+
 import {BlurView} from 'expo-blur';
-import ActualizarP from '@/profesores/hooks/actualizarProfesor';
-import EliminarP from '@/profesores/hooks/eliminarProfesor';
-import ProfesoresList from '@/profesores/hooks/profesorList';
 
 
 
@@ -30,45 +32,37 @@ return (
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title} >Modificar Profesor: </h1>
+    <h1 style={styles.title} >Modificar Estudiante: </h1>
     
 
     <View style={styles.ubicacion} >
         <button onClick={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>Agregar</button>
         <button onClick={() => handleButtonClick({ id: 2, name: 'actualizar' })} style={styles.boton}>Actualizar</button>
         <button onClick={() => handleButtonClick({ id: 3, name: 'eliminar' })} style={styles.boton}>Eliminar</button>
-        <button onClick={() => handleButtonClick({ id: 4, name: 'lista' })} style={styles.boton} >Lista de Profesores</button>
+        <button onClick={() => handleButtonClick({ id: 4, name: 'lista' })} style={styles.boton} >Lista de Estudiantes</button>
     </View>
 
     {activeSection.name === 'agregar' && (
-        <View style={styles.component}>
-            <ProfesorAdd></ProfesorAdd>
-        </View>
+        <View style={styles.component}><AgregarMateria></AgregarMateria></View>
         
     )}
 
         {activeSection.name === 'actualizar' && (
         
-        <View style={styles.component}>
-          <ActualizarP></ActualizarP>
-          </View>
+        <View style={styles.component}><Actualizar></Actualizar></View>
         
     )}
 
     
         {activeSection.name === 'eliminar' && (
         
-        <View style={styles.component}>
-          <EliminarP></EliminarP>
-        </View>
+        <View style={styles.component}><Eliminar></Eliminar></View>
         
     )}
 
         {activeSection.name === 'lista' && (
         
-        <View style={styles.component}>
-          <ProfesoresList></ProfesoresList>
-        </View>
+        <View style={styles.component}><MateriasList></MateriasList></View>
         
     )}
 

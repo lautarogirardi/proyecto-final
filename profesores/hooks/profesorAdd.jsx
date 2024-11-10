@@ -10,12 +10,7 @@ function ProfesorAdd() {
         dni: '',
         Telefono: '',
         Email: '',
-        Direccion:'',
-        Faltas:'',
-        Materias: '',
-        Cursos: '',
-        Puntuacion: '',
-        Reportes:''
+        Direccion:''
     });
 
     const handleChange = (name, value) => {
@@ -26,7 +21,7 @@ function ProfesorAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion || !formData.Faltas || !formData.Materias || !formData.Cursos || !formData.Puntuacion ) {
+        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion ) {
             window.alert("Error: Por favor, complete todos los campos.");
             console.log("Error", "Por favor, complete todos los campos.");
             return;
@@ -49,17 +44,12 @@ function ProfesorAdd() {
                 dni: formData.dni,
                 Telefono: formData.Telefono,
                 Email: formData.Email,
-                Direccion: formData.Direccion,
-                Faltas: formData.Faltas,
-                Materias: formData.Materias,
-                Cursos: formData.Cursos,
-                Puntuacion: formData.Puntuacion,
-                Reportes: formData.Reportes
+                Direccion: formData.Direccion
             });
             console.log('User added!');
             Alert.alert("Éxito", "Profesor agregado correctamente");
             window.alert("Profesor agregado correctamente");
-            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '', Faltas: '', Materias: '', Cursos: '', Puntuacion: '', Reportes: '' });
+            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
         } catch (error) {
             console.error("Error al agregar el profesor: ", error);
             window.alert("No se pudo agregar el profesor");
@@ -111,50 +101,6 @@ function ProfesorAdd() {
                 onChangeText={(value) => handleChange('Direccion', value)}
                 style={styles.input}
             />
-
-            <Text style={styles.label}>Faltas:</Text>
-            <TextInput
-                placeholder="Ingresar Faltas"
-                value={formData.Faltas}
-                onChangeText={(value) => handleChange('Faltas', value)}
-                style={styles.input}
-            />
-            <h3 style={styles.label}>Materias Asignadas</h3>
-            <Text style={styles.label}>Materia:</Text>
-            <TextInput
-                placeholder="Ingresar Materia"
-                value={formData.Materias}
-                onChangeText={(value) => handleChange('Materias', value)}
-                style={styles.input}
-            />
-
-            <Text style={styles.label}>Curso:</Text>
-            <TextInput
-                placeholder="Ingresar Curso"
-                value={formData.Cursos}
-                onChangeText={(value) => handleChange('Cursos', value)}
-                style={styles.input}
-            />
-            <h3 style={styles.label}>Comportamiento:</h3>
-            <Text style={styles.label}>Puntuacion:</Text>
-            <TextInput
-                placeholder="Ingresar Puntuacion"
-                value={formData.Puntuacion}
-                onChangeText={(value) => handleChange('Puntuacion', value)}
-                style={styles.input}
-            />
-
-            <Text style={styles.label}>Reportes:</Text>
-            <TextInput
-                placeholder="Ingresar Reportes"
-                value={formData.Reportes}
-                onChangeText={(value) => handleChange('Reportes', value)}
-                multiline={true}
-                numberOfLines={15} 
-                textAlignVertical="top"
-                style={styles.textarea}
-            />
-
             <View style={styles.br} />
             <Button title="Enviar" onPress={handleSubmit}  />
         </View>

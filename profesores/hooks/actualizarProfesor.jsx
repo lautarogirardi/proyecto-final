@@ -12,11 +12,9 @@ function ActualizarP() {
         Email: '',
         Direccion:'',
         Faltas:'',
-        Materias: '',
-        Cursos: '',
-        Puntuacion: '',
-        Reportes:''
+        Puntuacion: ''
     });
+    const [Reportes, setReportes] = useState([{ Reportes: '' }]);
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [profesorId, setProfesorId] = useState(null);
 
@@ -25,6 +23,22 @@ function ActualizarP() {
             ...formData,
             [name]: value
         });
+    };
+
+    const handleReportesChange = (index, field, value) => {
+        const newReportes = [...Reportes];
+        newReportes[index][field] = value;
+        setReportes(newReportes);
+    };
+
+    const agregarReportes = () => {
+        const lastReportes = Reportes[Reportes.length - 1];
+        if (!lastReportes.Reportes || !lastReportes) {
+            Alert.alert("Error", "Completar el reporte.");
+            window.alert("Error: Completar el reporte.");
+            return;
+        }
+        setReportes([...Reportes, { Reportes: ''}]);
     };
 
     const buscarPorDni = async () => {
@@ -45,6 +59,19 @@ function ActualizarP() {
                 const profesorEncontrado = querySnapshot.docs[0];
                 setProfesorId(profesorEncontrado.id);
                 setFormData(profesorEncontrado.data());
+                const data = profesorEncontrado.data();
+    
+                setFormData({
+                    Nombre: data.Nombre || '',
+                    dni: data.dni || '',
+                    Telefono: data.Telefono || '',
+                    Email: data.Email || '',
+                    Direccion: data.Direccion || '',
+                    Faltas: data.Faltas || '',
+                    Puntuacion: data.Puntuacion || ''
+                });
+                setReportes(data.Reportes || [{ Reportes: '' }]);
+
             }
         } catch (error) {
             console.error("Error al buscar el profesor: ", error);
@@ -54,20 +81,35 @@ function ActualizarP() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion || !formData.Faltas || !formData.Materias || !formData.Cursos || !formData.Puntuacion ) {
+        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion || !formData.Faltas || !formData.Puntuacion  ) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             window.alert("Error: Por favor, complete todos los campos.");
             return;
         }
 
-        try {
-            if (profesorId) {
-                await updateDoc(doc(db, 'profesores', profesorId), formData);
-                window.alert("Éxito: Profesor actualizado correctamente");
-                Alert.alert("Éxito", "Profesor actualizado correctamente");
-            } else {
-                Alert.alert("Error", "Primero busca un profesor por DNI");
-            }
+        try {            const dniQuery = query(
+            collection(db, 'profesores'),
+            where("dni", "==", formData.dni)
+        );
+        const dniSnapshot = await getDocs(dniQuery);
+        
+        if (!dniSnapshot.empty && dniSnapshot.docs[0].id !== profesorId) {
+            Alert.alert("Error", "El DNI ya está registrado con otro profesor.");
+            window.alert("Error: El DNI ya está registrado con otro profesor.");
+            return;
+        }
+
+        if (profesorId) {
+            await updateDoc(doc(db, 'profesores', profesorId), {
+                ...formData,
+                Reportes: Reportes.filter(item => item.Reportes),
+            });
+            Alert.alert("Éxito", "Profesor actualizado correctamente");
+            window.alert("Profesor actualizado correctamente");
+        } else {
+            Alert.alert("Error", "Primero busca un profesor por DNI");
+            window.alert("Primero busca un profesor por DNI");
+        }
         } catch (error) {
             console.error("Error al actualizar el profesor: ", error);
             window.alert("Error: No se pudo actualizar el profesor");
@@ -135,22 +177,6 @@ function ActualizarP() {
                 onChangeText={(value) => handleChange('Faltas', value)}
                 style={styles.input}
             />
-            <h3 style={styles.label}>Materias Asignadas</h3>
-            <Text style={styles.label}>Materia:</Text>
-            <TextInput
-                placeholder="Ingresar Materia"
-                value={formData.Materias}
-                onChangeText={(value) => handleChange('Materias', value)}
-                style={styles.input}
-            />
-
-            <Text style={styles.label}>Curso:</Text>
-            <TextInput
-                placeholder="Ingresar Curso"
-                value={formData.Cursos}
-                onChangeText={(value) => handleChange('Cursos', value)}
-                style={styles.input}
-            />
             <h3 style={styles.label}>Comportamiento:</h3>
             <Text style={styles.label}>Puntuacion:</Text>
             <TextInput
@@ -159,17 +185,21 @@ function ActualizarP() {
                 onChangeText={(value) => handleChange('Puntuacion', value)}
                 style={styles.input}
             />
-
             <Text style={styles.label}>Reportes:</Text>
-            <TextInput
-                placeholder="Ingresar Reportes"
-                value={formData.Reportes}
-                onChangeText={(value) => handleChange('Reportes', value)}
-                multiline={true}
-                numberOfLines={15} 
-                textAlignVertical="top"
-                style={styles.textarea}
-            />
+            {Reportes.map((item, index) => (
+                <View key={index} style={{ marginBottom: 10 }}>
+                    <TextInput
+                        placeholder="Ingresar Reporte"
+                        value={item.Reportes}
+                        onChangeText={(value) => handleReportesChange(index, 'Reportes', value)}
+                        multiline={true}
+                        numberOfLines={15} 
+                        textAlignVertical="top"
+                        style={styles.textarea}
+                    />
+                </View>
+            ))}
+            <Button title="Agregar Reporte" onPress={agregarReportes} />
 
             <View style={styles.br} />
             <Button title="Enviar" onPress={handleSubmit}  />
