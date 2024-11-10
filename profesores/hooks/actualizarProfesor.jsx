@@ -14,7 +14,7 @@ function ActualizarP() {
         Faltas:'',
         Puntuacion: ''
     });
-    const [Reportes, setReportes] = useState([{ Reportes: '' }]);
+    const [Reportes, setReportes] = useState([{ Reporte: '' }]);
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [profesorId, setProfesorId] = useState(null);
 
@@ -25,20 +25,22 @@ function ActualizarP() {
         });
     };
 
-    const handleReportesChange = (index, field, value) => {
-        const newReportes = [...Reportes];
-        newReportes[index][field] = value;
-        setReportes(newReportes);
+    const handleReporteChange = (index, field, value) => {
+        if (index >= 0 && index < Reportes.length) {
+            const newReportes = [...Reportes];
+            newReportes[index][field] = value;
+            setReportes(newReportes);
+        }
     };
 
-    const agregarReportes = () => {
+    const agregarReporte = () => {
         const lastReportes = Reportes[Reportes.length - 1];
-        if (!lastReportes.Reportes || !lastReportes) {
+        if (!lastReportes.Reporte) {
             Alert.alert("Error", "Completar el reporte.");
-            window.alert("Error: Completar el reporte.");
             return;
         }
-        setReportes([...Reportes, { Reportes: ''}]);
+        setReportes([...Reportes, { Reporte: '' }]);
+
     };
 
     const buscarPorDni = async () => {
@@ -70,8 +72,9 @@ function ActualizarP() {
                     Faltas: data.Faltas || '',
                     Puntuacion: data.Puntuacion || ''
                 });
-                setReportes(data.Reportes || [{ Reportes: '' }]);
-
+                setReportes(data.Reportes && data.Reportes.length > 0
+                    ? data.Reportes
+                    : [{ Reporte: '' }]);
             }
         } catch (error) {
             console.error("Error al buscar el profesor: ", error);
@@ -102,7 +105,7 @@ function ActualizarP() {
         if (profesorId) {
             await updateDoc(doc(db, 'profesores', profesorId), {
                 ...formData,
-                Reportes: Reportes.filter(item => item.Reportes),
+                Reportes: Reportes.filter(item => item.Reporte),
             });
             Alert.alert("Éxito", "Profesor actualizado correctamente");
             window.alert("Profesor actualizado correctamente");
@@ -185,21 +188,23 @@ function ActualizarP() {
                 onChangeText={(value) => handleChange('Puntuacion', value)}
                 style={styles.input}
             />
-            <Text style={styles.label}>Reportes:</Text>
+            <View style={styles.separator} />
+            <Text style={styles.labelcenter}>REPORTES DE LOS PROFESORES</Text>
+            <View style={styles.br}></View>
             {Reportes.map((item, index) => (
                 <View key={index} style={{ marginBottom: 10 }}>
                     <TextInput
                         placeholder="Ingresar Reporte"
-                        value={item.Reportes}
-                        onChangeText={(value) => handleReportesChange(index, 'Reportes', value)}
-                        multiline={true}
-                        numberOfLines={15} 
-                        textAlignVertical="top"
+                        value={item.Reporte}
+                        onChangeText={(value) => handleReporteChange(index, 'Reporte', value)}
+                        multiline
+                        numberOfLines={4}
                         style={styles.textarea}
                     />
                 </View>
             ))}
-            <Button title="Agregar Reporte" onPress={agregarReportes} />
+            <Button title="Agregar Reporte" onPress={agregarReporte} />
+            <View style={styles.br} />
 
             <View style={styles.br} />
             <Button title="Enviar" onPress={handleSubmit}  />
@@ -210,6 +215,19 @@ function ActualizarP() {
 export default ActualizarP;
 
 const styles = StyleSheet.create({
+    separator: {
+        height: 3,
+        backgroundColor: 'lightblue',  
+        
+        marginVertical: 10,      
+    },
+    labelcenter: {
+        fontFamily: 'arial',
+        marginVertical: 5,
+        color: '#000',
+        fontWeight: 'bold',
+        textAlign: 'center', // Centra el texto
+    },
     container: {
         flex: 1,
 
@@ -250,5 +268,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,  
         color: '#000',
     },
-
+    br: {
+        height: 20,
+    }
 });

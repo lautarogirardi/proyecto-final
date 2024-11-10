@@ -6,7 +6,6 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 function AlumnoAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
-        Curso: '',
         dni: '',
         Telefono: '',
         Email: '',
@@ -21,7 +20,7 @@ function AlumnoAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
+        if (!formData.Nombre ||  !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             window.alert("Error: Por favor, complete todos los campos.");
             return;
@@ -44,7 +43,7 @@ function AlumnoAdd() {
             Alert.alert("Éxito", "Estudiante agregado correctamente");
             window.alert("Éxito: Estudiante agregado correctamente");
 
-            setFormData({ Nombre: '', Curso: '', dni: '', Telefono: '', Email: '', Direccion: '' });
+            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
 
         } catch (error) {
             console.error("Error al agregar el usuario: ", error);
@@ -59,14 +58,6 @@ function AlumnoAdd() {
                 placeholder="Ingresar Nombre Completo"
                 value={formData.Nombre}
                 onChangeText={(value) => handleChange('Nombre', value)}
-                style={styles.input}
-            />
-
-            <Text style={styles.label}>Curso:</Text>
-            <TextInput
-                placeholder="Ingresar Curso"
-                value={formData.Curso}
-                onChangeText={(value) => handleChange('Curso', value)}
                 style={styles.input}
             />
 
@@ -104,7 +95,7 @@ function AlumnoAdd() {
                 onChangeText={(value) => handleChange('Direccion', value)}
                 style={styles.input}
             />
-
+            <View style={styles.br} ></View>
             <Button title="Enviar" onPress={handleSubmit} />
         </View>
     );
@@ -143,4 +134,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,  
         color: '#000',
     },
+    br: {
+        height: 20,
+    }
 });

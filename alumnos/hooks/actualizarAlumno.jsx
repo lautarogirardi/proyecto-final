@@ -5,17 +5,16 @@ import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/fire
 function Actualizar() {
     const [formData, setFormData] = useState({
         Nombre: '',
-        Curso: '',
         dni: '',
         Faltas: '',
         Sanciones: '',
-        Reportes: '',
         Telefono: '',
         Email: '',
         Direccion: ''
     });
     const [materias, setMaterias] = useState([{ materia: '', nota: '' }]);
     const [materiasPrevias, setMateriasPrevias] = useState([{ materiaPrevia: '', notaMateriaPrevia: '' }]);
+    const [Reportes, setReportes] = useState([{ Reporte: '' }]);
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [estudianteId, setEstudianteId] = useState(null);
     const [listaMaterias, setListaMaterias] = useState([]);
@@ -41,17 +40,28 @@ function Actualizar() {
     };
 
     const handleMateriaChange = (index, field, value) => {
-        const newMaterias = [...materias];
-        newMaterias[index][field] = value;
-        setMaterias(newMaterias);
+        if (index >= 0 && index < materias.length) {
+            const newMaterias = [...materias];
+            newMaterias[index][field] = value;
+            setMaterias(newMaterias);
+        }
     };
 
     const handleMateriaPreviaChange = (index, field, value) => {
-        const newMateriasPrevias = [...materiasPrevias];
-        newMateriasPrevias[index][field] = value;
-        setMateriasPrevias(newMateriasPrevias);
+        if (index >= 0 && index < materiasPrevias.length) {
+            const newMateriasPrevias = [...materiasPrevias];
+            newMateriasPrevias[index][field] = value;
+            setMateriasPrevias(newMateriasPrevias);
+        }
     };
 
+    const handleReporteChange = (index, field, value) => {
+        if (index >= 0 && index < Reportes.length) {
+            const newReportes = [...Reportes];
+            newReportes[index][field] = value;
+            setReportes(newReportes);
+        }
+    };
     const agregarMateria = () => {
         const lastMateria = materias[materias.length - 1];
         if (!lastMateria.materia || !lastMateria.nota) {
@@ -59,7 +69,7 @@ function Actualizar() {
             return;
         }
         setMaterias([...materias, { materia: '', nota: '' }]);
-    
+
 
         const materiaExiste = materias.some((item, index) => item.materia === lastMateria.materia && index !== materias.length - 1) ||
             materiasPrevias.some(item => item.materiaPrevia === lastMateria.materia);
@@ -75,13 +85,10 @@ function Actualizar() {
 
     const agregarMateriaPrevia = () => {
         const lastMateriaPrevia = materiasPrevias[materiasPrevias.length - 1];
-
-        if (!lastMateriaPrevia.materiaPrevia || !lastMateriaPrevia.notaMateriaPrevia) {
+        if (!lastMateriaPrevia || !lastMateriaPrevia.materiaPrevia || !lastMateriaPrevia.notaMateriaPrevia) {
             Alert.alert("Error", "Complete todos los campos de la materia previa antes de agregar otra.");
-            window.alert("Error: Complete todos los campos de la materia previa antes de agregar otra.");
             return;
         }
-
         const materiaPreviaExiste = materiasPrevias.some((item, index) => item.materiaPrevia === lastMateriaPrevia.materiaPrevia && index !== materiasPrevias.length - 1) ||
             materias.some(item => item.materia === lastMateriaPrevia.materiaPrevia);
 
@@ -94,48 +101,65 @@ function Actualizar() {
         setMateriasPrevias([...materiasPrevias, { materiaPrevia: '', notaMateriaPrevia: '' }]);
     };
 
+    const agregarReporte = () => {
+        const lastReportes = Reportes[Reportes.length - 1];
+        if (!lastReportes.Reporte) {
+            Alert.alert("Error", "Completar el reporte.");
+            return;
+        }
+        setReportes([...Reportes, { Reporte: '' }]);
+
+    };
+
     const buscarPorDni = async () => {
         if (!dniBusqueda) {
             Alert.alert("Error", "Por favor, ingrese un DNI para buscar");
-            window.alert("Error: Por favor, ingrese un DNI para buscar");
             return;
         }
-    
+
         try {
             const estudianteQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
             const querySnapshot = await getDocs(estudianteQuery);
-    
+
             if (querySnapshot.empty) {
                 Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
-                window.alert("No se encontró ningún estudiante con ese DNI");
             } else {
                 const estudianteEncontrado = querySnapshot.docs[0];
                 setEstudianteId(estudianteEncontrado.id);
                 const data = estudianteEncontrado.data();
-    
+
                 setFormData({
                     Nombre: data.Nombre || '',
-                    Curso: data.Curso || '',
                     dni: data.dni || '',
                     Faltas: data.Faltas || '',
                     Sanciones: data.Sanciones || '',
-                    Reportes: data.Reportes || '',
                     Telefono: data.Telefono || '',
                     Email: data.Email || '',
                     Direccion: data.Direccion || ''
                 });
-                setMaterias(data.materias || [{ materia: '', nota: '' }]);
-                setMateriasPrevias(data.materiasPrevias || [{ materiaPrevia: '', notaMateriaPrevia: '' }]);
+                setMaterias(data.materias && data.materias.length > 0
+                    ? data.materias
+                    : [{ materia: '', nota: '' }]);
+
+                
+                setMateriasPrevias(data.materiasPrevias && data.materiasPrevias.length > 0
+                    ? data.materiasPrevias
+                    : [{ materiaPrevia: '', notaMateriaPrevia: '' }]);
+
+                setReportes(data.Reportes && data.Reportes.length > 0
+                    ? data.Reportes
+                    : [{ Reporte: '' }]);
             }
         } catch (error) {
             console.error("Error al buscar el estudiante: ", error);
             Alert.alert("Error", "Ocurrió un error al buscar el estudiante");
-            window.alert("Error al buscar el estudiante");
+            window.alert("Error: Ocurrió un error al buscar el estudiante");
         }
     };
-    
+
+
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Sanciones || !formData.Reportes || !formData.Telefono || !formData.Email || !formData.Direccion) {
+        if (!formData.Nombre || !formData.dni || !formData.Faltas || !formData.Sanciones || !formData.Telefono || !formData.Email || !formData.Direccion) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             window.alert("Por favor, complete todos los campos.");
             return;
@@ -157,6 +181,7 @@ function Actualizar() {
             if (estudianteId) {
                 await updateDoc(doc(db, 'alumnos', estudianteId), {
                     ...formData,
+                    Reportes: Reportes.filter(item => item.Reporte),
                     materias: materias.filter(item => item.materia && item.nota),
                     materiasPrevias: materiasPrevias.filter(item => item.materiaPrevia && item.notaMateriaPrevia)
                 });
@@ -180,21 +205,17 @@ function Actualizar() {
                 onChangeText={setDniBusqueda}
                 style={styles.input}
             />
+
+
             <Button title="Buscar" onPress={buscarPorDni} />
+            <View style={styles.br}></View>
+
 
             <Text style={styles.label}>Nombre Completo:</Text>
             <TextInput
                 placeholder="Ingresar Nombre Completo"
                 value={formData.Nombre}
                 onChangeText={(value) => handleChange('Nombre', value)}
-                style={styles.input}
-            />
-
-            <Text style={styles.label}>Curso:</Text>
-            <TextInput
-                placeholder="Ingresar Curso"
-                value={formData.Curso}
-                onChangeText={(value) => handleChange('Curso', value)}
                 style={styles.input}
             />
 
@@ -240,10 +261,13 @@ function Actualizar() {
                 onChangeText={(value) => handleChange('Faltas', value)}
                 style={styles.input}
             />
+            <View style={styles.br}></View>
 
+            <View style={styles.separator} />
+            <Text style={styles.labelcenter}>CALIFICACIONES</Text>
+            <View style={styles.br}></View>
 
-<Text style={styles.label}>Materias y Notas</Text>
-{materias.map((item, index) => (
+            {materias.map((item, index) => (
                 <View key={index} style={{ marginBottom: 10 }}>
                     <Text style={styles.label}>Materia:</Text>
                     <Picker
@@ -265,15 +289,24 @@ function Actualizar() {
                 </View>
             ))}
             <Button title="Agregar Materia" onPress={agregarMateria} />
-            <Text style={styles.label}>Materias Previas</Text>
+
+
+            <View style={styles.separator} />
+            <Text style={styles.labelcenter}>MATERIAS PREVIAS</Text>
+            <View style={styles.br}></View>
             {materiasPrevias.map((item, index) => (
                 <View key={index} style={{ marginBottom: 10 }}>
-                    <TextInput
-                        placeholder="Ingresar Materia Previa"
-                        value={item.materiaPrevia}
-                        onChangeText={(value) => handleMateriaPreviaChange(index, 'materiaPrevia', value)}
+                    <Text style={styles.label}>Materia Previa:</Text>
+                    <Picker
+                        selectedValue={item.materiaPrevia}
+                        onValueChange={(value) => handleMateriaPreviaChange(index, 'materiaPrevia', value)}
                         style={styles.input}
-                    />
+                    >
+                        <Picker.Item label="Seleccionar Materia" value="" />
+                        {listaMaterias.map((materia) => (
+                            <Picker.Item key={materia.id} label={materia.materia} value={materia.materia} />
+                        ))}
+                    </Picker>
                     <TextInput
                         placeholder="Ingresar Nota"
                         value={item.notaMateriaPrevia}
@@ -294,18 +327,25 @@ function Actualizar() {
                 style={styles.textarea}
             />
 
-            <Text style={styles.label}>Reportes del Profesor:</Text>
-            <TextInput
-                placeholder="Ingresar Reportes"
-                value={formData.Reportes}
-                onChangeText={(value) => handleChange('Reportes', value)}
-                multiline
-                numberOfLines={4}
-                style={styles.textarea}
-            />
+            <View style={styles.separator} />
+            <Text style={styles.labelcenter}>REPORTES DE LOS PROFESORES</Text>
+            <View style={styles.br}></View>
+            {Reportes.map((item, index) => (
+                <View key={index} style={{ marginBottom: 10 }}>
+                    <TextInput
+                        placeholder="Ingresar Reporte"
+                        value={item.Reporte}
+                        onChangeText={(value) => handleReporteChange(index, 'Reporte', value)}
+                        multiline
+                        numberOfLines={4}
+                        style={styles.textarea}
+                    />
+                </View>
+            ))}
+            <Button title="Agregar Reporte" onPress={agregarReporte} />
+            <View style={styles.br} />
 
-
-            <Button title="Guardar Cambios" onPress={handleSubmit} />
+            <Button title="Guardar Cambios" onPress={handleSubmit} color="green" />
         </View>
     );
 }
@@ -318,6 +358,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
     },
+    separator: {
+        height: 3,
+        backgroundColor: 'lightblue',  
+        marginVertical: 10,       
+    },
+
     input: {
         padding: 5,
         width: '100%',
@@ -336,6 +382,13 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: 'bold',
     },
+    labelcenter: {
+        fontFamily: 'arial',
+        marginVertical: 5,
+        color: '#000',
+        fontWeight: 'bold',
+        textAlign: 'center', // Centra el texto
+    },
     textarea: {
         padding: 5,
         width: '100%',
@@ -344,8 +397,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         fontFamily: 'arial',
-        marginVertical: 5,  
+        marginVertical: 5,
         color: '#000',
     },
+    br: {
+        height: 20,
+    }
 });
 

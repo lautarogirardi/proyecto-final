@@ -17,7 +17,7 @@ id: number;
 name: string;
 }
 
-function InformeEstudiante() {
+function Materias() {
 const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
 
 const handleButtonClick = (section: Section) => {
@@ -32,14 +32,14 @@ return (
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title} >Modificar Estudiante: </h1>
+    <h1 style={styles.title} >Modificar Materia: </h1>
     
 
     <View style={styles.ubicacion} >
         <button onClick={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>Agregar</button>
         <button onClick={() => handleButtonClick({ id: 2, name: 'actualizar' })} style={styles.boton}>Actualizar</button>
         <button onClick={() => handleButtonClick({ id: 3, name: 'eliminar' })} style={styles.boton}>Eliminar</button>
-        <button onClick={() => handleButtonClick({ id: 4, name: 'lista' })} style={styles.boton} >Lista de Estudiantes</button>
+        <button onClick={() => handleButtonClick({ id: 4, name: 'lista' })} style={styles.boton} >Lista de Materias</button>
     </View>
 
     {activeSection.name === 'agregar' && (
@@ -75,7 +75,7 @@ return (
 );
 }
 
-export default InformeEstudiante;
+export default Materias;
 
 const styles = StyleSheet.create({
   container: {
