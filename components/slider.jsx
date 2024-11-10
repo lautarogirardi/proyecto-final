@@ -13,7 +13,7 @@ const MainScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>EPET N0</Text>
+      <Text style={styles.title}>EPET N20</Text>
       <View style={styles.separator} />
       {cardsData.map((data) => (
         <View style={styles.buttonContainer} key={data.id}>
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    color: 'red',
   },
   title: {
     fontSize: 30,
