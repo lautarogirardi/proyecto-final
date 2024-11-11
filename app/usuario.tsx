@@ -3,7 +3,7 @@ import { Platform, StyleSheet, View, Button, ImageBackground } from 'react-nativ
 import { Text } from '@/components/Themed';
 import { useNavigation } from '@react-navigation/native';
 
-export default function ModalScreen() {
+export default function Usuario() {
   const navigation = useNavigation();
 
   const handleAdminPress = () => {

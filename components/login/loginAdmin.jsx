@@ -36,7 +36,7 @@ export default function LoginAdmin() {
         console.log('Sesión iniciada');
         const user = userCredential.user;
         await AsyncStorage.setItem('user', JSON.stringify(user));
-        navigation.navigate("Preceptores"); // Redirigir a la pantalla de preceptores
+        navigation.navigate("Preceptores"); 
         console.log(user);
       })
       .catch(error => {

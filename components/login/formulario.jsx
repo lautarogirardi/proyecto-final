@@ -61,6 +61,10 @@ export default function LoginForm() {
     navigation.navigate("register");
   };
 
+  const handleAdminLogin = () => {
+    navigation.navigate("LoginAdmin");
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -91,6 +95,7 @@ export default function LoginForm() {
       <TouchableOpacity style={styles.boton2} onPress={direccionRegistro}>
         <Text style={styles.textoBoton}>Regístrate</Text>
       </TouchableOpacity>
+      <Text style={styles.adminLogin} onPress={handleAdminLogin}>Admin Login</Text>
 
       <Modal
         animationType="slide"
@@ -156,6 +161,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
+  },
+  adminLogin: {
+    color: 'red',
+    marginVertical: 10,
   },
   modalView: {
     margin: 40,
