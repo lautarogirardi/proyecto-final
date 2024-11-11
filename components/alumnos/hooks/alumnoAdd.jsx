@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, Button, Alert, View, Text } from 'react-native';
-import { db } from '../../../firebaseConfig';
+import { StyleSheet, Alert, View, Text, TextInput, Button } from 'react-native';
+import { db } from '@/firebaseConfig';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 function AlumnoAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
-        Curso: '',
         dni: '',
-        Faltas: '',
-        Materia: '',
-        Nota: '',
-        MateriaPrevia: '',
-        Sanciones: '',
-        Reportes: ''
+        Telefono: '',
+        Email: '',
+        Direccion: ''
     });
 
     const handleChange = (name, value) => {
@@ -24,10 +20,12 @@ function AlumnoAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.Curso || !formData.dni || !formData.Faltas || !formData.Materia || !formData.Nota || !formData.MateriaPrevia || !formData.Reportes || !formData.Sanciones) {
+        if (!formData.Nombre ||  !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
+            window.alert("Error: Por favor, complete todos los campos.");
             return;
         }
+        
 
         try {
             const alumnosRef = collection(db, 'alumnos');
@@ -36,45 +34,30 @@ function AlumnoAdd() {
 
             if (!querySnapshot.empty) {
                 Alert.alert("Error", "Ya existe un estudiante con este DNI.");
+                window.alert("Error: Ya existe un estudiante con este DNI.");
                 return;
             }
 
-            await addDoc(alumnosRef, {
-                Nombre: formData.Nombre,
-                Curso: formData.Curso,
-                dni: formData.dni,
-                Faltas: formData.Faltas,
-                Materia: formData.Materia,
-                Nota: formData.Nota,
-                MateriaPrevia: formData.MateriaPrevia,
-                Sanciones: formData.Sanciones,
-                Reportes: formData.Reportes
-            });
+            await addDoc(alumnosRef, formData);
 
             Alert.alert("Éxito", "Estudiante agregado correctamente");
-            setFormData({ Nombre: '', Curso: '', dni: '', Faltas: '', Materia: '', Nota: '', MateriaPrevia: '', Sanciones: '', Reportes: '' });
+            window.alert("Éxito: Estudiante agregado correctamente");
+
+            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
+
         } catch (error) {
             console.error("Error al agregar el usuario: ", error);
-            Alert.alert("Error", "No se pudo agregar el estudiante");
+            window.alert("Error: No se pudo agregar el usuario");
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Informe</Text>
             <Text style={styles.label}>Nombre Completo:</Text>
             <TextInput
                 placeholder="Ingresar Nombre Completo"
                 value={formData.Nombre}
                 onChangeText={(value) => handleChange('Nombre', value)}
-                style={styles.input}
-            />
-
-            <Text style={styles.label}>Curso:</Text>
-            <TextInput
-                placeholder="Ingresar Curso"
-                value={formData.Curso}
-                onChangeText={(value) => handleChange('Curso', value)}
                 style={styles.input}
             />
 
@@ -87,61 +70,32 @@ function AlumnoAdd() {
                 style={styles.input}
             />
 
-            <Text style={styles.label}>Faltas:</Text>
+            <Text style={styles.label}>Teléfono:</Text>
             <TextInput
-                placeholder="Ingresar Faltas"
-                value={formData.Faltas}
-                onChangeText={(value) => handleChange('Faltas', value)}
-                style={styles.input}
-            />
-            <Text style={styles.title}>Materias y Notas</Text>
-            <Text style={styles.label}>Materia:</Text>
-            <TextInput
-                placeholder="Ingresar Materia"
-                value={formData.Materia}
-                onChangeText={(value) => handleChange('Materia', value)}
+                placeholder="Ingresar Teléfono"
+                value={formData.Telefono}
+                onChangeText={(value) => handleChange('Telefono', value)}
+                keyboardType="phone-pad"
                 style={styles.input}
             />
 
-            <Text style={styles.label}>Nota:</Text>
+            <Text style={styles.label}>Email:</Text>
             <TextInput
-                placeholder="Ingresar Nota"
-                value={formData.Nota}
-                onChangeText={(value) => handleChange('Nota', value)}
+                placeholder="Ingresar Email"
+                value={formData.Email}
+                onChangeText={(value) => handleChange('Email', value)}
+                keyboardType="email-address"
                 style={styles.input}
             />
 
-            <Text style={styles.label}>Materia Previa:</Text>
+            <Text style={styles.label}>Dirección:</Text>
             <TextInput
-                placeholder="Ingresar Materia Previa"
-                value={formData.MateriaPrevia}
-                onChangeText={(value) => handleChange('MateriaPrevia', value)}
+                placeholder="Ingresar Dirección"
+                value={formData.Direccion}
+                onChangeText={(value) => handleChange('Direccion', value)}
                 style={styles.input}
             />
-            <Text style={styles.title}>Comportamiento:</Text>
-            <Text style={styles.label}>Sanciones:</Text>
-            <TextInput
-                placeholder="Ingresar Sanciones"
-                value={formData.Sanciones}
-                onChangeText={(value) => handleChange('Sanciones', value)}
-                multiline={true}
-                numberOfLines={4}
-                textAlignVertical="top"
-                style={styles.textarea}
-            />
-
-            <Text style={styles.label}>Reportes del Profesor:</Text>
-            <TextInput
-                placeholder="Ingresar Reportes"
-                value={formData.Reportes}
-                onChangeText={(value) => handleChange('Reportes', value)}
-                multiline={true}
-                numberOfLines={4}
-                textAlignVertical="top"
-                style={styles.textarea}
-            />
-
-            <View style={styles.br} />
+            <View style={styles.br} ></View>
             <Button title="Enviar" onPress={handleSubmit} />
         </View>
     );
@@ -153,7 +107,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
     input: {
@@ -169,16 +122,7 @@ const styles = StyleSheet.create({
     },
     label: {
         marginVertical: 5,
-        color: '#000',
         fontWeight: 'bold',
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginVertical: 10,
-    },
-    br: {
-        height: 20,
     },
     textarea: {
         padding: 5,
@@ -187,7 +131,10 @@ const styles = StyleSheet.create({
         borderColor: 'lightblue',
         borderWidth: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        marginVertical: 5,
+        marginVertical: 5,  
         color: '#000',
     },
+    br: {
+        height: 20,
+    }
 });

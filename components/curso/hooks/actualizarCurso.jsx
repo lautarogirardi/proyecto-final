@@ -8,7 +8,6 @@ function ActualizarCurso() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
         Turno: '',
-        Profesores: [],  // Cambio para manejar una lista de profesores
         Horario: ''
     });
     const [cursoId, setCursoId] = useState(null);
@@ -26,7 +25,6 @@ function ActualizarCurso() {
                     id: doc.id,
                     NombreCurso: doc.data().NombreCurso || '',
                     Turno: doc.data().Turno || '',
-                    Profesores: doc.data().Profesores || [],
                     Horario: doc.data().Horario || ''
                 }));
                 setCursos(cursosList);
@@ -51,7 +49,6 @@ function ActualizarCurso() {
             setFormData({
                 NombreCurso: selectedCursoData.NombreCurso,
                 Turno: selectedCursoData.Turno,
-                Profesores: selectedCursoData.Profesores,
                 Horario: selectedCursoData.Horario
             });
             setCursoId(cursoId);
@@ -59,7 +56,7 @@ function ActualizarCurso() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.Turno || !formData.Profesores.length || !formData.Horario) {
+        if (!formData.NombreCurso || !formData.Turno || !formData.Horario) {
             setModalMessage("Por favor, complete todos los campos.");
             setModalVisible(true);
             return;
@@ -113,13 +110,6 @@ function ActualizarCurso() {
                 <Picker.Item label="Tarde" value="tarde" />
                 <Picker.Item label="Mañana" value="mañana" />
             </Picker>
-
-            <Text style={styles.label}>Profesores:</Text>
-            <View style={styles.profesorContainer}>
-                {formData.Profesores.map((profesor, index) => (
-                    <Text key={index} style={styles.profesorText}>{profesor}</Text>
-                ))}
-            </View>
 
             <Text style={styles.label}>Horario:</Text>
             <TextInput
@@ -202,12 +192,5 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: 20,
         marginBottom: 20,
-    },
-    profesorContainer: {
-        marginBottom: 10,
-    },
-    profesorText: {
-        fontSize: 16,
-        color: '#000',
     },
 });

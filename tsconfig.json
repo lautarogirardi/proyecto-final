@@ -12,6 +12,15 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "src/expo-env.d.ts"
-, "components/formulario.jsx", "components/slider.jsx", "components/alumnos/formularioinforme.jsx", "components/alumnos/elegiralumno.jsx", "components/profesores/elegirprofesor.jsx", "components/profesores/formulariocomportamiento.jsx", "components/profesores/formulariomaterias.jsx", "components/profesores/informeprofesor.jsx"  ]
+    "src/expo-env.d.ts",
+    "components/formulario.jsx",
+    "components/slider.jsx",
+    "components/alumnos/formularioinforme.jsx",
+    "components/alumnos/elegiralumno.jsx",
+    "components/profesores/elegirprofesor.jsx",
+    "components/profesores/formulariocomportamiento.jsx",
+    "components/profesores/formulariomaterias.jsx",
+    "components/profesores/informeprofesor.jsx",
+    "expo-env.d.ts"
+  ]
 }

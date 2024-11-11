@@ -1,71 +1,75 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, Button, Alert, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { db } from '../../../firebaseConfig';
-import { collection, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
 function EliminarCurso() {
-    const [codigoBusqueda, setCodigoBusqueda] = useState('');
-    const [cursoId, setCursoId] = useState(null);
+    const [selectedCurso, setSelectedCurso] = useState('');
+    const [cursos, setCursos] = useState([]);
     const [formData, setFormData] = useState(null);
 
-    const buscarPorCodigo = useCallback(async () => {
-        if (!codigoBusqueda) {
-            Alert.alert("Error", "Por favor, ingrese un código de curso para buscar");
-            return;
-        }
-
-        try {
-            const cursoQuery = query(collection(db, 'cursos'), where("CodigoCurso", "==", codigoBusqueda));
-            const querySnapshot = await getDocs(cursoQuery);
-
-            if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningún curso con ese código");
-            } else {
-                const cursoEncontrado = querySnapshot.docs[0];
-                setCursoId(cursoEncontrado.id);
-                setFormData(cursoEncontrado.data());
-                Alert.alert("Curso encontrado", "Puedes eliminarlo ahora");
+    useEffect(() => {
+        const fetchCursos = async () => {
+            try {
+                const cursosCollection = collection(db, 'cursos');
+                const cursosSnapshot = await getDocs(cursosCollection);
+                const cursosList = cursosSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })).filter(curso => curso.habilitado !== false);  // Excluir cursos deshabilitados
+                setCursos(cursosList);
+            } catch (error) {
+                console.error("Error al obtener los cursos: ", error);
             }
-        } catch (error) {
-            console.error("Error al buscar el curso: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el curso");
-        }
-    }, [codigoBusqueda]);
+        };
+        fetchCursos();
+    }, []);
+
+    const handleCursoChange = (cursoId) => {
+        setSelectedCurso(cursoId);
+        const selectedCursoData = cursos.find(curso => curso.id === cursoId);
+        setFormData(selectedCursoData || null);
+    };
 
     const eliminarCurso = useCallback(async () => {
-        if (!cursoId) {
-            Alert.alert("Error", "Primero busca un curso por su código");
+        if (!selectedCurso) {
+            Alert.alert("Error", "Seleccione un curso");
             return;
         }
 
         try {
-            await deleteDoc(doc(db, 'cursos', cursoId));
+            await deleteDoc(doc(db, 'cursos', selectedCurso));
             Alert.alert("Curso eliminado", "El curso ha sido eliminado correctamente");
-            setCursoId(null);
+            setSelectedCurso('');
             setFormData(null);
-            setCodigoBusqueda('');
+
+            // Actualizar lista de cursos excluyendo el curso eliminado
+            setCursos(prevCursos => prevCursos.filter(curso => curso.id !== selectedCurso));
         } catch (error) {
             console.error("Error al eliminar el curso: ", error);
             Alert.alert("Error", "No se pudo eliminar el curso");
         }
-    }, [cursoId]);
+    }, [selectedCurso]);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>BUSCAR:</Text>
-            <TextInput
-                placeholder="Buscar por Código de Curso"
-                value={codigoBusqueda}
-                onChangeText={setCodigoBusqueda}
+            <Text style={styles.label}>Seleccionar Curso:</Text>
+            <Picker
+                selectedValue={selectedCurso}
+                onValueChange={handleCursoChange}
                 style={styles.input}
-            />
-            <View style={styles.br} />
-            <Button title="Buscar" onPress={buscarPorCodigo} />
-
+            >
+                <Picker.Item label="Seleccione un Curso" value="" />
+                {cursos.map(curso => (
+                    <Picker.Item key={curso.id} label={curso.NombreCurso} value={curso.id} />
+                ))}
+            </Picker>
             {formData && (
                 <View style={styles.resultContainer}>
                     <Text style={styles.label}>Nombre del Curso: {formData.NombreCurso}</Text>
-                    <Text style={styles.label}>Código del Curso: {formData.CodigoCurso}</Text>
+                    <Text style={styles.label}>Turno: {formData.Turno}</Text>
+                    <Text style={styles.label}>Horario: {formData.Horario}</Text>
                     <View style={styles.br} />
                     <Button
                         title="Eliminar Curso"

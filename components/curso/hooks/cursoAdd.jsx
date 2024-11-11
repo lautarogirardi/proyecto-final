@@ -7,7 +7,6 @@ function CursoAdd() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
         Turno: '',
-        Profesores: '',
         Horario: ''
     });
     const [modalVisible, setModalVisible] = useState(false);
@@ -21,7 +20,7 @@ function CursoAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.NombreCurso || !formData.Turno || !formData.Profesores || !formData.Horario) {
+        if (!formData.NombreCurso || !formData.Turno || !formData.Horario) {
             setModalMessage("Por favor, complete todos los campos.");
             setModalVisible(true);
             return;
@@ -33,7 +32,7 @@ function CursoAdd() {
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                setModalMessage("Ya existe un curso con esta combinación de curso y división.");
+                setModalMessage("Ya existe un curso con este nombre.");
                 setModalVisible(true);
                 return;
             }
@@ -41,13 +40,12 @@ function CursoAdd() {
             await addDoc(cursosRef, {
                 NombreCurso: formData.NombreCurso,
                 Turno: formData.Turno,
-                Profesores: formData.Profesores,
                 Horario: formData.Horario
             });
 
             setModalMessage("Curso agregado correctamente");
             setModalVisible(true);
-            setFormData({ NombreCurso: '', Turno: '', Profesores: '', Horario: '' });
+            setFormData({ NombreCurso: '', Turno: '', Horario: '' });
         } catch (error) {
             console.error("Error al agregar el curso: ", error);
             setModalMessage("No se pudo agregar el curso");
@@ -77,14 +75,6 @@ function CursoAdd() {
                 <Picker.Item label="Tarde" value="Tarde" />
                 <Picker.Item label="Vespertino" value="Vespertino" />
             </Picker>
-
-            <Text style={styles.label}>Profesores:</Text>
-            <TextInput
-                placeholder="Ingresar Profesores"
-                value={formData.Profesores}
-                onChangeText={(value) => handleChange('Profesores', value)}
-                style={styles.input}
-            />
 
             <Text style={styles.label}>Horario:</Text>
             <TextInput

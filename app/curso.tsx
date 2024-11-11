@@ -5,7 +5,8 @@ import ActualizarCurso from '@/components/curso/hooks/actualizarCurso';
 import EliminarCurso from '@/components/curso/hooks/eliminarCurso';
 import CursosList from '@/components/curso/hooks/cursoList';
 import AsignarCurso from '@/components/curso/asignarCurso';
-import AsignarProfesor from '@/components/curso/asignarProfesor'; 
+import AsignarProfesor from '@/components/curso/asignarProfesor';
+import AsignarMateria from '@/components/curso/asisgnarMateria'; 
 import { BlurView } from 'expo-blur';
 
 interface Section {
@@ -22,7 +23,7 @@ const Curso: React.FC = () => {
 
   return (
     <ImageBackground source={require('@/assets/images/epet20.jpeg')} style={styles.backgroundImage}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
           <BlurView intensity={65} style={styles.blurContainer}>
             <Text style={styles.title}>Gestionar Cursos</Text>
@@ -46,6 +47,9 @@ const Curso: React.FC = () => {
               <TouchableOpacity onPress={() => handleButtonClick({ id: 6, name: 'asignarProfesor' })} style={styles.boton}>
                 <Text style={styles.botonText}>Asignar Profesores</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleButtonClick({ id: 7, name: 'asignarMateria' })} style={styles.boton}>
+                <Text style={styles.botonText}>Asignar Materias</Text>
+              </TouchableOpacity>
             </View>
 
             {activeSection.name === 'agregar' && (
@@ -66,6 +70,9 @@ const Curso: React.FC = () => {
             {activeSection.name === 'asignarProfesor' && (
               <View style={styles.component}><AsignarProfesor /></View>
             )}
+            {activeSection.name === 'asignarMateria' && (
+              <View style={styles.component}><AsignarMateria /></View>
+            )}
           </BlurView>
         </View>
       </ScrollView>
@@ -81,6 +88,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    marginHorizontal: 20,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backgroundImage: {
     flex: 1,
@@ -119,6 +132,7 @@ const styles = StyleSheet.create({
   ubicacion: {
     flexDirection: 'row',
     justifyContent: 'center',
+    flexWrap: 'wrap', 
     marginBottom: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
@@ -147,5 +161,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
     backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    paddingHorizontal: 20,
   },
 });

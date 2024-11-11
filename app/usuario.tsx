@@ -1,32 +1,30 @@
 import { StatusBar } from 'expo-status-bar';
 import { Platform, StyleSheet, View, Button, ImageBackground } from 'react-native';
 import { Text } from '@/components/Themed';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ModalScreen() {
+  const navigation = useNavigation();
+
+  const handleAdminPress = () => {
+    navigation.navigate('LoginAdmin');  // Navegar a la pantalla de LoginAdmin
+  };
+
   return (
     <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.background}>
       <View style={styles.overlay}>
         <View style={styles.profileContainer}>
           <Text style={styles.title}>Perfil de Usuario</Text>
-
-          {/* Menú de configuración de usuario */}
           <View style={styles.menuContainer}>
-            {/* Botón para actualizar el nombre de usuario */}
             <View style={styles.buttonContainer}>
-              <Button title="Cambiar nombre de usuario" onPress={() => console.log('Actualizando nombre de usuario')} color="#4B0082" />
-            </View>
-
-            {/* Espacio entre botones */}
-            <View style={{ marginVertical: 10 }} />
-
-            {/* Botón para actualizar la contraseña */}
-            <View style={styles.buttonContainer}>
-              <Button title="Cambiar contraseña" onPress={() => console.log('Actualizando contraseña')} color="#4B0082" />
+              <Button
+                title="Admin"
+                onPress={handleAdminPress}
+                color="#4B0082"
+              />
             </View>
           </View>
         </View>
-
-        {/* Use a light status bar on iOS to account for the black space above the modal */}
         <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
       </View>
     </ImageBackground>

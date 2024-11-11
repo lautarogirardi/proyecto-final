@@ -1,75 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button, Alert, StyleSheet, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../../firebaseConfig';
-import { updateDoc, doc, arrayUnion, getDoc, collection, getDocs } from 'firebase/firestore';
+import { updateDoc, doc, arrayUnion } from 'firebase/firestore';
 import useFirestoreCollection from '../../src/useFirestoreCollection';
 
-const AsignarProfesor = () => {
+const AsignarMateria = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
-  const [selectedProfesor, setSelectedProfesor] = useState('');
   const [selectedMateria, setSelectedMateria] = useState('');
-  const [cursoMaterias, setCursoMaterias] = useState([]);
-  const [materias, setMaterias] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
 
   const cursos = useFirestoreCollection('cursos');
-  const profesores = useFirestoreCollection('profesores');
+  const materias = useFirestoreCollection('materias');
 
-  useEffect(() => {
-    const fetchCursoMaterias = async () => {
-      if (selectedCurso) {
-        const cursoRef = doc(db, 'cursos', selectedCurso);
-        const cursoDoc = await getDoc(cursoRef);
-        if (cursoDoc.exists()) {
-          const materiasData = cursoDoc.data().materias || [];
-          setCursoMaterias(materiasData);
-
-          // Fetch nombres de materias
-          const materiasCollection = await getDocs(collection(db, 'materias'));
-          const materiasMap = {};
-          materiasCollection.forEach((doc) => {
-            materiasMap[doc.id] = doc.data().materia;
-          });
-          setMaterias(materiasMap);
-        }
-      } else {
-        setCursoMaterias([]);
-        setMaterias({});
-      }
-    };
-
-    fetchCursoMaterias();
-  }, [selectedCurso]);
-
-  const handleAddProfesorToCurso = async () => {
-    if (!selectedCurso || !selectedProfesor || !selectedMateria) {
-      Alert.alert("Error", "Seleccione un curso, un profesor y una materia");
+  const handleAddMateriaToCurso = async () => {
+    if (!selectedCurso || !selectedMateria) {
+      Alert.alert("Error", "Seleccione un curso y una materia");
       return;
     }
 
     try {
       const cursoRef = doc(db, 'cursos', selectedCurso);
       await updateDoc(cursoRef, {
-        profesores: arrayUnion({
-          profesorId: selectedProfesor,
-          materiaId: selectedMateria,
-          materiaNombre: materias[selectedMateria] // Añadir el nombre de la materia
-        })
+        materias: arrayUnion(selectedMateria)
       });
       setModalVisible(true);
       setSelectedCurso('');
-      setSelectedProfesor('');
       setSelectedMateria('');
     } catch (error) {
-      console.error("Error al agregar el profesor al curso: ", error);
-      Alert.alert("Error", "No se pudo agregar el profesor al curso");
+      console.error("Error al agregar la materia al curso: ", error);
+      Alert.alert("Error", "No se pudo agregar la materia al curso");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Asignar Profesores a Cursos</Text>
+      <Text style={styles.title}>Asignar Materias a Cursos</Text>
       <View style={styles.pickerContainer}>
         <Text style={styles.label}>Seleccionar Curso:</Text>
         <Picker
@@ -85,20 +51,6 @@ const AsignarProfesor = () => {
       </View>
 
       <View style={styles.pickerContainer}>
-        <Text style={styles.label}>Seleccionar Profesor:</Text>
-        <Picker
-          selectedValue={selectedProfesor}
-          onValueChange={(itemValue) => setSelectedProfesor(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Seleccione un Profesor" value="" />
-          {profesores.map((profesor) => (
-            <Picker.Item key={profesor.id} label={`${profesor.Nombre || ''} ${profesor.Apellido || ''} - DNI: ${profesor.dni || ''}`} value={profesor.id} />
-          ))}
-        </Picker>
-      </View>
-
-      <View style={styles.pickerContainer}>
         <Text style={styles.label}>Seleccionar Materia:</Text>
         <Picker
           selectedValue={selectedMateria}
@@ -106,13 +58,13 @@ const AsignarProfesor = () => {
           style={styles.picker}
         >
           <Picker.Item label="Seleccione una Materia" value="" />
-          {cursoMaterias.map((materiaId) => (
-            <Picker.Item key={materiaId} label={materias[materiaId]} value={materiaId} />
+          {materias.map((materia) => (
+            <Picker.Item key={materia.id} label={materia.materia} value={materia.id} />
           ))}
         </Picker>
       </View>
 
-      <Button title="Agregar Profesor al Curso" onPress={handleAddProfesorToCurso} />
+      <Button title="Agregar Materia al Curso" onPress={handleAddMateriaToCurso} />
 
       <Modal
         animationType="slide"
@@ -122,7 +74,7 @@ const AsignarProfesor = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>¡Profesor agregado al curso correctamente!</Text>
+            <Text style={styles.modalText}>¡Materia agregada al curso correctamente!</Text>
             <Button
               title="Cerrar"
               onPress={() => setModalVisible(!modalVisible)}
@@ -134,7 +86,7 @@ const AsignarProfesor = () => {
   );
 };
 
-export default AsignarProfesor;
+export default AsignarMateria;
 
 const styles = StyleSheet.create({
   container: {
