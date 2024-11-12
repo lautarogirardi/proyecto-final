@@ -3,6 +3,7 @@ import { ImageBackground, StyleSheet } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { ScrollView } from 'react-native';
+import BuscarAlumno from '@/alumnos/hooks/pantallausuario';
 
 
 function agregarUsuario() {
@@ -10,7 +11,7 @@ function agregarUsuario() {
     return (
       <ScrollView>
         <View style={{ padding: 20 }}>
-
+        <BuscarAlumno></BuscarAlumno>
         </View>
         </ScrollView>
     );

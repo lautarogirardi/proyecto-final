@@ -1,24 +1,15 @@
 import React, { useState } from 'react';
 import { Text, View } from '@/components/Themed';
 import { ImageBackground, StyleSheet } from 'react-native';
-import Materias  from '@/profesores/formMaterias';
-import Informe from '@/profesores/formInforme';
-import ElegirP from '@/profesores/elegirProfesor';
 import { BlurView } from 'expo-blur';
 import { ScrollView } from 'react-native';
+import BuscarCurso from '@/Cursos/cursos';
 
 
-interface Section {
-id: number;
-name: string;
-}
+
 
 function InformeEstudiante() {
-const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'materias' });
 
-const handleButtonClick = (section: Section) => {
-    setActiveSection(section);
-};
 
 return (
   <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
@@ -27,26 +18,12 @@ return (
     
     
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title}>Informe de Profesores: </h1>
-    <View style={styles.elegirP} >
-    <ElegirP></ElegirP>
-    </View>
-    
-    <View style={styles.ubicacion} >
-        <button onClick={() => handleButtonClick({ id: 1, name: 'materias' })} style={styles.boton}>Materias</button>
-        <button onClick={() => handleButtonClick({ id: 2, name: 'informe' })} style={styles.boton} >Informe</button>
-    </View>
+    <h1 style={styles.title}>Buscar Cursos: </h1>
 
-    {activeSection.name === 'materias' && (
-        <View style={styles.materias}><Materias></Materias></View> 
-        
-    )}
 
-    {activeSection.name === 'informe' && (
+        <View style={styles.informe}><BuscarCurso></BuscarCurso></View> 
         
-        <View style={styles.informe}><Informe></Informe></View> 
-        
-    )}
+
     </BlurView>
     </View>
     </ScrollView>

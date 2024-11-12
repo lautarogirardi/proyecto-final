@@ -27,6 +27,7 @@ function Actualizar() {
                 setListaMaterias(materiasData);
             } catch (error) {
                 console.error("Error al obtener materias: ", error);
+                window.alert("Error al obtener materias: ");
             }
         };
         cargarMaterias();
@@ -66,6 +67,7 @@ function Actualizar() {
         const lastMateria = materias[materias.length - 1];
         if (!lastMateria.materia || !lastMateria.nota) {
             Alert.alert("Error", "Completar materia y nota.");
+            window.alert("Error: Completar materia y nota.");
             return;
         }
         setMaterias([...materias, { materia: '', nota: '' }]);
@@ -87,6 +89,8 @@ function Actualizar() {
         const lastMateriaPrevia = materiasPrevias[materiasPrevias.length - 1];
         if (!lastMateriaPrevia || !lastMateriaPrevia.materiaPrevia || !lastMateriaPrevia.notaMateriaPrevia) {
             Alert.alert("Error", "Complete todos los campos de la materia previa antes de agregar otra.");
+            Alert.alert("Error: Complete todos los campos de la materia previa antes de agregar otra.");
+
             return;
         }
         const materiaPreviaExiste = materiasPrevias.some((item, index) => item.materiaPrevia === lastMateriaPrevia.materiaPrevia && index !== materiasPrevias.length - 1) ||
@@ -105,6 +109,7 @@ function Actualizar() {
         const lastReportes = Reportes[Reportes.length - 1];
         if (!lastReportes.Reporte) {
             Alert.alert("Error", "Completar el reporte.");
+            window.alert("Error: Completar el reporte.");
             return;
         }
         setReportes([...Reportes, { Reporte: '' }]);
@@ -114,6 +119,7 @@ function Actualizar() {
     const buscarPorDni = async () => {
         if (!dniBusqueda) {
             Alert.alert("Error", "Por favor, ingrese un DNI para buscar");
+            window.alert("Error: Por favor, ingrese un DNI para buscar");
             return;
         }
 
@@ -123,6 +129,7 @@ function Actualizar() {
 
             if (querySnapshot.empty) {
                 Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
+                Alert.window("No se encontró ningún estudiante con ese DNI");
             } else {
                 const estudianteEncontrado = querySnapshot.docs[0];
                 setEstudianteId(estudianteEncontrado.id);
@@ -387,7 +394,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
-        textAlign: 'center', // Centra el texto
+        textAlign: 'center', 
     },
     textarea: {
         padding: 5,

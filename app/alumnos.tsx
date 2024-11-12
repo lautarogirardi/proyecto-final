@@ -3,7 +3,7 @@ import { Text, View} from '@/components/Themed';
 import { ScrollView } from 'react-native';
 import { ImageBackground, StyleSheet } from 'react-native';
 import {BlurView} from 'expo-blur';
-import Enlistar from '@/alumnos/hooks/enlistarAlumno';
+import BuscarAlumno from '@/alumnos/hooks/pantallausuario';
 
 
 
@@ -19,7 +19,7 @@ return (
 
     <BlurView intensity={65} style={styles.blurContainer}>
     <h1 style={styles.title} >Informe de Estudiante: </h1>
-    <View style={styles.component} ><Enlistar></Enlistar></View>
+    <View style={styles.component} ><BuscarAlumno></BuscarAlumno></View>
     </BlurView>
     </View>
     
