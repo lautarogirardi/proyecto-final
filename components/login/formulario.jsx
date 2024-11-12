@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import VirtualKeyboard from '@/components/virtualKeyboard';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -11,6 +12,7 @@ export default function LoginForm() {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const [inputName, setInputName] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -62,7 +64,19 @@ export default function LoginForm() {
   };
 
   const handleAdminLogin = () => {
-    navigation.navigate("LoginAdmin");
+    navigation.navigate("loginAdmin");
+  };
+
+  const handleInputChange = (input, inputName) => {
+    if (inputName === 'email') {
+      setEmail(input);
+    } else if (inputName === 'password') {
+      setPassword(input);
+    }
+  };
+
+  const handleFocus = (name) => {
+    setInputName(name);
   };
 
   if (loading) {
@@ -74,18 +88,23 @@ export default function LoginForm() {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} >
       <Text style={styles.titulo}>Inicia sesión</Text>
       <TextInput
         placeholder='Email'
         style={styles.textInput}
         onChangeText={(text) => setEmail(text)}
+        autoFocus
+        value={email}
+        onFocus={() => handleFocus("email")}
       />
       <TextInput
         placeholder='Contraseña'
         style={styles.textInput}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
+        value={password}
+        onFocus={() => handleFocus("password")}
       />
       <Text style={styles.olvideContra} onPress={handleForgotPassword}>Olvidé la Contraseña</Text>
       <TouchableOpacity style={styles.boton} onPress={HandleSignIn}>
@@ -115,7 +134,8 @@ export default function LoginForm() {
           </TouchableOpacity>
         </View>
       </Modal>
-    </View>
+      <VirtualKeyboard inputName={inputName} onChange={handleInputChange} />
+    </KeyboardAvoidingView>
   );
 }
 

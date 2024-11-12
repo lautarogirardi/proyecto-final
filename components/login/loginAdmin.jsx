@@ -15,9 +15,9 @@ export default function LoginAdmin() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const user = await AsyncStorage.getItem('user');
+      const user = await AsyncStorage.getItem('adminUser');
       if (user) {
-        navigation.navigate("Preceptores"); // Redirigir a la pantalla de preceptores
+        navigation.navigate("preceptores"); // Redirigir a la pantalla de preceptores
       }
       setLoading(false);
     };
@@ -35,8 +35,8 @@ export default function LoginAdmin() {
       .then(async (userCredential) => {
         console.log('Sesión iniciada');
         const user = userCredential.user;
-        await AsyncStorage.setItem('user', JSON.stringify(user));
-        navigation.navigate("Preceptores"); 
+        await AsyncStorage.setItem('adminUser', JSON.stringify(user));
+        navigation.navigate("preceptores");
         console.log(user);
       })
       .catch(error => {
@@ -68,12 +68,14 @@ export default function LoginAdmin() {
         placeholder='Email'
         style={styles.textInput}
         onChangeText={(text) => setEmail(text)}
+        value={email}
       />
       <TextInput
         placeholder='Contraseña'
         style={styles.textInput}
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
+        value={password}
       />
       <TouchableOpacity style={styles.boton} onPress={HandleSignIn}>
         <Text style={styles.textoBoton}>Iniciar sesión</Text>
