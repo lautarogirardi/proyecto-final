@@ -6,7 +6,7 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 function ProfesorAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
-        Apellido: '',  // Campo de apellido agregado
+        Apellido: '',  
         dni: '',
         Telefono: '',
         Email: ''

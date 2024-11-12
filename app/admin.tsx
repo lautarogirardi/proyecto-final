@@ -10,23 +10,23 @@ interface CardData {
   route: string;
 }
 
-export default function MainScreen() {
+export default function Admin() {
   const router = useRouter();
   const cardsData: CardData[] = [
-    { id: 1, title: 'cursos', buttonText: 'toca para ver info sobre los cursos!', route: '/cursoUsuario' },
-    { id: 3, title: 'alumnos', buttonText: 'toca para ver info sobre los alumnos!', route: '/alumnoUsuario' },
+    { id: 1, title: 'cursos', buttonText: 'Toca para ver info sobre los cursos!', route: '/curso' },
+    { id: 2, title: 'informe profesores', buttonText: 'Toca para hacer un informe a algún profesor!', route: '/profesores' },
+    { id: 3, title: 'alumnos', buttonText: 'Toca para ver info sobre los alumnos!', route: '/alumnos' },
+    { id: 4, title: 'preceptores', buttonText: 'Toca para gestionar preceptores!', route: '/preceptores' },
   ];
 
   useEffect(() => {
     const handleBackButton = () => {
-      // Aquí puedes verificar si el usuario está autenticado
-      const isAuthenticated = false; 
+      const isAuthenticated = true; 
 
       if (!isAuthenticated) {
-        router.replace("/(tabs)/");//si no esta autenticado volvemos a login
+        router.replace("/(tabs)/"); // Si no está autenticado volvemos a login
       } else {
-        // Si está autenticado, redirigimos a la pagina principal
-        router.replace('/epet20'); //llevamos a nuestra pagina principal
+        router.replace('/admin'); // Llevamos a nuestra página principal de admin
       }
     };
 
@@ -48,7 +48,7 @@ export default function MainScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>EPET N20</Text>
+      <Text style={styles.title}>Admin</Text>
       <View style={styles.separator} />
       <SlidingCards cards={cardsData} mainContent={renderCard} />
     </View>

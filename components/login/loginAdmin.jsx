@@ -16,9 +16,6 @@ export default function LoginAdmin() {
   useEffect(() => {
     const checkUser = async () => {
       const user = await AsyncStorage.getItem('adminUser');
-      if (user) {
-        navigation.navigate("preceptores"); // Redirigir a la pantalla de preceptores
-      }
       setLoading(false);
     };
     checkUser();
@@ -36,7 +33,7 @@ export default function LoginAdmin() {
         console.log('Sesión iniciada');
         const user = userCredential.user;
         await AsyncStorage.setItem('adminUser', JSON.stringify(user));
-        navigation.navigate("preceptores");
+        navigation.navigate("admin");
         console.log(user);
       })
       .catch(error => {
@@ -105,53 +102,48 @@ export default function LoginAdmin() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    flex: 1, backgroundColor: '#fff',
+     alignItems: 'center', 
+     justifyContent: 'center', 
+     padding: 20,
   },
   titulo: {
-    fontSize: 23,
+    fontSize: 23, 
     fontWeight: 'bold',
-    marginBottom: 5,
+     marginBottom: 5,
   },
   textInput: {
-    width: '80%',
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
+    width: '80%', height: 50, 
+    borderColor: 'gray', 
+    borderWidth: 1, 
+    marginBottom: 10, 
     paddingHorizontal: 10,
   },
   boton: {
     backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
+     padding: 10, 
+     borderRadius: 5,
+      marginVertical: 10,
   },
   textoBoton: {
     color: 'white',
-    textAlign: 'center',
+     textAlign: 'center',
   },
   modalView: {
-    margin: 40,
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 15,
+    margin: 40, 
+    backgroundColor: 'white', 
+    borderRadius: 16, 
+    padding: 15, 
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+     shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2, }, 
+      shadowOpacity: 0.25,
+       shadowRadius: 4,
+        elevation: 5,
   },
   modalText: {
     marginBottom: 1,
-    textAlign: 'center',
+     textAlign: 'center',
   },
   botonCerrar: {
     backgroundColor: '#f44336',

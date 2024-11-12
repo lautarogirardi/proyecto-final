@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import useFirestoreCollection from '../../../src/useFirestoreCollection';
+import useFirestoreCollection from '@/src/useFirestoreCollection';
 import Button from '@/components/curso/boton';
 
 const CursosList = () => {
@@ -9,7 +9,10 @@ const CursosList = () => {
   const [selectedCurso, setSelectedCurso] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const cursos = useFirestoreCollection('cursos');
-  const alumnos = useFirestoreCollection('alumnos');  // Asegurarse de tener los datos de alumnos
+  const alumnos = useFirestoreCollection('alumnos');
+  const profesores = useFirestoreCollection('profesores');
+  const preceptores = useFirestoreCollection('preceptores');
+  const materias = useFirestoreCollection('materias');
 
   const filteredCursos = turno ? cursos.filter(curso => curso.Turno === turno) : cursos;
 
@@ -18,12 +21,21 @@ const CursosList = () => {
     setModalVisible(true);
   };
 
-  const getAlumnosNombres = (alumnosIds) => {
-    const alumnosNombres = alumnosIds.map(alumnoId => {
-      const alumno = alumnos.find(a => a.id === alumnoId);
-      return alumno ? `${alumno.Nombre || 'Desconocido'} ${alumno.Apellido || ''} - DNI: ${alumno.dni || 'N/A'}` : 'Desconocido';
-    });
-    return alumnosNombres.join(', ');
+  const getNombres = (ids, collection) => {
+    return ids.map(id => {
+      const item = collection.find(a => a.id === id);
+      return item ? `${item.Nombre} ${item.Apellido || ''}` : 'Desconocido';
+    }).join(', ');
+  };
+
+  const getAlumnosNombres = (alumnosIds) => getNombres(alumnosIds, alumnos);
+  const getProfesoresNombres = (profesoresIds) => getNombres(profesoresIds, profesores);
+  const getPreceptoresNombres = (preceptoresIds) => getNombres(preceptoresIds, preceptores);
+  const getMateriasNombres = (materiasIds) => {
+    return materiasIds.map(id => {
+      const materia = materias.find(m => m.id === id);
+      return materia ? materia.materia : 'Desconocido';
+    }).join(', ');
   };
 
   return (
@@ -67,9 +79,10 @@ const CursosList = () => {
                 <Text style={styles.modalTitle}>Detalles del Curso</Text>
                 <Text style={styles.modalText}>Nombre del Curso: {selectedCurso.NombreCurso || 'N/A'}</Text>
                 <Text style={styles.modalText}>Turno: {selectedCurso.Turno || 'N/A'}</Text>
-                <Text style={styles.modalText}>Profesores: {selectedCurso.Profesores || 'N/A'}</Text>
-                <Text style={styles.modalText}>Materias: {selectedCurso.Materias || 'N/A'}</Text>
+                <Text style={styles.modalText}>Profesores: {getProfesoresNombres(selectedCurso.profesores || [])}</Text>
+                <Text style={styles.modalText}>Materias: {getMateriasNombres(selectedCurso.materias || [])}</Text>
                 <Text style={styles.modalText}>Alumnos: {getAlumnosNombres(selectedCurso.alumnos || [])}</Text>
+                <Text style={styles.modalText}>Preceptores: {getPreceptoresNombres(selectedCurso.preceptores || [])}</Text>
                 <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
               </>
             )}
