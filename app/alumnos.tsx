@@ -18,7 +18,7 @@ return (
     
 
     <BlurView intensity={65} style={styles.blurContainer}>
-    <h1 style={styles.title} >Informe de Estudiante: </h1>
+    <h1 style={styles.title} >Informe de Alumno: </h1>
     <View style={styles.component} ><BuscarAlumno></BuscarAlumno></View>
     </BlurView>
     </View>

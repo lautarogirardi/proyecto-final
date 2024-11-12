@@ -15,7 +15,7 @@ export default function TabOneScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     <View style={styles.br} />
     <BlurView style={styles.blur}>
-    <Link href={'/CRUDEstudiantes'} style={styles.text}>CRUD Estudiantes</Link>
+    <Link href={'/CRUDAlumnos'} style={styles.text}>CRUD Alumnos</Link>
     </BlurView>
     <View style={styles.br} />
     <BlurView style={styles.blur}>

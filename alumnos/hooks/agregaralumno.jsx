@@ -20,12 +20,11 @@ function AlumnoAdd() {
     };
 
     const handleSubmit = async () => {
-        if (!formData.Nombre ||  !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
+        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
             Alert.alert("Error", "Por favor, complete todos los campos.");
             window.alert("Error: Por favor, complete todos los campos.");
             return;
         }
-        
 
         try {
             const alumnosRef = collection(db, 'alumnos');
@@ -33,21 +32,21 @@ function AlumnoAdd() {
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                Alert.alert("Error", "Ya existe un estudiante con este DNI.");
-                window.alert("Error: Ya existe un estudiante con este DNI.");
+                Alert.alert("Error", "Ya existe un alumno con este DNI.");
+                window.alert("Error: Ya existe un alumno con este DNI.");
                 return;
             }
 
             await addDoc(alumnosRef, formData);
 
-            Alert.alert("Éxito", "Estudiante agregado correctamente");
-            window.alert("Éxito: Estudiante agregado correctamente");
+            Alert.alert("Éxito", "Alumno agregado correctamente");
+            window.alert("Éxito: Alumno agregado correctamente");
 
             setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
 
         } catch (error) {
-            console.error("Error al agregar el usuario: ", error);
-            window.alert("Error: No se pudo agregar el usuario");
+            console.error("Error al agregar el alumno: ", error);
+            window.alert("Error: No se pudo agregar el alumno");
         }
     };
 
@@ -95,7 +94,7 @@ function AlumnoAdd() {
                 onChangeText={(value) => handleChange('Direccion', value)}
                 style={styles.input}
             />
-            <View style={styles.br} ></View>
+            <View style={styles.br}></View>
             <Button title="Enviar" onPress={handleSubmit} />
         </View>
     );

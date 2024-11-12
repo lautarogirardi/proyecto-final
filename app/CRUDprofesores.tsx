@@ -15,7 +15,7 @@ id: number;
 name: string;
 }
 
-function InformeEstudiante() {
+function InformeProfesor() {
 const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
 
 const handleButtonClick = (section: Section) => {
@@ -81,7 +81,7 @@ return (
 );
 }
 
-export default InformeEstudiante;
+export default InformeProfesor;
 
 const styles = StyleSheet.create({
   container: {

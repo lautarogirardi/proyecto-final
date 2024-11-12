@@ -16,22 +16,22 @@ function BuscarAlumno() {
         }
 
         try {
-            const estudianteQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
-            const querySnapshot = await getDocs(estudianteQuery);
+            const alumnoQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
+            const querySnapshot = await getDocs(alumnoQuery);
 
             if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
-                window.alert("No se encontró ningún estudiante con ese DNI");
+                Alert.alert("No encontrado", "No se encontró ningún alumno con ese DNI");
+                window.alert("No se encontró ningún alumno con ese DNI");
                 setDatosAlumno(null); 
                 setDatosCurso(null); 
             } else {
-                const estudianteEncontrado = querySnapshot.docs[0];
-                const alumnoData = estudianteEncontrado.data();
+                const alumnoEncontrado = querySnapshot.docs[0];
+                const alumnoData = alumnoEncontrado.data();
                 setDatosAlumno(alumnoData);
 
                 const cursoQuery = query(
                     collection(db, 'cursos'),
-                    where("alumnos", "array-contains", estudianteEncontrado.id)
+                    where("alumnos", "array-contains", alumnoEncontrado.id)
                 );
                 const cursoSnapshot = await getDocs(cursoQuery);
 
@@ -43,9 +43,9 @@ function BuscarAlumno() {
                 }
             }
         } catch (error) {
-            console.error("Error al buscar el estudiante: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el estudiante o su curso");
-            window.alert("Ocurrió un error al buscar el estudiante o su curso");
+            console.error("Error al buscar el alumno: ", error);
+            Alert.alert("Error", "Ocurrió un error al buscar el alumno o su curso");
+            window.alert("Ocurrió un error al buscar el alumno o su curso");
         }
     };
 
@@ -115,7 +115,7 @@ function BuscarAlumno() {
                     </View>
                 </View>
             ) : (
-                <Text style={styles.label}>Ingrese un DNI para buscar al estudiante</Text>
+                <Text style={styles.label}>Ingrese un DNI para buscar al alumno</Text>
             )}
         </View>
     );

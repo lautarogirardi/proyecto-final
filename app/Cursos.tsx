@@ -8,7 +8,7 @@ import BuscarCurso from '@/Cursos/cursos';
 
 
 
-function InformeEstudiante() {
+function PantallaCursos() {
 
 
 return (
@@ -32,7 +32,7 @@ return (
 );
 }
 
-export default InformeEstudiante;
+export default PantallaCursos;
 
 const styles = StyleSheet.create({
     container: {

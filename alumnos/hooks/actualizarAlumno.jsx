@@ -16,7 +16,7 @@ function Actualizar() {
     const [materiasPrevias, setMateriasPrevias] = useState([{ materiaPrevia: '', notaMateriaPrevia: '' }]);
     const [Reportes, setReportes] = useState([{ Reporte: '' }]);
     const [dniBusqueda, setDniBusqueda] = useState('');
-    const [estudianteId, setEstudianteId] = useState(null);
+    const [alumnoId, setAlumnoId] = useState(null);
     const [listaMaterias, setListaMaterias] = useState([]);
 
     useEffect(() => {
@@ -124,16 +124,16 @@ function Actualizar() {
         }
 
         try {
-            const estudianteQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
-            const querySnapshot = await getDocs(estudianteQuery);
+            const alumnoQuery = query(collection(db, 'alumnos'), where("dni", "==", dniBusqueda));
+            const querySnapshot = await getDocs(alumnoQuery);
 
             if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
-                Alert.window("No se encontró ningún estudiante con ese DNI");
+                Alert.alert("No encontrado", "No se encontró ningún alumno con ese DNI");
+                Alert.window("No se encontró ningún alumno con ese DNI");
             } else {
-                const estudianteEncontrado = querySnapshot.docs[0];
-                setEstudianteId(estudianteEncontrado.id);
-                const data = estudianteEncontrado.data();
+                const alumnoEncontrado = querySnapshot.docs[0];
+                setAlumnoId(alumnoEncontrado.id);
+                const data = alumnoEncontrado.data();
 
                 setFormData({
                     Nombre: data.Nombre || '',
@@ -158,9 +158,9 @@ function Actualizar() {
                     : [{ Reporte: '' }]);
             }
         } catch (error) {
-            console.error("Error al buscar el estudiante: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el estudiante");
-            window.alert("Error: Ocurrió un error al buscar el estudiante");
+            console.error("Error al buscar el alumno: ", error);
+            Alert.alert("Error", "Ocurrió un error al buscar el alumno");
+            window.alert("Error: Ocurrió un error al buscar el alumno");
         }
     };
 
@@ -179,29 +179,29 @@ function Actualizar() {
             );
             const dniSnapshot = await getDocs(dniQuery);
 
-            if (!dniSnapshot.empty && dniSnapshot.docs[0].id !== estudianteId) {
-                Alert.alert("Error", "El DNI ya está registrado con otro estudiante.");
-                window.alert("Error: El DNI ya está registrado con otro estudiante.");
+            if (!dniSnapshot.empty && dniSnapshot.docs[0].id !== alumnoId) {
+                Alert.alert("Error", "El DNI ya está registrado con otro alumno.");
+                window.alert("Error: El DNI ya está registrado con otro alumno.");
                 return;
             }
 
-            if (estudianteId) {
-                await updateDoc(doc(db, 'alumnos', estudianteId), {
+            if (alumnoId) {
+                await updateDoc(doc(db, 'alumnos', alumnoId), {
                     ...formData,
                     Reportes: Reportes.filter(item => item.Reporte),
                     materias: materias.filter(item => item.materia && item.nota),
                     materiasPrevias: materiasPrevias.filter(item => item.materiaPrevia && item.notaMateriaPrevia)
                 });
-                Alert.alert("Éxito", "Estudiante actualizado correctamente");
-                window.alert("Estudiante actualizado correctamente");
+                Alert.alert("Éxito", "alumno actualizado correctamente");
+                window.alert("alumno actualizado correctamente");
             } else {
-                Alert.alert("Error", "Primero busca un estudiante por DNI");
-                window.alert("Primero busca un estudiante por DNI");
+                Alert.alert("Error", "Primero busca un alumno por DNI");
+                window.alert("Primero busca un alumno por DNI");
             }
         } catch (error) {
-            console.error("Error al actualizar el estudiante: ", error);
-            Alert.alert("Error", "No se pudo actualizar el estudiante");
-            window.alert("Error: No se pudo actualizar el estudiante");
+            console.error("Error al actualizar el alumno: ", error);
+            Alert.alert("Error", "No se pudo actualizar el alumno");
+            window.alert("Error: No se pudo actualizar el alumno");
         }
     };
     return (

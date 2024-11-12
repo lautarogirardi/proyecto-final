@@ -5,7 +5,7 @@ import { collection, getDocs, query, where, doc, deleteDoc } from 'firebase/fire
 
 function Eliminar() {
     const [dniBusqueda, setDniBusqueda] = useState('');
-    const [estudianteId, setEstudianteId] = useState(null);
+    const [alumnoId, setAlumnoId] = useState(null);
     const [formData, setFormData] = useState(null); 
 
     const buscarPorDni = async () => {
@@ -16,47 +16,47 @@ function Eliminar() {
         }
 
         try {
-            const estudianteQuery = query(
+            const alumnoQuery = query(
                 collection(db, 'alumnos'),
                 where("dni", "==", dniBusqueda)
             );
-            const querySnapshot = await getDocs(estudianteQuery);
+            const querySnapshot = await getDocs(alumnoQuery);
 
             if (querySnapshot.empty) {
-                window.alert("No se encontró ningún estudiante con ese DNI");
-                Alert.alert("No encontrado", "No se encontró ningún estudiante con ese DNI");
+                window.alert("No se encontró ningún alumno con ese DNI");
+                Alert.alert("No encontrado", "No se encontró ningún alumno con ese DNI");
             } else {
-                const estudianteEncontrado = querySnapshot.docs[0];
-                setEstudianteId(estudianteEncontrado.id);
-                setFormData(estudianteEncontrado.data());
-                window.alert("Estudiante Encontrado");
-                Alert.alert("Estudiante encontrado", "Puedes eliminarlo ahora");
+                const alumnoEncontrado = querySnapshot.docs[0];
+                setAlumnoId(alumnoEncontrado.id);
+                setFormData(alumnoEncontrado.data());
+                window.alert("Alumno Encontrado");
+                Alert.alert("Alumno encontrado", "Puedes eliminarlo ahora");
             }
         } catch (error) {
-            console.error("Error al buscar el estudiante: ", error);
-            window.alert("Ocurrió un error al buscar el estudiante");
-            Alert.alert("Error", "Ocurrió un error al buscar el estudiante");
+            console.error("Error al buscar el alumno: ", error);
+            window.alert("Ocurrió un error al buscar el alumno");
+            Alert.alert("Error", "Ocurrió un error al buscar el alumno");
         }
     };
 
-    const eliminarEstudiante = async () => {
-        if (!estudianteId) {
-            window.alert("Primero busca un estudiante por DNI");
-            Alert.alert("Error", "Primero busca un estudiante por DNI");
+    const eliminarAlumno = async () => {
+        if (!alumnoId) {
+            window.alert("Primero busca un alumno por DNI");
+            Alert.alert("Error", "Primero busca un alumno por DNI");
             return;
         }
 
         try {
-            await deleteDoc(doc(db, 'alumnos', estudianteId));
-            window.alert("El estudiante ha sido eliminado correctamente");
-            Alert.alert("Estudiante eliminado", "El estudiante ha sido eliminado correctamente");
-            setEstudianteId(null);
+            await deleteDoc(doc(db, 'alumnos', alumnoId));
+            window.alert("El alumno ha sido eliminado correctamente");
+            Alert.alert("Alumno eliminado", "El alumno ha sido eliminado correctamente");
+            setAlumnoId(null);
             setFormData(null);
             setDniBusqueda('');
         } catch (error) {
-            console.error("Error al eliminar el estudiante: ", error);
-            window.alert("No se pudo eliminar el estudiante");
-            Alert.alert("Error", "No se pudo eliminar el estudiante");
+            console.error("Error al eliminar el alumno: ", error);
+            window.alert("No se pudo eliminar el alumno");
+            Alert.alert("Error", "No se pudo eliminar el alumno");
         }
     };
 
@@ -78,8 +78,8 @@ function Eliminar() {
                     <Text style={styles.label}>Curso: {formData.Curso}</Text>
                     <View style={styles.br} />
                     <Button
-                        title="Eliminar Estudiante"
-                        onPress={eliminarEstudiante}
+                        title="Eliminar Alumno"
+                        onPress={eliminarAlumno}
                         color="red"
                     />
                 </View>
@@ -93,7 +93,6 @@ export default Eliminar;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
         justifyContent: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
@@ -109,7 +108,6 @@ const styles = StyleSheet.create({
         fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
-
     },
     label: {
         fontFamily: 'arial',
@@ -120,6 +118,4 @@ const styles = StyleSheet.create({
     br:{
         height:10,
     }
-
 });
-
