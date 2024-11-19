@@ -18,17 +18,23 @@ interface Section {
 const Curso: React.FC = () => {
   const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
 
+  // Función para manejar el clic en los botones y cambiar la sección activa
   const handleButtonClick = (section: Section) => {
     setActiveSection(section);
   };
 
   return (
-    <ImageBackground source={require('@/assets/images/epet20.jpeg')} style={styles.backgroundImage}>
+    // Imagen de fondo para la pantalla de gestión de cursos
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.backgroundImage}>
+      {/* Habilitando el desplazamiento vertical */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
+          {/* BlurView para el efecto de desenfoque en el fondo */}
           <BlurView intensity={65} style={styles.blurContainer}>
+            {/* Título de la pantalla */}
             <Text style={styles.title}>Gestionar Cursos</Text>
 
+            {/* Botones para seleccionar la sección activa */}
             <View style={styles.ubicacion}>
               <TouchableOpacity onPress={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>
                 <Text style={styles.botonText}>Agregar Curso</Text>
@@ -56,6 +62,7 @@ const Curso: React.FC = () => {
               </TouchableOpacity>
             </View>
 
+            {/* Renderizado condicional del componente correspondiente a la sección activa */}
             {activeSection.name === 'agregar' && (
               <View style={styles.component}><CursoAdd /></View>
             )}
@@ -89,7 +96,9 @@ const Curso: React.FC = () => {
 
 export default Curso;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -97,28 +106,33 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginHorizontal: 20,
   },
+  /* Contenedor del ScrollView */
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  /* Estilo para la imagen de fondo */
   backgroundImage: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width: '100%',  // Expande la imagen a todo el ancho de la pantalla
+    height: '100%', // Expande la imagen a toda la altura de la pantalla
     justifyContent: 'center',
     alignItems: 'center',
     resizeMode: 'cover',
   },
+  /* Estilo para el título */
   title: {
     fontFamily: 'arial',
     fontWeight: 'bold',
     fontSize: 24,
     marginBottom: 20,
   },
+  /* Estilo para los textos */
   text: {
     fontFamily: 'arial',
   },
+  /* Estilo para los botones */
   boton: {
     backgroundColor: 'lightblue',
     padding: 10,
@@ -136,6 +150,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'arial',
   },
+  /* Contenedor para los botones */
   ubicacion: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -143,6 +158,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
+  /* Estilo adicional */
   elegir: {
     marginBottom: 10,
     alignItems: 'center',
@@ -150,6 +166,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
+  /* Contenedor del desenfoque */
   blurContainer: {
     width: '100%',
     padding: 20,
@@ -164,6 +181,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightblue',
     borderWidth: 2,
   },
+  /* Contenedor para los componentes */
   component: {
     marginBottom: 10,
     width: '100%',

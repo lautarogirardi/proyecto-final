@@ -4,7 +4,7 @@ import LoginForm from '../../components/login/formulario'; // Importamos el comp
 
 export default function LoginScreen() {
   return (
-    <ImageBackground source={require('@/assets/images/login.jpeg')} style={styles.background}>
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.background}>
       <View style={styles.container}>
         <LoginForm /> {/* Usamos el componente de Login */}
       </View>

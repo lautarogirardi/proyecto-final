@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, ScrollView, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import AlumnoAdd from '@/components/alumnos/hooks/alumnoAdd';
 import Comportamiento from '@/components/alumnos/formulariocomportamiento';
-import Elegir from '@/components/alumnos/elegirAlumno';
+import Elegir from '@/components/alumnos/elegiralumno';
 import { BlurView } from 'expo-blur';
 import EstudiantesList from '@/components/alumnos/hooks/alumnoList';
 import Actualizar from '@/components/alumnos/hooks/actualizarAlumno';
@@ -16,17 +16,23 @@ interface Section {
 function InformeEstudiante() {
   const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
 
+  // Función para manejar el clic en los botones y cambiar la sección activa
   const handleButtonClick = (section: Section) => {
     setActiveSection(section);
   };
 
   return (
-    <ImageBackground source={require('@/assets/images/epet20.jpeg')} style={styles.backgroundImage}>
+    // Imagen de fondo para la pantalla de informe de estudiantes
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.backgroundImage}>
+      {/* Habilitando el desplazamiento vertical */}
       <ScrollView>
         <View style={styles.container}>
+          {/* BlurView para el efecto de desenfoque en el fondo */}
           <BlurView intensity={65} style={styles.blurContainer}>
+            {/* Título de la pantalla */}
             <Text style={styles.title}>Modificar Estudiante:</Text>
 
+            {/* Botones para seleccionar la sección activa */}
             <View style={styles.ubicacion}>
               <TouchableOpacity onPress={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>
                 <Text style={styles.botonText}>Agregar</Text>
@@ -42,6 +48,7 @@ function InformeEstudiante() {
               </TouchableOpacity>
             </View>
 
+            {/* Renderizado condicional del componente correspondiente a la sección activa */}
             {activeSection.name === 'agregar' && (
               <View style={styles.component}><AlumnoAdd /></View>
             )}
@@ -63,30 +70,32 @@ function InformeEstudiante() {
 
 export default InformeEstudiante;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
+  /* Estilo para la imagen de fondo */
   backgroundImage: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width: '100%',  // Expande la imagen a todo el ancho de la pantalla
+    height: '100%', // Expande la imagen a toda la altura de la pantalla
     justifyContent: 'center',
     alignItems: 'center',
     resizeMode: "cover",
   },
+  /* Estilo para el título */
   title: {
     fontFamily: 'arial',
     fontWeight: 'bold',
     fontSize: 24,
     marginBottom: 20,
   },
-  text: {
-    fontFamily: 'arial',
-  },
+  /* Estilo para los botones */
   boton: {
     backgroundColor: 'lightblue',
     padding: 10,
@@ -104,19 +113,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'arial',
   },
+  /* Contenedor para los botones */
   ubicacion: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.0)',
   },
-  elegir: {
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.0)',
-  },
+  /* Contenedor para el efecto de desenfoque */
   blurContainer: {
     width: '100%',
     padding: 20,
@@ -131,6 +135,7 @@ const styles = StyleSheet.create({
     borderColor: 'lightblue',
     borderWidth: 2,
   },
+  /* Contenedor para los componentes */
   component: {
     marginBottom: 10,
     width: '100%',

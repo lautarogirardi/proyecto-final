@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../firebaseConfig'; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import CustomButton from '@/components/curso/boton';  // Tu componente personalizado
 
 export default function RegistroForm() {
   const [email, setEmail] = useState('');
@@ -59,9 +60,7 @@ export default function RegistroForm() {
         onChangeText={(text) => setConfirmPassword(text)}
         secureTextEntry 
       />
-      <TouchableOpacity style={styles.boton} onPress={handleSignUp}>
-        <Text style={styles.textoBoton}>Registrarse</Text>
-      </TouchableOpacity>
+      <CustomButton title="Registrarse" onPress={handleSignUp} />
 
       <Modal
         animationType="slide"
@@ -71,14 +70,11 @@ export default function RegistroForm() {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{modalMessage}</Text>
-          <TouchableOpacity
-            style={[styles.boton, styles.botonCerrar]}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Text style={styles.textoBoton}>Cerrar</Text>
-          </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{modalMessage}</Text>
+            <CustomButton title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+          </View>
         </View>
       </Modal>
     </View>
@@ -94,45 +90,32 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   titulo: {
-    fontSize: 23,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 20,
+    color: '#333',
   },
   textInput: {
     width: '80%',
     height: 50,
-    borderColor: 'gray',
+    borderColor: '#ddd',
     borderWidth: 1,
+    borderRadius: 10,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#f9f9f9',
   },
-  olvideContra: {
-    color: 'blue',
-    marginVertical: 10,
-  },
-  boton: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  textoBoton: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  registrate: {
-    marginVertical: 10,
-  },
-  boton2: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    margin: 40,
+    margin: 20,
     backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 15,
+    borderRadius: 10,
+    padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -144,10 +127,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    marginBottom: 1,
+    marginBottom: 15,
     textAlign: 'center',
-  },
-  botonCerrar: {
-    backgroundColor: '#f44336',
   },
 });

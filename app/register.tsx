@@ -4,7 +4,7 @@ import RegistroForm from '../components/login/Registro';
 
 export default function RegistroScreen() {
   return (
-    <ImageBackground source={require('@/assets/images/login.jpeg')} style={styles.background}>
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.background}>
       <View style={styles.container}>
         <RegistroForm /> {/* Usamos el componente RegistroForm */}
       </View>

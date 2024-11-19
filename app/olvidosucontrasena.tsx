@@ -4,7 +4,7 @@ import OlvidoSuContraseña from '../components/login/olvidosucontrasena'; // Imp
 
 export default function OlvidoSuContraseñaScreen() {
   return (
-    <ImageBackground source={require('@/assets/images/login.jpeg')} style={styles.background}>
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.background}>
       <View style={styles.container}>
         <OlvidoSuContraseña /> {/* Usamos el componente OlvidoSuContraseña */}
       </View>

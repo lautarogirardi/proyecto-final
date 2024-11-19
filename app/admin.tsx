@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import { SlidingCards } from 'react-native-slide-cards';
+import { StyleSheet, Text, View, ImageBackground, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import { BlurView } from 'expo-blur';
+import CustomButton from '@/components/curso/boton';  
 
 interface CardData {
   id: number;
@@ -10,18 +11,19 @@ interface CardData {
   route: string;
 }
 
-export default function Admin() {
+const Admin: React.FC = () => {
   const router = useRouter();
   const cardsData: CardData[] = [
-    { id: 1, title: 'cursos', buttonText: 'Toca para ver info sobre los cursos!', route: '/curso' },
-    { id: 2, title: 'informe profesores', buttonText: 'Toca para hacer un informe a algún profesor!', route: '/profesores' },
-    { id: 3, title: 'alumnos', buttonText: 'Toca para ver info sobre los alumnos!', route: '/alumnos' },
-    { id: 4, title: 'preceptores', buttonText: 'Toca para gestionar preceptores!', route: '/preceptores' },
+    { id: 1, title: 'Cursos', buttonText: 'Toca para ver info sobre los cursos!', route: '/curso' },
+    { id: 2, title: 'Informe Profesores', buttonText: 'Toca para hacer un informe a algún profesor!', route: '/profesores' },
+    { id: 3, title: 'Alumnos', buttonText: 'Toca para ver info sobre los alumnos!', route: '/alumnos' },
+    { id: 4, title: 'Preceptores', buttonText: 'Toca para gestionar preceptores!', route: '/preceptores' },
+    { id: 5, title: 'Materias', buttonText: 'Toca para gestionar las materias!', route: '/materias' }
   ];
 
-  useEffect(() => {
+  useEffect(() => {               
     const handleBackButton = () => {
-      const isAuthenticated = true; 
+      const isAuthenticated = true;
 
       if (!isAuthenticated) {
         router.replace("/(tabs)/"); // Si no está autenticado volvemos a login
@@ -37,58 +39,94 @@ export default function Admin() {
     };
   }, [router]);
 
-  const renderCard = (data: CardData) => (
-    <View style={styles.card} key={data.id}>
-      <Text style={styles.cardTitle}>{data.title}</Text>
-      <View style={styles.buttonContainer}>
-        <Button title={data.buttonText} onPress={() => router.push(data.route)} />
-      </View>
-    </View>
-  );
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Admin</Text>
-      <View style={styles.separator} />
-      <SlidingCards cards={cardsData} mainContent={renderCard} />
-    </View>
+    // Imagen de fondo para la pantalla de administración
+    <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.background}>
+      {/* BlurView para el efecto de desenfoque en el fondo */}
+      <BlurView intensity={50} style={styles.blurContainer}>
+        {/* Habilitando el desplazamiento vertical */}
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Título de la pantalla */}
+          <Text style={styles.title}>Administración</Text>
+          {/* Separador visual */}
+          <View style={styles.separator} />
+          {/* Mapeo de datos para renderizar las tarjetas */}
+          {cardsData.map((data) => (
+            <View style={styles.card} key={data.id}>
+              <Text style={styles.cardTitle}>{data.title}</Text>
+              <CustomButton title={data.buttonText} onPress={() => router.push(data.route)} />
+            </View>
+          ))}
+        </ScrollView>
+      </BlurView>
+    </ImageBackground>
   );
-}
+};
 
+export default Admin;
+
+/* Estilos para el componente */
 const styles = StyleSheet.create({
-  container: {
+  /* Estilo para la imagen de fondo */
+  background: {
     flex: 1,
-    alignItems: 'center',
+    width: '100%',  // Expande la imagen a todo el ancho de la pantalla
+    height: '100%', // Expande la imagen a toda la altura de la pantalla
+    resizeMode: 'cover',  // Esta propiedad determina cómo se redimensionará la imagen
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-    backgroundColor: '#eee',
-  },
-  card: {
-    width: '80%',
-    padding: 15,
-    backgroundColor: '#fff',
+  /* Contenedor del desenfoque */
+  blurContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    margin: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',  // Fondo semi-transparente para el efecto de desenfoque
     borderRadius: 10,
+  },
+  /* Estilo para el contenido del ScrollView */
+  scrollContent: {
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
+  /* Estilo para el título */
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
+  },
+  /* Estilo para el separador */
+  separator: {
+    marginVertical: 20,
+    height: 2,
+    width: '80%',
+    backgroundColor: '#fff',
+  },
+  /* Estilo para las tarjetas */
+  card: {
+    width: '90%',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 10,
+    padding: 20,
     marginVertical: 10,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
+  /* Estilo para el título de las tarjetas */
   cardTitle: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  buttonContainer: {
-    width: '60%',
-    marginTop: 5,
-  },
-  button: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
   },
 });

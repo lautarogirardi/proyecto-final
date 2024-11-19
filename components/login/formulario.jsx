@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import CustomButton from '@/components/curso/boton';  
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -67,14 +68,14 @@ export default function LoginForm() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} >
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Text style={styles.titulo}>Inicia sesión</Text>
       <TextInput
         placeholder='Email'
@@ -91,13 +92,9 @@ export default function LoginForm() {
         value={password}
       />
       <Text style={styles.olvideContra} onPress={handleForgotPassword}>Olvidé la Contraseña</Text>
-      <TouchableOpacity style={styles.boton} onPress={HandleSignIn}>
-        <Text style={styles.textoBoton}>Iniciar sesión</Text>
-      </TouchableOpacity>
+      <CustomButton title="Iniciar sesión" onPress={HandleSignIn} />
       <Text style={styles.registrate}>¿No tienes una cuenta? </Text>
-      <TouchableOpacity style={styles.boton2} onPress={direccionRegistro}>
-        <Text style={styles.textoBoton}>Regístrate</Text>
-      </TouchableOpacity>
+      <CustomButton title="Regístrate" onPress={direccionRegistro} />
       <Text style={styles.adminLogin} onPress={handleAdminLogin}>Admin Login</Text>
 
       <Modal
@@ -108,14 +105,11 @@ export default function LoginForm() {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{modalMessage}</Text>
-          <TouchableOpacity
-            style={[styles.boton, styles.botonCerrar]}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Text style={styles.textoBoton}>Cerrar</Text>
-          </TouchableOpacity>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{modalMessage}</Text>
+            <CustomButton title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+          </View>
         </View>
       </Modal>
     </KeyboardAvoidingView>
@@ -130,50 +124,52 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   titulo: {
-    fontSize: 23,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 20,
+    color: '#333',
   },
   textInput: {
     width: '80%',
     height: 50,
-    borderColor: 'gray',
+    borderColor: '#ddd',
     borderWidth: 1,
+    borderRadius: 10,
     marginBottom: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#f9f9f9',
   },
   olvideContra: {
-    color: 'blue',
+    color: '#007BFF',
     marginVertical: 10,
-  },
-  boton: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  textoBoton: {
-    color: 'white',
     textAlign: 'center',
   },
   registrate: {
     marginVertical: 10,
-  },
-  boton2: {
-    backgroundColor: '#4CAF50',
-    padding: 10,
-    borderRadius: 5,
+    textAlign: 'center',
   },
   adminLogin: {
-    color: 'red',
+    color: '#DC3545',
     marginVertical: 10,
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    margin: 40,
+    margin: 20,
     backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 15,
+    borderRadius: 10,
+    padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -185,10 +181,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    marginBottom: 1,
+    marginBottom: 15,
     textAlign: 'center',
-  },
-  botonCerrar: {
-    backgroundColor: '#f44336',
   },
 });

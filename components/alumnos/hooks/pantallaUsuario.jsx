@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -7,11 +8,31 @@ function BuscarAlumno() {
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [datosAlumno, setDatosAlumno] = useState(null);
     const [datosCurso, setDatosCurso] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [alumnos, setAlumnos] = useState([]);
+    const [alumnoSeleccionado, setAlumnoSeleccionado] = useState('');
+
+    useEffect(() => {
+        const fetchAlumnos = async () => {
+            try {
+                const alumnosSnapshot = await getDocs(collection(db, 'alumnos'));
+                const alumnosList = alumnosSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setAlumnos(alumnosList);
+            } catch (error) {
+                console.error("Error al obtener los datos: ", error);
+            }
+        };
+        fetchAlumnos();
+    }, []);
 
     const buscarPorDni = async () => {
         if (!dniBusqueda) {
-            Alert.alert("Error", "Por favor, ingrese un DNI para buscar");
-            window.alert("Error: Por favor, ingrese un DNI para buscar");
+            setModalMessage("Por favor, ingrese un DNI para buscar");
+            setModalVisible(true);
             return;
         }
 
@@ -20,10 +41,10 @@ function BuscarAlumno() {
             const querySnapshot = await getDocs(alumnoQuery);
 
             if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningún alumno con ese DNI");
-                window.alert("No se encontró ningún alumno con ese DNI");
-                setDatosAlumno(null); 
-                setDatosCurso(null); 
+                setModalMessage("No se encontró ningún alumno con ese DNI");
+                setModalVisible(true);
+                setDatosAlumno(null);
+                setDatosCurso(null);
             } else {
                 const alumnoEncontrado = querySnapshot.docs[0];
                 const alumnoData = alumnoEncontrado.data();
@@ -39,13 +60,43 @@ function BuscarAlumno() {
                     const cursoEncontrado = cursoSnapshot.docs[0].data();
                     setDatosCurso(cursoEncontrado);
                 } else {
-                    setDatosCurso(null); 
+                    setDatosCurso(null);
                 }
             }
         } catch (error) {
             console.error("Error al buscar el alumno: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el alumno o su curso");
-            window.alert("Ocurrió un error al buscar el alumno o su curso");
+            setModalMessage("Ocurrió un error al buscar el alumno o su curso");
+            setModalVisible(true);
+        }
+    };
+
+    const handleAlumnoChange = (alumnoId) => {
+        const selectedAlumno = alumnos.find(alumno => alumno.id === alumnoId);
+        setAlumnoSeleccionado(alumnoId);
+        setDatosAlumno(selectedAlumno || null);
+
+        if (selectedAlumno) {
+            const fetchCurso = async () => {
+                try {
+                    const cursoQuery = query(
+                        collection(db, 'cursos'),
+                        where("alumnos", "array-contains", alumnoId)
+                    );
+                    const cursoSnapshot = await getDocs(cursoQuery);
+
+                    if (!cursoSnapshot.empty) {
+                        const cursoEncontrado = cursoSnapshot.docs[0].data();
+                        setDatosCurso(cursoEncontrado);
+                    } else {
+                        setDatosCurso(null);
+                    }
+                } catch (error) {
+                    console.error("Error al buscar el curso del alumno: ", error);
+                }
+            };
+            fetchCurso();
+        } else {
+            setDatosCurso(null);
         }
     };
 
@@ -58,10 +109,20 @@ function BuscarAlumno() {
                 style={styles.input}
             />
             <Button title="Buscar" onPress={buscarPorDni} />
+            <Text style={styles.label}>O Seleccionar Alumno:</Text>
+            <Picker
+                selectedValue={alumnoSeleccionado}
+                onValueChange={handleAlumnoChange}
+                style={styles.input}
+            >
+                <Picker.Item label="Seleccione un Alumno" value="" />
+                {alumnos.map(alumno => (
+                    <Picker.Item key={alumno.id} label={alumno.Nombre} value={alumno.id} />
+                ))}
+            </Picker>
 
             {datosAlumno ? (
                 <View style={styles.datosContainer}>
-
                     <View style={styles.topLeft}>
                         <Text style={styles.sectionTitle}>Datos Personales:</Text>
                         <Text style={styles.label}>Nombre: {datosAlumno.Nombre}</Text>
@@ -70,8 +131,6 @@ function BuscarAlumno() {
                         <Text style={styles.label}>Email: {datosAlumno.Email}</Text>
                         <Text style={styles.label}>Dirección: {datosAlumno.Direccion}</Text>
                     </View>
-
-
                     <View style={styles.topRight}>
                         <Text style={styles.sectionTitle}>Notas:</Text>
                         <Text style={styles.label}>Materias:</Text>
@@ -87,8 +146,6 @@ function BuscarAlumno() {
                             </Text>
                         ))}
                     </View>
-
-
                     <View style={styles.bottomLeft}>
                         <Text style={styles.sectionTitle}>Curso:</Text>
                         {datosCurso ? (
@@ -102,12 +159,10 @@ function BuscarAlumno() {
                         )}
                         <Text style={styles.label}>Faltas: {datosAlumno.Faltas}</Text>
                     </View>
-
-
                     <View style={styles.bottomRight}>
                         <Text style={styles.sectionTitle}>Comportamiento:</Text>
                         <Text style={styles.label}>Sanciones: {datosAlumno.Sanciones}</Text>
-                        {datosAlumno.Reportes?.map((reporte, index) => (
+                        {Array.isArray(datosAlumno.Reportes) && datosAlumno.Reportes.map((reporte, index) => (
                             <Text key={index} style={styles.subLabel}>
                                 -Reporte: {reporte.Reporte}
                             </Text>
@@ -115,13 +170,32 @@ function BuscarAlumno() {
                     </View>
                 </View>
             ) : (
-                <Text style={styles.label}>Ingrese un DNI para buscar al alumno</Text>
+                <Text style={styles.label}>Ingrese un DNI para buscar al alumno o seleccione un alumno de la lista</Text>
             )}
+
+            <Modal
+                visible={modalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{modalMessage}</Text>
+                        <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.button}>
+                            <Text style={styles.buttonText}>Cerrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
 
 export default BuscarAlumno;
+
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -187,5 +261,31 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         marginBottom: 10,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalText: {
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    button: {
+        backgroundColor: 'blue',
+        padding: 10,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });

@@ -10,7 +10,6 @@ const CursosList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const cursos = useFirestoreCollection('cursos');
   const alumnos = useFirestoreCollection('alumnos');
-  const profesores = useFirestoreCollection('profesores');
   const preceptores = useFirestoreCollection('preceptores');
   const materias = useFirestoreCollection('materias');
 
@@ -29,7 +28,6 @@ const CursosList = () => {
   };
 
   const getAlumnosNombres = (alumnosIds) => getNombres(alumnosIds, alumnos);
-  const getProfesoresNombres = (profesoresIds) => getNombres(profesoresIds, profesores);
   const getPreceptoresNombres = (preceptoresIds) => getNombres(preceptoresIds, preceptores);
   const getMateriasNombres = (materiasIds) => {
     return materiasIds.map(id => {
@@ -79,7 +77,6 @@ const CursosList = () => {
                 <Text style={styles.modalTitle}>Detalles del Curso</Text>
                 <Text style={styles.modalText}>Nombre del Curso: {selectedCurso.NombreCurso || 'N/A'}</Text>
                 <Text style={styles.modalText}>Turno: {selectedCurso.Turno || 'N/A'}</Text>
-                <Text style={styles.modalText}>Profesores: {getProfesoresNombres(selectedCurso.profesores || [])}</Text>
                 <Text style={styles.modalText}>Materias: {getMateriasNombres(selectedCurso.materias || [])}</Text>
                 <Text style={styles.modalText}>Alumnos: {getAlumnosNombres(selectedCurso.alumnos || [])}</Text>
                 <Text style={styles.modalText}>Preceptores: {getPreceptoresNombres(selectedCurso.preceptores || [])}</Text>

@@ -26,7 +26,7 @@ const handleButtonClick = (section: Section) => {
 
 return (
   
-  <ImageBackground source={require('@/assets/images/epet20.jpeg')} style={styles.backgroundImage}>
+  <ImageBackground source={require('@/assets/images/epet20.jpg')} style={styles.backgroundImage}>
     <ScrollView>  
     <View  style={styles.container}>
     
