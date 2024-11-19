@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 
+// Componente funcional para actualizar información de un preceptor
 function ActualizarPreceptor() {
     const [formData, setFormData] = useState({
         Nombre: '',
@@ -17,6 +18,7 @@ function ActualizarPreceptor() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
+    // Obtener lista de preceptores al cargar el componente
     useEffect(() => {
         const fetchPreceptores = async () => {
             try {
@@ -37,6 +39,7 @@ function ActualizarPreceptor() {
         fetchPreceptores();
     }, []);
 
+    // Manejar los cambios en el formulario
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
@@ -44,6 +47,7 @@ function ActualizarPreceptor() {
         });
     };
 
+    // Manejar la selección del preceptor
     const handlePreceptorChange = (preceptorId) => {
         setSelectedPreceptor(preceptorId);
         const selectedPreceptorData = preceptores.find(preceptor => preceptor.id === preceptorId);
@@ -58,26 +62,30 @@ function ActualizarPreceptor() {
         }
     };
 
+    // Manejar el envío del formulario
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.Telefono || !formData.Email || !formData.Direccion) {
-            setModalMessage("Por favor, complete todos los campos.");
-            setModalVisible(true);
+            showAlertModal("Por favor, complete todos los campos.");
             return;
         }
 
         try {
             if (preceptorId) {
                 await updateDoc(doc(db, 'preceptores', preceptorId), formData);
-                setModalMessage("Preceptor actualizado correctamente");
+                showAlertModal("Preceptor actualizado correctamente");
             } else {
-                setModalMessage("Primero busca un preceptor");
+                showAlertModal("Primero busca un preceptor");
             }
-            setModalVisible(true);
         } catch (error) {
             console.error("Error al actualizar el preceptor: ", error);
-            setModalMessage("No se pudo actualizar el preceptor");
-            setModalVisible(true);
+            showAlertModal("No se pudo actualizar el preceptor");
         }
+    };
+
+    // Función para mostrar un mensaje en un modal
+    const showAlertModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
     };
 
     return (
@@ -131,6 +139,7 @@ function ActualizarPreceptor() {
             <View style={styles.br} />
             <Button title="Guardar Cambios" onPress={handleSubmit} />
 
+            {/* Modal para mostrar mensajes de error o información */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -150,13 +159,16 @@ function ActualizarPreceptor() {
 
 export default ActualizarPreceptor;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
+    /* Estilo para los campos de entrada de texto y selectores */
     input: {
         padding: 5,
         width: '100%',
@@ -167,25 +179,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         color: '#000',
     },
+    /* Estilo para las etiquetas */
     label: {
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
     },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginVertical: 10,
-    },
+    /* Espacio entre los elementos */
     br: {
         height: 20,
     },
+    /* Contenedor del modal */
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+    /* Estilo de la vista del modal */
     modalView: {
         margin: 20,
         backgroundColor: 'white',
@@ -198,6 +209,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    /* Estilo del texto en el modal */
     modalText: {
         fontSize: 20,
         marginBottom: 20,

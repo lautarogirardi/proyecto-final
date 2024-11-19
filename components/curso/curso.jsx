@@ -8,8 +8,7 @@ const Curso: React.FC = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedAlumno, setSelectedAlumno] = useState('');
   const cursos = ['1°', '2°', '3°', '4°', '5°', '6°'];
-  const alumnos = useFirestoreCollection('alumnos'); // Hook personalizado para obtener los alumnos
-
+  const alumnos = useFirestoreCollection('alumnos'); 
   const handleAddAlumnoToCurso = async () => {
     if (!selectedCurso || !selectedAlumno) {
       Alert.alert("Error", "Seleccione un curso y un alumno");

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Alert, StyleSheet, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../../firebaseConfig';
 import { collection, getDocs, updateDoc, doc, arrayUnion, query, where } from 'firebase/firestore';
 import useFirestoreCollection from '../../src/useFirestoreCollection';
 
+// Componente funcional para asignar alumnos a cursos
 const AsignarCurso = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedAlumno, setSelectedAlumno] = useState('');
@@ -15,9 +16,10 @@ const AsignarCurso = () => {
   const cursos = useFirestoreCollection('cursos'); 
   const alumnos = useFirestoreCollection('alumnos'); 
 
+  // Manejar la asignación del alumno al curso
   const handleAddAlumnoToCurso = async () => {
     if (!selectedCurso || !selectedAlumno) {
-      Alert.alert("Error", "Seleccione un curso y un alumno");
+      showAlertModal("Seleccione un curso y un alumno");
       return;
     }
 
@@ -41,8 +43,14 @@ const AsignarCurso = () => {
       setSelectedAlumno('');
     } catch (error) {
       console.error("Error al agregar el alumno al curso: ", error);
-      Alert.alert("Error", "No se pudo agregar el alumno al curso");
+      showAlertModal("No se pudo agregar el alumno al curso");
     }
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setErrorMessage(message);
+    setErrorModalVisible(true);
   };
 
   return (
@@ -78,6 +86,7 @@ const AsignarCurso = () => {
 
       <Button title="Agregar Alumno al Curso" onPress={handleAddAlumnoToCurso} />
 
+      {/* Modal para confirmar la asignación del alumno al curso */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -95,6 +104,7 @@ const AsignarCurso = () => {
         </View>
       </Modal>
 
+      {/* Modal para mostrar mensajes de error */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -117,32 +127,39 @@ const AsignarCurso = () => {
 
 export default AsignarCurso;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
+  /* Estilo para el título */
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  /* Estilo para las etiquetas */
   label: {
     fontSize: 16,
     marginBottom: 10,
   },
+  /* Contenedor para los selectores */
   pickerContainer: {
     width: '100%',
     marginBottom: 20,
   },
+  /* Estilo para los selectores */
   picker: {
     height: 50,
     width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
   },
+  /* Estilos para los modales */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -161,6 +178,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     fontSize: 20,
     marginBottom: 20,

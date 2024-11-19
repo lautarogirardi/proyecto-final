@@ -1,18 +1,20 @@
-
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore';
+
 
 function Eliminar() {
     const [materiaBusqueda, setMateriaBusqueda] = useState('');
     const [materiaId, setMateriaId] = useState(null);
     const [formData, setFormData] = useState(null); 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
+    // Buscar materia en la base de datos
     const buscarPorMateria = async () => {
         if (!materiaBusqueda) {
-            window.alert("Error: Por favor, ingrese una materia para buscar");
-            Alert.alert("Error", "Por favor, ingrese una materia para buscar");
+            showAlertModal("Por favor, ingrese una materia para buscar");
             return;
         }
 
@@ -24,46 +26,47 @@ function Eliminar() {
             const querySnapshot = await getDocs(materiaQuery);
 
             if (querySnapshot.empty) {
-                window.alert("No se encontró ningúna materia con ese DNI");
-                Alert.alert("No encontrado", "No se encontró ningúna materia con ese DNI");
+                showAlertModal("No se encontró ninguna materia con ese nombre");
             } else {
                 const materiaEncontrado = querySnapshot.docs[0];
                 setMateriaId(materiaEncontrado.id);
                 setFormData(materiaEncontrado.data());
-                window.alert("Materia Encontrado");
-                Alert.alert("Materia encontrado", "Puedes eliminarla ahora");
+                showAlertModal("Materia encontrada. Puedes eliminarla ahora.");
             }
         } catch (error) {
             console.error("Error al buscar la materia: ", error);
-            window.alert("Ocurrió un error al buscar la materia");
-            Alert.alert("Error", "Ocurrió un error al buscar la materia");
+            showAlertModal("Ocurrió un error al buscar la materia");
         }
     };
 
+    // Manejar la eliminación de la materia
     const eliminarMateria = async () => {
         if (!materiaId) {
-            window.alert("Primero busca una materia");
-            Alert.alert("Error", "Primero busca una materia");
+            showAlertModal("Primero busca una materia");
             return;
         }
 
         try {
             await deleteDoc(doc(db, 'materias', materiaId));
-            window.alert("La materia ha sido eliminada correctamente");
-            Alert.alert("Materia eliminada", "La materia ha sido eliminada correctamente");
+            showAlertModal("La materia ha sido eliminada correctamente");
             setMateriaId(null);
             setFormData(null);
             setMateriaBusqueda('');
         } catch (error) {
             console.error("Error al eliminar la materia: ", error);
-            window.alert("No se pudo eliminar la materia");
-            Alert.alert("Error", "No se pudo eliminar la materia");
+            showAlertModal("No se pudo eliminar la materia");
         }
+    };
+
+    // Función para mostrar un mensaje en un modal
+    const showAlertModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label} >BUSCAR: </Text>
+            <Text style={styles.label}>BUSCAR:</Text>
             <TextInput
                 placeholder="Buscar materia"
                 value={materiaBusqueda}
@@ -84,20 +87,37 @@ function Eliminar() {
                     />
                 </View>
             )}
+
+            {/* Modal para mostrar mensajes de error o información */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(!modalVisible)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{modalMessage}</Text>
+                        <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
 
 export default Eliminar;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
-
         justifyContent: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
+    /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
         width: '100%',
@@ -109,16 +129,44 @@ const styles = StyleSheet.create({
         fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
-
     },
+    /* Estilo para las etiquetas */
     label: {
         fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
     },
-    br:{
-        height:10,
-    }
-
+    /* Espacio entre los elementos */
+    br: {
+        height: 10,
+    },
+    /* Contenedor del modal */
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    /* Estilo de la vista del modal */
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    /* Estilo del texto en el modal */
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
 });

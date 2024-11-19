@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, Picker } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+
+
 function Actualizar() {
     const [formData, setFormData] = useState({
         materia: ''
     });
     const [materiaBusqueda, setMateriaBusqueda] = useState('');
     const [materiaId, setMateriaId] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
-
-
+    // Manejar los cambios en el formulario
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
@@ -18,11 +21,10 @@ function Actualizar() {
         });
     };
 
-
+    // Buscar materia en la base de datos
     const buscarPorMateria = async () => {
         if (!materiaBusqueda) {
-            Alert.alert("Error", "Por favor, ingrese la materia para buscar");
-            window.alert("Error", "Por favor, ingrese la materia para buscar");
+            showAlertModal("Por favor, ingrese la materia para buscar");
             return;
         }
 
@@ -31,30 +33,26 @@ function Actualizar() {
             const querySnapshot = await getDocs(materiaQuery);
 
             if (querySnapshot.empty) {
-                Alert.alert("No encontrado", "No se encontró ningúna materia");
-                window.alert("No se encontró ningúna materia");
+                showAlertModal("No se encontró ninguna materia");
             } else {
                 const materiaEncontrada = querySnapshot.docs[0];
                 setMateriaId(materiaEncontrada.id);
                 const data = materiaEncontrada.data();
 
                 setFormData({
-                    Materia: data.materia || ''
+                    materia: data.materia || ''
                 });
-
             }
         } catch (error) {
             console.error("Error al buscar la materia: ", error);
-            Alert.alert("Error", "Ocurrió un error al buscar el estudiante");
-            window.alert("Error: Ocurrió un error al buscar la materia");
+            showAlertModal("Ocurrió un error al buscar la materia");
         }
     };
 
-
+    // Manejar la actualización de la materia
     const handleSubmit = async () => {
         if (!formData.materia) {
-            Alert.alert("Error", "Por favor, complete todos los campos.");
-            window.alert("Por favor, complete todos los campos.");
+            showAlertModal("Por favor, complete todos los campos.");
             return;
         }
 
@@ -66,8 +64,7 @@ function Actualizar() {
             const materiaSnapshot = await getDocs(materiaQuery);
 
             if (!materiaSnapshot.empty && materiaSnapshot.docs[0].id !== materiaId) {
-                Alert.alert("Error", "La materia ya está registrada.");
-                window.alert("Error: La materia ya está registrada.");
+                showAlertModal("La materia ya está registrada.");
                 return;
             }
 
@@ -75,18 +72,22 @@ function Actualizar() {
                 await updateDoc(doc(db, 'materias', materiaId), {
                     ...formData,
                 });
-                Alert.alert("Éxito", "materia actualizada correctamente");
-                window.alert("Materia actualizada correctamente");
+                showAlertModal("Materia actualizada correctamente");
             } else {
-                Alert.alert("Error", "Primero busca una materia");
-                window.alert("Primero busca una materia");
+                showAlertModal("Primero busca una materia");
             }
         } catch (error) {
             console.error("Error al actualizar la materia: ", error);
-            Alert.alert("Error", "No se pudo actualizar la materia");
-            window.alert("Error: No se pudo actualizar la materia");
+            showAlertModal("No se pudo actualizar la materia");
         }
     };
+
+    // Función para mostrar un mensaje en un modal
+    const showAlertModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
+    };
+
     return (
         <View style={styles.container}>
             <TextInput
@@ -95,11 +96,8 @@ function Actualizar() {
                 onChangeText={setMateriaBusqueda}
                 style={styles.input}
             />
-
-
             <Button title="Buscar" onPress={buscarPorMateria} />
             <View style={styles.br}></View>
-
 
             <Text style={styles.label}>Materia:</Text>
             <TextInput
@@ -108,27 +106,45 @@ function Actualizar() {
                 onChangeText={(value) => handleChange('materia', value)}
                 style={styles.input}
             />
-
-
             <Button title="Guardar Cambios" onPress={handleSubmit} color="green" />
+
+            {/* Modal para mostrar mensajes de error o información */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{modalMessage}</Text>
+                        <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
 
 export default Actualizar;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         padding: 20,
     },
+    /* Separador */
     separator: {
         height: 3,
         backgroundColor: 'lightblue',  
         marginVertical: 10,       
     },
-
+    /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
         width: '100%',
@@ -141,12 +157,14 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
     },
+    /* Estilo para las etiquetas */
     label: {
         fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
     },
+    /* Estilo centrado para las etiquetas */
     labelcenter: {
         fontFamily: 'arial',
         marginVertical: 5,
@@ -154,6 +172,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center', // Centra el texto
     },
+    /* Textarea */
     textarea: {
         padding: 5,
         width: '100%',
@@ -165,7 +184,36 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
     },
+    /* Espacio */
     br: {
         height: 20,
-    }
+    },
+    /* Contenedor del modal */
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    /* Estilo de la vista del modal */
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    /* Estilo del texto en el modal */
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
 });

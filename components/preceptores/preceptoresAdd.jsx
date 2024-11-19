@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Alert, View, Text, TextInput, Button } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import { db } from '@/firebaseConfig';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
+// Componente funcional para agregar un nuevo preceptor
 function PreceptorAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
@@ -11,7 +12,10 @@ function PreceptorAdd() {
         Email: '',
         Direccion: ''
     });
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
+    // Manejar cambios en el formulario
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
@@ -19,10 +23,10 @@ function PreceptorAdd() {
         });
     };
 
+    // Manejar el envío del formulario
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
-            Alert.alert("Error", "Por favor, complete todos los campos.");
-            window.alert("Error: Por favor, complete todos los campos.");
+            showAlertModal("Por favor, complete todos los campos.");
             return;
         }
 
@@ -32,22 +36,23 @@ function PreceptorAdd() {
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                Alert.alert("Error", "Ya existe un preceptor con este DNI.");
-                window.alert("Error: Ya existe un preceptor con este DNI.");
+                showAlertModal("Ya existe un preceptor con este DNI.");
                 return;
             }
 
             await addDoc(preceptoresRef, formData);
-
-            Alert.alert("Éxito", "Preceptor agregado correctamente");
-            window.alert("Éxito: Preceptor agregado correctamente");
-
+            showAlertModal("Preceptor agregado correctamente");
             setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
-
         } catch (error) {
             console.error("Error al agregar el preceptor: ", error);
-            window.alert("Error: No se pudo agregar el preceptor");
+            showAlertModal("No se pudo agregar el preceptor");
         }
+    };
+
+    // Función para mostrar un mensaje en un modal
+    const showAlertModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
     };
 
     return (
@@ -96,18 +101,36 @@ function PreceptorAdd() {
             />
             <View style={styles.br}></View>
             <Button title="Enviar" onPress={handleSubmit} />
+
+            {/* Modal para mostrar mensajes de error o información */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(!modalVisible)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{modalMessage}</Text>
+                        <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
 
 export default PreceptorAdd;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         padding: 20,
     },
+    /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
         width: '100%',
@@ -119,10 +142,12 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
     },
+    /* Estilo para las etiquetas */
     label: {
         marginVertical: 5,
         fontWeight: 'bold',
     },
+    /* Textarea */
     textarea: {
         padding: 5,
         width: '100%',
@@ -133,7 +158,36 @@ const styles = StyleSheet.create({
         marginVertical: 5,  
         color: '#000',
     },
+    /* Espacio */
     br: {
         height: 20,
-    }
+    },
+    /* Contenedor del modal */
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    /* Estilo de la vista del modal */
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    /* Estilo del texto en el modal */
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
 });

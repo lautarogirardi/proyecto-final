@@ -5,6 +5,7 @@ import { auth } from '../../firebaseConfig';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import CustomButton from '@/components/curso/boton';  // Tu componente personalizado
 
+// Componente funcional para recuperar la contraseña
 export default function OlvidoSuContraseña() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -12,10 +13,10 @@ export default function OlvidoSuContraseña() {
   const [modalMessage, setModalMessage] = useState('');
   const navigation = useNavigation();
 
+  // Manejar la recuperación de contraseña
   const handlePasswordRecovery = () => {
     if (email.trim() === '') {
-      setModalMessage('Por favor ingrese su correo electrónico');
-      setModalVisible(true);
+      showAlertModal('Por favor ingrese su correo electrónico');
       return;
     }
 
@@ -25,9 +26,14 @@ export default function OlvidoSuContraseña() {
       })
       .catch(error => {
         console.log(error);
-        setModalMessage(error.message);
-        setModalVisible(true);
+        showAlertModal(error.message);
       });
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
   };
 
   return (
@@ -45,6 +51,7 @@ export default function OlvidoSuContraseña() {
         <CustomButton title="Volver" onPress={() => navigation.goBack()} />
       </View>
 
+      {/* Modal para mostrar mensajes de error o información */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -64,7 +71,9 @@ export default function OlvidoSuContraseña() {
   );
 }
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -72,6 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  /* Formulario */
   form: {
     width: '90%',
     padding: 35,
@@ -83,12 +93,14 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  /* Estilo para el título */
   title: {
     fontSize: 25,
     marginBottom: 20,
     textAlign: 'center',
     color: '#333',
   },
+  /* Estilo para los campos de entrada de texto */
   input: {
     height: 40,
     borderColor: '#ddd',
@@ -98,17 +110,20 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#f9f9f9',
   },
+  /* Estilo para los mensajes */
   message: {
     color: 'green',
     textAlign: 'center',
     marginTop: 8,
   },
+  /* Contenedor del modal */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  /* Estilo de la vista del modal */
   modalView: {
     margin: 20,
     backgroundColor: 'white',
@@ -124,6 +139,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     marginBottom: 15,
     textAlign: 'center',

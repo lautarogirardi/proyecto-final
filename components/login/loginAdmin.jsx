@@ -6,6 +6,7 @@ import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import CustomButton from '@/components/curso/boton';  // Tu componente personalizado
 
+// Componente funcional para iniciar sesión como administrador
 export default function LoginAdmin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,18 +15,22 @@ export default function LoginAdmin() {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
+  // Verificar si el usuario ya ha iniciado sesión
   useEffect(() => {
     const checkUser = async () => {
       const user = await AsyncStorage.getItem('adminUser');
+      if (user) {
+        navigation.navigate("admin");
+      }
       setLoading(false);
     };
     checkUser();
   }, [navigation]);
 
+  // Manejar el inicio de sesión
   const HandleSignIn = () => {
     if (email.trim() === '' || password.trim() === '') {
-      setModalMessage('Por favor llene los espacios para poder iniciar sesión de su cuenta');
-      setModalVisible(true);
+      showAlertModal('Por favor llene los espacios para poder iniciar sesión de su cuenta');
       return;
     }
 
@@ -41,14 +46,19 @@ export default function LoginAdmin() {
         console.log(error);
         switch (error.message) {
           case "Firebase: Error (auth/invalid-login-credentials).":
-            setModalMessage("No existe la cuenta.");
+            showAlertModal("No existe la cuenta.");
             break;
           default:
-            setModalMessage(error.message);
+            showAlertModal(error.message);
             break;
         }
-        setModalVisible(true);
       });
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
   };
 
   if (loading) {
@@ -77,6 +87,7 @@ export default function LoginAdmin() {
       />
       <CustomButton title="Iniciar sesión" onPress={HandleSignIn} />
 
+      {/* Modal para mostrar mensajes de error o información */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -97,6 +108,7 @@ export default function LoginAdmin() {
 }
 
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -104,17 +116,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  /* Contenedor de carga */
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  /* Estilo para el título */
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
   },
+  /* Estilo para los campos de entrada de texto */
   textInput: {
     width: '80%',
     height: 50,
@@ -125,12 +140,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#f9f9f9',
   },
+  /* Contenedor del modal */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  /* Estilo de la vista del modal */
   modalView: {
     margin: 20,
     backgroundColor: 'white',
@@ -146,6 +163,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     marginBottom: 15,
     textAlign: 'center',

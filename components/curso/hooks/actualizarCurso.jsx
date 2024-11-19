@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { db } from '../../../firebaseConfig';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 
+// Componente funcional para actualizar la información de un curso
 function ActualizarCurso() {
     const [formData, setFormData] = useState({
         NombreCurso: '',
@@ -16,6 +17,7 @@ function ActualizarCurso() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
+    // Obtener la lista de cursos desde la base de datos al cargar el componente
     useEffect(() => {
         const fetchCursos = async () => {
             try {
@@ -35,6 +37,7 @@ function ActualizarCurso() {
         fetchCursos();
     }, []);
 
+    // Manejar los cambios en los campos del formulario
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
@@ -42,6 +45,7 @@ function ActualizarCurso() {
         });
     };
 
+    // Manejar el cambio de selección del curso
     const handleCursoChange = (cursoId) => {
         setSelectedCurso(cursoId);
         const selectedCursoData = cursos.find(curso => curso.id === cursoId);
@@ -55,9 +59,10 @@ function ActualizarCurso() {
         }
     };
 
+    // Manejar el envío del formulario para actualizar el curso
     const handleSubmit = async () => {
         if (!formData.NombreCurso || !formData.Turno || !formData.Horario) {
-            setModalMessage("Por favor, complete todos los campos.");
+            setModalMessage("Por favor complete todos los campos");
             setModalVisible(true);
             return;
         }
@@ -79,6 +84,7 @@ function ActualizarCurso() {
 
     return (
         <View style={styles.container}>
+            {/* Selección del curso a actualizar */}
             <Text style={styles.label}>Seleccionar Curso:</Text>
             <Picker
                 selectedValue={selectedCurso}
@@ -91,6 +97,7 @@ function ActualizarCurso() {
                 ))}
             </Picker>
 
+            {/* Campo para el nombre del curso */}
             <Text style={styles.label}>Nombre del Curso:</Text>
             <TextInput
                 placeholder="Ingresar Nombre del Curso"
@@ -99,6 +106,7 @@ function ActualizarCurso() {
                 style={styles.input}
             />
 
+            {/* Selección del turno del curso */}
             <Text style={styles.label}>Turno:</Text>
             <Picker
                 selectedValue={formData.Turno}
@@ -111,6 +119,7 @@ function ActualizarCurso() {
                 <Picker.Item label="Mañana" value="mañana" />
             </Picker>
 
+            {/* Campo para el horario del curso */}
             <Text style={styles.label}>Horario:</Text>
             <TextInput
                 placeholder="Ingresar Horario"
@@ -120,8 +129,10 @@ function ActualizarCurso() {
             />
 
             <View style={styles.br} />
+            {/* Botón para enviar el formulario y guardar los cambios */}
             <Button title="Guardar Cambios" onPress={handleSubmit} />
 
+            {/* Modal para mostrar mensajes de alerta */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -141,13 +152,16 @@ function ActualizarCurso() {
 
 export default ActualizarCurso;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
+    /* Estilo para los campos de entrada de texto y selectores */
     input: {
         padding: 5,
         width: '100%',
@@ -158,19 +172,23 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         color: '#000',
     },
+    /* Estilo para las etiquetas de los campos */
     label: {
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
     },
+    /* Título del modal */
     title: {
         fontSize: 20,
         fontWeight: 'bold',
         marginVertical: 10,
     },
+    /* Espacio entre los elementos */
     br: {
         height: 20,
     },
+    /* Estilos para el modal */
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -189,6 +207,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    /* Estilo del texto en el modal */
     modalText: {
         fontSize: 20,
         marginBottom: 20,

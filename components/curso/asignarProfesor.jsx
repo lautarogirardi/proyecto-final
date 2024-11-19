@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert, StyleSheet, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../../firebaseConfig';
 import { updateDoc, doc, arrayUnion, getDoc, collection, getDocs } from 'firebase/firestore';
 import useFirestoreCollection from '../../src/useFirestoreCollection';
 
+// Componente funcional para asignar profesores a cursos
 const AsignarProfesor = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedProfesor, setSelectedProfesor] = useState('');
@@ -12,6 +13,8 @@ const AsignarProfesor = () => {
   const [cursoMaterias, setCursoMaterias] = useState([]);
   const [materias, setMaterias] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const cursos = useFirestoreCollection('cursos');
   const profesores = useFirestoreCollection('profesores');
@@ -25,7 +28,7 @@ const AsignarProfesor = () => {
           const materiasData = cursoDoc.data().materias || [];
           setCursoMaterias(materiasData);
 
-          // Fetch nombres de materias
+          // Obtener nombres de materias
           const materiasCollection = await getDocs(collection(db, 'materias'));
           const materiasMap = {};
           materiasCollection.forEach((doc) => {
@@ -42,9 +45,10 @@ const AsignarProfesor = () => {
     fetchCursoMaterias();
   }, [selectedCurso]);
 
+  // Manejar la asignación del profesor al curso
   const handleAddProfesorToCurso = async () => {
     if (!selectedCurso || !selectedProfesor || !selectedMateria) {
-      Alert.alert("Error", "Seleccione un curso, un profesor y una materia");
+      showAlertModal("Seleccione un curso, un profesor y una materia");
       return;
     }
 
@@ -63,8 +67,14 @@ const AsignarProfesor = () => {
       setSelectedMateria('');
     } catch (error) {
       console.error("Error al agregar el profesor al curso: ", error);
-      Alert.alert("Error", "No se pudo agregar el profesor al curso");
+      showAlertModal("No se pudo agregar el profesor al curso");
     }
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setErrorMessage(message);
+    setErrorModalVisible(true);
   };
 
   return (
@@ -114,6 +124,7 @@ const AsignarProfesor = () => {
 
       <Button title="Agregar Profesor al Curso" onPress={handleAddProfesorToCurso} />
 
+      {/* Modal para confirmar la asignación del profesor al curso */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -130,38 +141,63 @@ const AsignarProfesor = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Modal para mostrar mensajes de error */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={errorModalVisible}
+        onRequestClose={() => setErrorModalVisible(!errorModalVisible)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{errorMessage}</Text>
+            <Button
+              title="Cerrar"
+              onPress={() => setErrorModalVisible(!errorModalVisible)}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 export default AsignarProfesor;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
+  /* Estilo para el título */
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  /* Estilo para las etiquetas */
   label: {
     fontSize: 16,
     marginBottom: 10,
   },
+  /* Contenedor para los selectores */
   pickerContainer: {
     width: '100%',
     marginBottom: 20,
   },
+  /* Estilo para los selectores */
   picker: {
     height: 50,
     width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
   },
+  /* Estilos para los modales */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -180,6 +216,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     fontSize: 20,
     marginBottom: 20,

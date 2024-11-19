@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Alert, StyleSheet, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../../firebaseConfig';
 import { updateDoc, doc, arrayUnion } from 'firebase/firestore';
 import useFirestoreCollection from '../../src/useFirestoreCollection';
 
+// Componente funcional para asignar preceptores a cursos
 const AsignarPreceptor = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedPreceptor, setSelectedPreceptor] = useState('');
@@ -13,9 +14,10 @@ const AsignarPreceptor = () => {
   const cursos = useFirestoreCollection('cursos');
   const preceptores = useFirestoreCollection('preceptores'); // Asumiendo que tienes una colección de preceptores
 
+  // Manejar la asignación del preceptor al curso
   const handleAddPreceptorToCurso = async () => {
     if (!selectedCurso || !selectedPreceptor) {
-      Alert.alert("Error", "Seleccione un curso y un preceptor");
+      showAlertModal("Seleccione un curso y un preceptor");
       return;
     }
 
@@ -29,8 +31,14 @@ const AsignarPreceptor = () => {
       setSelectedPreceptor('');
     } catch (error) {
       console.error("Error al agregar el preceptor al curso: ", error);
-      Alert.alert("Error", "No se pudo agregar el preceptor al curso");
+      showAlertModal("No se pudo agregar el preceptor al curso");
     }
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setErrorMessage(message);
+    setErrorModalVisible(true);
   };
 
   return (
@@ -67,6 +75,7 @@ const AsignarPreceptor = () => {
 
       <Button title="Agregar Preceptor al Curso" onPress={handleAddPreceptorToCurso} />
 
+      {/* Modal para confirmar la asignación del preceptor al curso */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -86,32 +95,39 @@ const AsignarPreceptor = () => {
 
 export default AsignarPreceptor;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
+  /* Estilo para el título */
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  /* Estilo para las etiquetas */
   label: {
     fontSize: 16,
     marginBottom: 10,
   },
+  /* Contenedor para los selectores */
   pickerContainer: {
     width: '100%',
     marginBottom: 20,
   },
+  /* Estilo para los selectores */
   picker: {
     height: 50,
     width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
   },
+  /* Estilos para los modales */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -130,6 +146,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     fontSize: 20,
     marginBottom: 20,

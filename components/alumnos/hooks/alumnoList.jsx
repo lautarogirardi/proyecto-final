@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import { db } from '@/firebaseConfig';
 import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 
-
+// Componente funcional para enlistar y actualizar información de un estudiante
 function Enlistar() {
     const [formData, setFormData] = useState({
         Nombre: '',
@@ -19,6 +18,7 @@ function Enlistar() {
     const [dniBusqueda, setDniBusqueda] = useState('');
     const [estudianteId, setEstudianteId] = useState(null);
 
+    // Función para buscar un estudiante por DNI
     const buscarPorDni = async () => {
         if (!dniBusqueda) {
             Alert.alert("Error", "Por favor, ingrese un DNI para buscar");
@@ -56,54 +56,61 @@ function Enlistar() {
         }
     };
 
-
     return (
         <View style={styles.container}>
+            {/* Campo para buscar estudiante por DNI */}
             <TextInput
                 placeholder="Buscar por DNI"
                 value={dniBusqueda}
                 onChangeText={setDniBusqueda}
                 style={styles.input}
             />
+            {/* Botón para iniciar la búsqueda */}
             <Button title="Buscar" onPress={buscarPorDni} />
-            <View style={styles.br} ></View>
+            <View style={styles.br}></View>
+
             <View style={styles.row}>
-                <View style={styles.inputContainer} >
-                <Text style={styles.label}>Nombre Completo:</Text>
-                <TextInput
-                    placeholder="Nombre Completo"
-                    value={formData.Nombre}
-                    style={styles.input}
-                />
+                <View style={styles.inputContainer}>
+                    {/* Campo para el nombre completo */}
+                    <Text style={styles.label}>Nombre Completo:</Text>
+                    <TextInput
+                        placeholder="Nombre Completo"
+                        value={formData.Nombre}
+                        style={styles.input}
+                    />
                 </View>
                 <View style={styles.inputContainer}>
-                <Text style={styles.label}>Curso:</Text>
-                <TextInput
-                    placeholder="Curso"
-                    value={formData.Curso}
-                    style={styles.input}
-                />
+                    {/* Campo para el curso */}
+                    <Text style={styles.label}>Curso:</Text>
+                    <TextInput
+                        placeholder="Curso"
+                        value={formData.Curso}
+                        style={styles.input}
+                    />
                 </View>
-                <View style={styles.inputContainer} >
-                <Text style={styles.label}>DNI:</Text>
-                <TextInput
-                    placeholder="DNI"
-                    value={formData.dni}
-                    keyboardType="numeric"
-                    style={styles.input}
-                />
+                <View style={styles.inputContainer}>
+                    {/* Campo para el DNI */}
+                    <Text style={styles.label}>DNI:</Text>
+                    <TextInput
+                        placeholder="DNI"
+                        value={formData.dni}
+                        keyboardType="numeric"
+                        style={styles.input}
+                    />
                 </View>
-                <View style={styles.inputContainer} >
-                <Text style={styles.label}>Faltas:</Text>
-                <TextInput
-                    placeholder="Faltas"
-                    value={formData.Faltas}
-                    style={styles.input}
-                />
+                <View style={styles.inputContainer}>
+                    {/* Campo para las faltas */}
+                    <Text style={styles.label}>Faltas:</Text>
+                    <TextInput
+                        placeholder="Faltas"
+                        value={formData.Faltas}
+                        style={styles.input}
+                    />
                 </View>
             </View>
 
             <Text style={styles.label}>Materias y Notas</Text>
+            {/* Campos para las materias y sus respectivas notas */}
             {materias.map((item, index) => (
                 <View key={index} style={styles.row}>
                     <TextInput
@@ -119,8 +126,8 @@ function Enlistar() {
                 </View>
             ))}
 
-
             <Text style={styles.label}>Materias Previas</Text>
+            {/* Campos para las materias previas y sus respectivas notas */}
             {materiasPrevias.map((item, index) => (
                 <View key={index} style={styles.row}>
                     <TextInput
@@ -136,7 +143,7 @@ function Enlistar() {
                 </View>
             ))}
 
-
+            {/* Campo para las sanciones */}
             <Text style={styles.label}>Sanciones:</Text>
             <TextInput
                 placeholder="Sanciones"
@@ -146,6 +153,7 @@ function Enlistar() {
                 style={styles.textarea}
             />
 
+            {/* Campo para los reportes del profesor */}
             <Text style={styles.label}>Reportes del Profesor:</Text>
             <TextInput
                 placeholder="Reportes"
@@ -160,12 +168,15 @@ function Enlistar() {
 
 export default Enlistar;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         padding: 10,
     },
+    /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
         width: '100%',
@@ -177,24 +188,27 @@ const styles = StyleSheet.create({
         fontFamily: 'arial',
         marginVertical: 5,
         color: '#000',
-        textAlign:'center',
+        textAlign: 'center',
     },
+    /* Contenedor para los campos de entrada */
     inputContainer: {
-        marginBottom: 15, 
-        flexDirection: 'column', 
-        alignItems: 'flex-start', 
-        
+        marginBottom: 15,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
     },
+    /* Estilo para las etiquetas de los campos */
     label: {
         fontFamily: 'arial',
         color: '#000',
         fontWeight: 'bold',
-        marginBottom: 5, 
-        textAlign:'center'
+        marginBottom: 5,
+        textAlign: 'center',
     },
+    /* Espacio entre los campos */
     br: {
         height: 10,
     },
+    /* Estilo para los campos de texto de varias líneas */
     textarea: {
         padding: 5,
         width: '100%',
@@ -206,11 +220,11 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
     },
+    /* Estilo para las filas */
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
         marginVertical: 10,
-
-    }
+    },
 });

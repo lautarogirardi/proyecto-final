@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, Button, View, Text, Modal } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import { db } from '../../../firebaseConfig';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
+// Componente funcional para agregar un nuevo profesor
 function ProfesorAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
@@ -14,6 +15,7 @@ function ProfesorAdd() {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
+    // Manejar cambios en el formulario
     const handleChange = (name, value) => {
         setFormData({
             ...formData,
@@ -21,10 +23,10 @@ function ProfesorAdd() {
         });
     };
 
+    // Manejar el envío del formulario
     const handleSubmit = async () => {
         if (!formData.Nombre || !formData.Apellido || !formData.dni || !formData.Telefono || !formData.Email) {
-            setModalMessage("Por favor, complete todos los campos.");
-            setModalVisible(true);
+            showAlertModal("Por favor, complete todos los campos.");
             return;
         }
 
@@ -34,27 +36,24 @@ function ProfesorAdd() {
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                setModalMessage("Ya existe un profesor con este DNI.");
-                setModalVisible(true);
+                showAlertModal("Ya existe un profesor con este DNI.");
                 return;
             }
 
-            await addDoc(profesoresRef, {
-                Nombre: formData.Nombre,
-                Apellido: formData.Apellido,  // Guardar apellido
-                dni: formData.dni,
-                Telefono: formData.Telefono,
-                Email: formData.Email
-            });
+            await addDoc(profesoresRef, formData);
 
-            setModalMessage("Profesor agregado correctamente");
-            setModalVisible(true);
+            showAlertModal("Profesor agregado correctamente");
             setFormData({ Nombre: '', Apellido: '', dni: '', Telefono: '', Email: '' });
         } catch (error) {
             console.error("Error al agregar el profesor: ", error);
-            setModalMessage("No se pudo agregar el profesor");
-            setModalVisible(true);
+            showAlertModal("No se pudo agregar el profesor");
         }
+    };
+
+    // Función para mostrar un mensaje en un modal
+    const showAlertModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
     };
 
     return (
@@ -103,6 +102,7 @@ function ProfesorAdd() {
             <View style={styles.br} />
             <Button title="Enviar" onPress={handleSubmit} />
 
+            {/* Modal para mostrar mensajes de error o información */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -122,13 +122,16 @@ function ProfesorAdd() {
 
 export default ProfesorAdd;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
         padding: 20,
     },
+    /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
         width: '100%',
@@ -140,20 +143,24 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
     },
+    /* Estilo para las etiquetas */
     label: {
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
     },
+    /* Espacio entre los elementos */
     br: {
         height: 20,
     },
+    /* Contenedor del modal */
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+    /* Estilo de la vista del modal */
     modalView: {
         margin: 20,
         backgroundColor: 'white',
@@ -166,6 +173,7 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    /* Estilo del texto en el modal */
     modalText: {
         fontSize: 20,
         marginBottom: 20,

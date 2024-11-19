@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Alert, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, Modal, TouchableOpacity } from 'react-native';
 import { db } from '@/firebaseConfig';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
@@ -13,8 +13,22 @@ function AlumnoAdd() {
         Direccion: ''
     });
 
+    const [alertModalVisible, setAlertModalVisible] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+
+    // Función para mostrar un mensaje en un modal
+    const showAlertModal = (message) => {
+        setAlertMessage(message);
+        setAlertModalVisible(true);
+    };
+
     // Función para manejar los cambios en los campos del formulario
     const handleChange = (name, value) => {
+        if ((name === 'dni' || name === 'Telefono') && /\D/.test(value)) {
+            showAlertModal(`El ${name === 'dni' ? 'DNI' : 'Teléfono'} debe ser numérico.`);
+            return;
+        }
+
         setFormData({
             ...formData,
             [name]: value
@@ -25,8 +39,7 @@ function AlumnoAdd() {
     const handleSubmit = async () => {
         // Validación de campos obligatorios
         if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
-            Alert.alert("Error", "Por favor, complete todos los campos.");
-            window.alert("Error: Por favor, complete todos los campos.");
+            showAlertModal("Por favor, complete todos los campos.");
             return;
         }
 
@@ -39,23 +52,21 @@ function AlumnoAdd() {
 
             // Verificación de existencia de alumno
             if (!querySnapshot.empty) {
-                Alert.alert("Error", "Ya existe un estudiante con este DNI.");
-                window.alert("Error: Ya existe un estudiante con este DNI.");
+                showAlertModal("Ya existe un estudiante con este DNI.");
                 return;
             }
 
             // Agregar nuevo alumno a la colección
             await addDoc(alumnosRef, formData);
 
-            Alert.alert("Éxito", "Estudiante agregado correctamente");
-            window.alert("Éxito: Estudiante agregado correctamente");
+            showAlertModal("Estudiante agregado correctamente");
 
             // Limpiar formulario después de enviar
             setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
 
         } catch (error) {
             console.error("Error al agregar el usuario: ", error);
-            window.alert("Error: No se pudo agregar el usuario");
+            showAlertModal("No se pudo agregar el usuario");
         }
     };
 
@@ -112,6 +123,26 @@ function AlumnoAdd() {
             <View style={styles.br}></View>
             {/* Botón para enviar el formulario */}
             <Button title="Enviar" onPress={handleSubmit} />
+
+            {/* Modal para mostrar mensajes de alerta */}
+            <Modal
+                visible={alertModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setAlertModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{alertMessage}</Text>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setAlertModalVisible(false)}
+                        >
+                            <Text style={styles.buttonText}>Cerrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -146,5 +177,37 @@ const styles = StyleSheet.create({
     /* Espacio entre los campos */
     br: {
         height: 20,
-    }
+    },
+    /* Estilos para el modal */
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    modalText: {
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    button: {
+        flex: 1,
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 5,
+        marginHorizontal: 5,
+    },
+    buttonClose: {
+        backgroundColor: '#2196F3',
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
 });

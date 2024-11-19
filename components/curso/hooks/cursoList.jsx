@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import useFirestoreCollection from '@/src/useFirestoreCollection';
 import Button from '@/components/curso/boton';
 
+// Componente funcional para listar y ver los detalles de los cursos
 const CursosList = () => {
   const [turno, setTurno] = useState('');
   const [selectedCurso, setSelectedCurso] = useState(null);
@@ -13,18 +14,21 @@ const CursosList = () => {
   const preceptores = useFirestoreCollection('preceptores');
   const materias = useFirestoreCollection('materias');
 
+  // Filtrar cursos por turno
   const filteredCursos = turno ? cursos.filter(curso => curso.Turno === turno) : cursos;
 
+  // Manejar la selección de un curso
   const handleCursoPress = (curso) => {
     setSelectedCurso(curso);
     setModalVisible(true);
   };
 
+  // Obtener nombres de los elementos desde su colección
   const getNombres = (ids, collection) => {
     return ids.map(id => {
       const item = collection.find(a => a.id === id);
       return item ? `${item.Nombre} ${item.Apellido || ''}` : 'Desconocido';
-    }).join(', ');
+    }).join(' ');
   };
 
   const getAlumnosNombres = (alumnosIds) => getNombres(alumnosIds, alumnos);
@@ -33,13 +37,15 @@ const CursosList = () => {
     return materiasIds.map(id => {
       const materia = materias.find(m => m.id === id);
       return materia ? materia.materia : 'Desconocido';
-    }).join(', ');
+    }).join(' ');
   };
 
   return (
     <View style={styles.container}>
+      {/* Título de la lista de cursos */}
       <Text style={styles.title}>Lista de Cursos</Text>
 
+      {/* Filtro por turno */}
       <Text style={styles.label}>Filtrar por Turno:</Text>
       <Picker
         selectedValue={turno}
@@ -52,6 +58,7 @@ const CursosList = () => {
         <Picker.Item label="Vespertino" value="Vespertino" />
       </Picker>
 
+      {/* Lista de cursos */}
       <FlatList
         data={filteredCursos}
         keyExtractor={(curso) => curso.id}
@@ -64,6 +71,7 @@ const CursosList = () => {
         )}
       />
 
+      {/* Modal para mostrar detalles del curso */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -92,58 +100,66 @@ const CursosList = () => {
 
 export default CursosList;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#000',
-  },
-  input: {
-    padding: 5,
-    width: '100%',
-    borderRadius: 15,
-    height: 40,
-    borderColor: 'lightblue',
-    borderWidth: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    marginVertical: 5,
-    color: '#000',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
+    /* Contenedor principal */
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+    },
+    /* Estilo para el título */
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    /* Estilo para las etiquetas */
+    label: {
+        fontSize: 16,
+        marginBottom: 10,
+        color: '#000',
+    },
+    /* Estilo para los campos de entrada de texto y selectores */
+    input: {
+        padding: 5,
+        width: '100%',
+        borderRadius: 15,
+        height: 40,
+        borderColor: 'lightblue',
+        borderWidth: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        marginVertical: 5,
+        color: '#000',
+    },
+    /* Estilos para el modal */
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    /* Estilo para el título del modal */
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    /* Estilo del texto en el modal */
+    modalText: {
+        fontSize: 16,
+        marginBottom: 10,
+    },
 });

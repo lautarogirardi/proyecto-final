@@ -6,6 +6,7 @@ import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import CustomButton from '@/components/curso/boton';  
 
+// Componente funcional para el formulario de inicio de sesión
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,6 +26,7 @@ export default function LoginForm() {
     checkUser();
   }, [navigation]);
 
+  // Manejar el inicio de sesión
   const HandleSignIn = () => {
     if (email.trim() === '' || password.trim() === '') {
       setModalMessage('Por favor llene los espacios para poder iniciar sesión de su cuenta');
@@ -54,14 +56,17 @@ export default function LoginForm() {
       });
   };
 
+  // Manejar la navegación para olvidar contraseña
   const handleForgotPassword = () => {
     navigation.navigate("olvidosucontrasena");
   };
 
+  // Manejar la navegación para registro
   const direccionRegistro = () => {
     navigation.navigate("register");
   };
 
+  // Manejar la navegación para login de admin
   const handleAdminLogin = () => {
     navigation.navigate("loginAdmin");
   };
@@ -97,6 +102,7 @@ export default function LoginForm() {
       <CustomButton title="Regístrate" onPress={direccionRegistro} />
       <Text style={styles.adminLogin} onPress={handleAdminLogin}>Admin Login</Text>
 
+      {/* Modal para mostrar mensajes */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -116,7 +122,9 @@ export default function LoginForm() {
   );
 }
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -124,17 +132,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  /* Contenedor de carga */
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  /* Estilo para el título */
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
   },
+  /* Estilo para los campos de entrada de texto */
   textInput: {
     width: '80%',
     height: 50,
@@ -145,20 +156,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#f9f9f9',
   },
+  /* Estilo para el texto de olvidar contraseña */
   olvideContra: {
     color: '#007BFF',
     marginVertical: 10,
     textAlign: 'center',
   },
+  /* Estilo para el texto de registrarse */
   registrate: {
     marginVertical: 10,
     textAlign: 'center',
   },
+  /* Estilo para el texto de login de admin */
   adminLogin: {
     color: '#DC3545',
     marginVertical: 10,
     textAlign: 'center',
   },
+  /* Estilos para el modal */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -180,6 +195,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     marginBottom: 15,
     textAlign: 'center',

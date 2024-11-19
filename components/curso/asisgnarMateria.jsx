@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Alert, StyleSheet, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../../firebaseConfig';
 import { updateDoc, doc, arrayUnion } from 'firebase/firestore';
 import useFirestoreCollection from '../../src/useFirestoreCollection';
 
+// Componente funcional para asignar materias a cursos
 const AsignarMateria = () => {
   const [selectedCurso, setSelectedCurso] = useState('');
   const [selectedMateria, setSelectedMateria] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const cursos = useFirestoreCollection('cursos');
   const materias = useFirestoreCollection('materias');
 
+  // Manejar la asignación de la materia al curso
   const handleAddMateriaToCurso = async () => {
     if (!selectedCurso || !selectedMateria) {
-      Alert.alert("Error", "Seleccione un curso y una materia");
+      showAlertModal("Seleccione un curso y una materia");
       return;
     }
 
@@ -29,8 +33,14 @@ const AsignarMateria = () => {
       setSelectedMateria('');
     } catch (error) {
       console.error("Error al agregar la materia al curso: ", error);
-      Alert.alert("Error", "No se pudo agregar la materia al curso");
+      showAlertModal("No se pudo agregar la materia al curso");
     }
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setErrorMessage(message);
+    setErrorModalVisible(true);
   };
 
   return (
@@ -66,6 +76,7 @@ const AsignarMateria = () => {
 
       <Button title="Agregar Materia al Curso" onPress={handleAddMateriaToCurso} />
 
+      {/* Modal para confirmar la asignación de la materia al curso */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -82,38 +93,63 @@ const AsignarMateria = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Modal para mostrar mensajes de error */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={errorModalVisible}
+        onRequestClose={() => setErrorModalVisible(!errorModalVisible)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{errorMessage}</Text>
+            <Button
+              title="Cerrar"
+              onPress={() => setErrorModalVisible(!errorModalVisible)}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 export default AsignarMateria;
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
+  /* Estilo para el título */
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  /* Estilo para las etiquetas */
   label: {
     fontSize: 16,
     marginBottom: 10,
   },
+  /* Contenedor para los selectores */
   pickerContainer: {
     width: '100%',
     marginBottom: 20,
   },
+  /* Estilo para los selectores */
   picker: {
     height: 50,
     width: '100%',
     borderColor: 'gray',
     borderWidth: 1,
   },
+  /* Estilos para los modales */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -132,6 +168,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     fontSize: 20,
     marginBottom: 20,

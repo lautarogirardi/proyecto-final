@@ -5,6 +5,7 @@ import { auth } from '../../firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import CustomButton from '@/components/curso/boton';  // Tu componente personalizado
 
+// Componente funcional para registrar un nuevo usuario
 export default function RegistroForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,16 +14,15 @@ export default function RegistroForm() {
   const [modalMessage, setModalMessage] = useState('');
   const navigation = useNavigation();
 
+  // Manejar el registro de usuario
   const handleSignUp = () => {
     if (email.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
-      setModalMessage('Por favor llene todos los campos para registrarse');
-      setModalVisible(true);
+      showAlertModal('Por favor llene todos los campos para registrarse');
       return;
     }
 
     if (password !== confirmPassword) {
-      setModalMessage('Por favor asegúrese de que las contraseñas coincidan');
-      setModalVisible(true);
+      showAlertModal('Por favor asegúrese de que las contraseñas coincidan');
       return;
     }
 
@@ -35,9 +35,14 @@ export default function RegistroForm() {
       })
       .catch(error => {
         console.log(error);
-        setModalMessage(error.message);
-        setModalVisible(true);
+        showAlertModal(error.message);
       });
+  };
+
+  // Función para mostrar un mensaje en un modal
+  const showAlertModal = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
   };
 
   return (
@@ -62,6 +67,7 @@ export default function RegistroForm() {
       />
       <CustomButton title="Registrarse" onPress={handleSignUp} />
 
+      {/* Modal para mostrar mensajes de error o información */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -81,7 +87,9 @@ export default function RegistroForm() {
   );
 }
 
+/* Estilos para el componente */
 const styles = StyleSheet.create({
+  /* Contenedor principal */
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -89,12 +97,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  /* Estilo para el título */
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
   },
+  /* Estilo para los campos de entrada de texto */
   textInput: {
     width: '80%',
     height: 50,
@@ -105,12 +115,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: '#f9f9f9',
   },
+  /* Contenedor del modal */
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  /* Estilo de la vista del modal */
   modalView: {
     margin: 20,
     backgroundColor: 'white',
@@ -126,6 +138,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  /* Estilo del texto en el modal */
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
