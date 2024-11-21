@@ -14,9 +14,9 @@ interface CardData {
 const Admin: React.FC = () => {
   const router = useRouter();
   const cardsData: CardData[] = [
-    { id: 1, title: 'Cursos', buttonText: 'Toca para ver info sobre los cursos!', route: '/curso' },
-    { id: 2, title: 'Informe Profesores', buttonText: 'Toca para hacer un informe a algún profesor!', route: '/profesores' },
-    { id: 3, title: 'Alumnos', buttonText: 'Toca para ver info sobre los alumnos!', route: '/alumnos' },
+    { id: 1, title: 'Cursos', buttonText: 'Toca para gestionar los cursos!', route: '/curso' },
+    { id: 2, title: 'Informe Profesores', buttonText: 'Toca para gestionar a los profesores!', route: '/profesores' },
+    { id: 3, title: 'Alumnos', buttonText: 'Toca para para gestionar a los alumnos!', route: '/alumnos' },
     { id: 4, title: 'Preceptores', buttonText: 'Toca para gestionar preceptores!', route: '/preceptores' },
     { id: 5, title: 'Materias', buttonText: 'Toca para gestionar las materias!', route: '/materias' }
   ];

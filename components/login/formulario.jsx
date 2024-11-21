@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Modal, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Modal, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from '../../firebaseConfig';
@@ -67,7 +67,8 @@ export default function LoginForm() {
   };
 
   // Manejar la navegación para login de admin
-  const handleAdminLogin = () => {
+  const handleAdminLogin = async () => {
+    await AsyncStorage.removeItem('adminUser');  // Asegurarse de que no haya sesión de administrador activa
     navigation.navigate("loginAdmin");
   };
 

@@ -14,7 +14,7 @@ interface Section {
 const Preceptores: React.FC = () => {
   const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
 
-  // Función para manejar el clic en los botones y cambiar la sección activa
+  
   const handleButtonClick = (section: Section) => {
     setActiveSection(section);
   };

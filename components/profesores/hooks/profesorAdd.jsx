@@ -7,16 +7,22 @@ import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 function ProfesorAdd() {
     const [formData, setFormData] = useState({
         Nombre: '',
-        Apellido: '',  
+        Apellido: '',
         dni: '',
         Telefono: '',
         Email: ''
     });
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [errorModalMessage, setErrorModalMessage] = useState('');
 
     // Manejar cambios en el formulario
     const handleChange = (name, value) => {
+        if ((name === 'dni' || name === 'Telefono') && !/^\d*$/.test(value)) {
+            showErrorModal(`Solo se pueden ingresar números en  ${name}`);
+            return; // Permitir solo números
+        }
         setFormData({
             ...formData,
             [name]: value
@@ -56,6 +62,12 @@ function ProfesorAdd() {
         setModalVisible(true);
     };
 
+    // Función para mostrar un mensaje de error en un modal
+    const showErrorModal = (message) => {
+        setErrorModalMessage(message);
+        setErrorModalVisible(true);
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Nombre:</Text>
@@ -79,6 +91,7 @@ function ProfesorAdd() {
                 placeholder="Ingresar DNI"
                 value={formData.dni}
                 onChangeText={(value) => handleChange('dni', value)}
+                keyboardType="numeric"
                 style={styles.input}
             />
 
@@ -87,7 +100,7 @@ function ProfesorAdd() {
                 placeholder="Ingresar Teléfono"
                 value={formData.Telefono}
                 onChangeText={(value) => handleChange('Telefono', value)}
-                keyboardType="numeric"
+                keyboardType="phone-pad"
                 style={styles.input}
             />
 
@@ -96,6 +109,7 @@ function ProfesorAdd() {
                 placeholder="Ingresar Email"
                 value={formData.Email}
                 onChangeText={(value) => handleChange('Email', value)}
+                keyboardType="email-address"
                 style={styles.input}
             />
 
@@ -113,6 +127,21 @@ function ProfesorAdd() {
                     <View style={styles.modalView}>
                         <Text style={styles.modalText}>{modalMessage}</Text>
                         <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+                    </View>
+                </View>
+            </Modal>
+
+            {/* Modal para mostrar mensajes de error en DNI y Teléfono */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={errorModalVisible}
+                onRequestClose={() => setErrorModalVisible(!errorModalVisible)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{errorModalMessage}</Text>
+                        <Button title="Cerrar" onPress={() => setErrorModalVisible(!errorModalVisible)} />
                     </View>
                 </View>
             </Modal>

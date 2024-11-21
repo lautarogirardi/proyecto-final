@@ -14,9 +14,15 @@ function PreceptorAdd() {
     });
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [errorModalMessage, setErrorModalMessage] = useState('');
 
     // Manejar cambios en el formulario
     const handleChange = (name, value) => {
+        if ((name === 'dni' || name === 'Telefono') && !/^\d*$/.test(value)) {
+            showErrorModal("Solo se pueden ingresar números en " + name);
+            return; // Permitir solo números
+        }
         setFormData({
             ...formData,
             [name]: value
@@ -53,6 +59,12 @@ function PreceptorAdd() {
     const showAlertModal = (message) => {
         setModalMessage(message);
         setModalVisible(true);
+    };
+
+    // Función para mostrar un mensaje de error en un modal
+    const showErrorModal = (message) => {
+        setErrorModalMessage(message);
+        setErrorModalVisible(true);
     };
 
     return (
@@ -110,9 +122,24 @@ function PreceptorAdd() {
                 onRequestClose={() => setModalVisible(!modalVisible)}
             >
                 <View style={styles.modalContainer}>
-                    <View style={styles.modalView}>
+                    <View style={styles.modalContent}>
                         <Text style={styles.modalText}>{modalMessage}</Text>
                         <Button title="Cerrar" onPress={() => setModalVisible(!modalVisible)} />
+                    </View>
+                </View>
+            </Modal>
+
+            {/* Modal para mostrar mensajes de error en DNI y Teléfono */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={errorModalVisible}
+                onRequestClose={() => setErrorModalVisible(!errorModalVisible)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{errorModalMessage}</Text>
+                        <Button title="Cerrar" onPress={() => setErrorModalVisible(!errorModalVisible)} />
                     </View>
                 </View>
             </Modal>
@@ -124,13 +151,11 @@ export default PreceptorAdd;
 
 /* Estilos para el componente */
 const styles = StyleSheet.create({
-    /* Contenedor principal */
     container: {
         flex: 1,
         justifyContent: 'center',
         padding: 20,
     },
-    /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
         width: '100%',
@@ -142,50 +167,26 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
     },
-    /* Estilo para las etiquetas */
     label: {
         marginVertical: 5,
         fontWeight: 'bold',
     },
-    /* Textarea */
-    textarea: {
-        padding: 5,
-        width: '100%',
-        borderRadius: 15,
-        borderColor: 'lightblue',
-        borderWidth: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        marginVertical: 5,  
-        color: '#000',
-    },
-    /* Espacio */
     br: {
         height: 20,
     },
-    /* Contenedor del modal */
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    /* Estilo de la vista del modal */
-    modalView: {
-        margin: 20,
+    modalContent: {
         backgroundColor: 'white',
+        padding: 20,
         borderRadius: 10,
-        padding: 35,
+        width: '80%',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
     },
-    /* Estilo del texto en el modal */
     modalText: {
         marginBottom: 15,
         textAlign: 'center',

@@ -1,51 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Modal } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { db } from '@/firebaseConfig';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
-
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 
 function Actualizar() {
     const [formData, setFormData] = useState({
         materia: ''
     });
-    const [materiaBusqueda, setMateriaBusqueda] = useState('');
-    const [materiaId, setMateriaId] = useState(null);
+    const [materiaId, setMateriaId] = useState('');
+    const [materias, setMaterias] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
 
-    // Manejar los cambios en el formulario
-    const handleChange = (name, value) => {
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    // Buscar materia en la base de datos
-    const buscarPorMateria = async () => {
-        if (!materiaBusqueda) {
-            showAlertModal("Por favor, ingrese la materia para buscar");
-            return;
-        }
-
-        try {
-            const materiaQuery = query(collection(db, 'materias'), where("materia", "==", materiaBusqueda));
-            const querySnapshot = await getDocs(materiaQuery);
-
-            if (querySnapshot.empty) {
-                showAlertModal("No se encontró ninguna materia");
-            } else {
-                const materiaEncontrada = querySnapshot.docs[0];
-                setMateriaId(materiaEncontrada.id);
-                const data = materiaEncontrada.data();
-
-                setFormData({
-                    materia: data.materia || ''
-                });
+    useEffect(() => {
+        const fetchMaterias = async () => {
+            try {
+                const materiasCollection = collection(db, 'materias');
+                const materiasSnapshot = await getDocs(materiasCollection);
+                const materiasList = materiasSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    materia: doc.data().materia || '',
+                }));
+                setMaterias(materiasList);
+            } catch (error) {
+                console.error("Error al obtener las materias: ", error);
             }
-        } catch (error) {
-            console.error("Error al buscar la materia: ", error);
-            showAlertModal("Ocurrió un error al buscar la materia");
+        };
+        fetchMaterias();
+    }, []);
+
+    // Manejar el cambio de selección de la materia
+    const handleMateriaChange = (materiaId) => {
+        setMateriaId(materiaId);
+        const selectedMateriaData = materias.find(materia => materia.id === materiaId);
+        if (selectedMateriaData) {
+            setFormData(selectedMateriaData);
         }
     };
 
@@ -57,24 +47,13 @@ function Actualizar() {
         }
 
         try {
-            const materiaQuery = query(
-                collection(db, 'materias'),
-                where("materia", "==", formData.materia)
-            );
-            const materiaSnapshot = await getDocs(materiaQuery);
-
-            if (!materiaSnapshot.empty && materiaSnapshot.docs[0].id !== materiaId) {
-                showAlertModal("La materia ya está registrada.");
-                return;
-            }
-
             if (materiaId) {
                 await updateDoc(doc(db, 'materias', materiaId), {
                     ...formData,
                 });
                 showAlertModal("Materia actualizada correctamente");
             } else {
-                showAlertModal("Primero busca una materia");
+                showAlertModal("Primero selecciona una materia");
             }
         } catch (error) {
             console.error("Error al actualizar la materia: ", error);
@@ -90,20 +69,24 @@ function Actualizar() {
 
     return (
         <View style={styles.container}>
-            <TextInput
-                placeholder="Buscar Materia"
-                value={materiaBusqueda}
-                onChangeText={setMateriaBusqueda}
+            <Text style={styles.label}>Seleccionar Materia:</Text>
+            <Picker
+                selectedValue={materiaId}
+                onValueChange={handleMateriaChange}
                 style={styles.input}
-            />
-            <Button title="Buscar" onPress={buscarPorMateria} />
+            >
+                <Picker.Item label="Seleccione una Materia" value="" />
+                {materias.map(materia => (
+                    <Picker.Item key={materia.id} label={materia.materia} value={materia.id} />
+                ))}
+            </Picker>
             <View style={styles.br}></View>
 
             <Text style={styles.label}>Materia:</Text>
             <TextInput
                 placeholder="Ingresar Materia"
                 value={formData.materia}
-                onChangeText={(value) => handleChange('materia', value)}
+                onChangeText={(value) => setFormData({ ...formData, materia: value })}
                 style={styles.input}
             />
             <Button title="Guardar Cambios" onPress={handleSubmit} color="green" />
@@ -138,12 +121,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
     },
-    /* Separador */
-    separator: {
-        height: 3,
-        backgroundColor: 'lightblue',  
-        marginVertical: 10,       
-    },
     /* Estilo para los campos de entrada de texto */
     input: {
         padding: 5,
@@ -170,19 +147,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         color: '#000',
         fontWeight: 'bold',
-        textAlign: 'center', // Centra el texto
-    },
-    /* Textarea */
-    textarea: {
-        padding: 5,
-        width: '100%',
-        borderRadius: 15,
-        borderColor: 'lightblue',
-        borderWidth: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        fontFamily: 'arial',
-        marginVertical: 5,
-        color: '#000',
+        textAlign: 'center',
     },
     /* Espacio */
     br: {
