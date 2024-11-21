@@ -16,9 +16,9 @@ interface Section {
 }
 
 function InformeAlumno() {
-  const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });
+  const [activeSection, setActiveSection] = useState<Section>({ id: 1, name: 'agregar' });//estado que configura la seccion activa que se debe mostrar
 
-  const handleButtonClick = (section: Section) => {
+  const handleButtonClick = (section: Section) => {//cambia la seccion activa cuando se presiona
     setActiveSection(section);
   };
 
@@ -26,16 +26,16 @@ function InformeAlumno() {
     <ImageBackground source={require('@/fondo/epet23.jpg')} style={styles.backgroundImage}>
       <ScrollView>
         <View style={styles.container}>
-          <BlurView intensity={65} style={styles.blurContainer}>
+          <BlurView intensity={65} style={styles.blurContainer}>//para desenfocar
             <h1 style={styles.title}>Modificar Alumno: </h1>
-            <View style={styles.ubicacion}>
+            <View style={styles.ubicacion}>//botones para cambiar de seccion
               <button onClick={() => handleButtonClick({ id: 1, name: 'agregar' })} style={styles.boton}>Agregar</button>
               <button onClick={() => handleButtonClick({ id: 2, name: 'actualizar' })} style={styles.boton}>Actualizar</button>
               <button onClick={() => handleButtonClick({ id: 3, name: 'eliminar' })} style={styles.boton}>Eliminar</button>
               <button onClick={() => handleButtonClick({ id: 4, name: 'lista' })} style={styles.boton}>Lista de Alumnos</button>
             </View>
 
-            {activeSection.name === 'agregar' && (
+            {activeSection.name === 'agregar' && (//se renderizalos componentes segun que seccion se active
               <View style={styles.component}><AlumnoAdd /></View>
             )}
             {activeSection.name === 'actualizar' && (

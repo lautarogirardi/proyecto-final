@@ -4,7 +4,7 @@ import { db } from '@/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 
 function AlumnoAdd() {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ //el estado formdta contiene los datos del alumno
         Nombre: '',
         dni: '',
         Telefono: '',
@@ -12,37 +12,37 @@ function AlumnoAdd() {
         Direccion: ''
     });
 
-    const handleChange = (name, value) => {
+    const handleChange = (name, value) => { //reinicia los valores del formulario
         setFormData({
             ...formData,
             [name]: value
         });
     };
 
-    const handleSubmit = async () => {
-        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) {
+    const handleSubmit = async () => { //cuando se presiona el boton de enviar
+        if (!formData.Nombre || !formData.dni || !formData.Telefono || !formData.Email || !formData.Direccion) { //validacion: se debe completar todos los campos del formulario para poder enviarlo
             Alert.alert("Error", "Por favor, complete todos los campos.");
             window.alert("Error: Por favor, complete todos los campos.");
             return;
         }
 
         try {
-            const alumnosRef = collection(db, 'alumnos');
-            const q = query(alumnosRef, where("dni", "==", formData.dni));
-            const querySnapshot = await getDocs(q);
+            const alumnosRef = collection(db, 'alumnos'); //llamamos la coleccion alumnos
+            const q = query(alumnosRef, where("dni", "==", formData.dni));//se crea la consulta, si se encuantra un dni igual en la coleccion, al enviado
+            const querySnapshot = await getDocs(q); //se ejecuta la consulta
 
-            if (!querySnapshot.empty) {
+            if (!querySnapshot.empty) { // validacion no se puede agregar un dni ya registrado
                 Alert.alert("Error", "Ya existe un alumno con este DNI.");
                 window.alert("Error: Ya existe un alumno con este DNI.");
                 return;
             }
 
-            await addDoc(alumnosRef, formData);
+            await addDoc(alumnosRef, formData);// Agrega un nuevo documento a la colección alumnosRef con los datos del formulario
 
             Alert.alert("Éxito", "Alumno agregado correctamente");
             window.alert("Éxito: Alumno agregado correctamente");
 
-            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });
+            setFormData({ Nombre: '', dni: '', Telefono: '', Email: '', Direccion: '' });// Reinicia los el formulario a valores vacios
 
         } catch (error) {
             console.error("Error al agregar el alumno: ", error);
@@ -56,7 +56,7 @@ function AlumnoAdd() {
             <TextInput
                 placeholder="Ingresar Nombre Completo"
                 value={formData.Nombre}
-                onChangeText={(value) => handleChange('Nombre', value)}
+                onChangeText={(value) => handleChange('Nombre', value)}// actualiza el value co el valor ingresado por teclado 
                 style={styles.input}
             />
 
